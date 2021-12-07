@@ -131,40 +131,65 @@
                 <a name="OrderPrints"></a>
                 <h3>Order Prints</h3>
                 <p>This website is still under construction. In the meantime please use this contact form to let us know your requirements and we will get right back to you with a quote.</p>
-                <form>
+                <form data-ajax-begin="onBegin" 
+                    data-ajax-complete="onComplete"
+                    data-ajax-failure="onFailed" 
+                    data-ajax-success="onSuccess"
+                    data-ajax="true" 
+                    data-ajax-method="POST"
+                    asp-page-handler="SaveForm">
                     @Html.ValidationSummary(true)
                     <div class="form-group row">
-                        <label for="exampleInputEmail1" class="col-sm-2 col-form-label">Email address</label>
+                        <label asp-for="ContactModel.Name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" 
+                                class="form-control" 
+                                id="inputName1" 
+                                placeholder="Enter name" 
+                                data-val-required="Name is required." 
+                                data-val="true"
+                                name="name"
+                                asp-for="ContactModel.Name"
+                                data-val-regex="Name may only contain letters, spaces and the the following characters: - '"
+                                data-val-regex-pattern="^[a-zA-Z \-']+$">
+                            <small id="nameHelp" class="form-text text-muted float-left">We'll never share your name with anyone else.</small>
+                            <div class="field-validation-valid float-left" data-valmsg-for="name" data-valmsg-replace="true"></div>                     
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="ContactModel.Email" class="col-sm-2 col-form-label">Email address</label>
                         <div class="col-sm-10">
                             <input type="email" 
                                 class="form-control" 
-                                id="exampleInputEmail1" 
-                                aria-describedby="emailHelp" 
+                                id="inputEmail" 
                                 placeholder="Enter email" 
                                 data-val-required="Email address is required." 
                                 data-val="true"
-                                name="emailInput">
-                            <small id="emailHelp" class="form-text text-muted float-left">We'll never share your email with anyone ese.</small>
-                            <div class="field-validation-valid float-left" data-valmsg-for="emailInput" data-valmsg-replace="true"></div>                     
+                                name="email"
+                                asp-for="ContactModel.Email">
+                            <small id="emailHelp" class="form-text text-muted float-left">We'll never share your email with anyone else.</small>
+                            <div class="field-validation-valid float-left" data-valmsg-for="email" data-valmsg-replace="true"></div>                     
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="exampleFormControlTextarea1" class="col-sm-2 col-form-label">Your message</label>
+                        <label asp-for="ContactModel.Message" class="col-sm-2 col-form-label">Your message</label>
                         <div class="col-sm-10">
                            <textarea class="form-control" 
-                               id="exampleFormControlTextarea1" 
+                               id="textareaMessage" 
                                rows="3" 
-                               name="messageTextarea"
+                               name="message"
+                               asp-for="ContactModel.Message"
                                placeholder="Enter your message"
                                data-val-required="Message is required." 
                                data-val="true"
-                               data-val-regex="This field may only contain alpha-numerics and the the following characters: . , / _ :"
+                               data-val-regex="Message may only contain alpha-numerics, spaces and the the following characters: . , / _ :"
                                data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$">
                            </textarea>
-                           <div class="field-validation-valid float-left" data-valmsg-for="messageTextarea" data-valmsg-replace="true"></div>
+                           <div class="field-validation-valid float-left" data-valmsg-for="message" data-valmsg-replace="true"></div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <input type="submit" class="btn btn-primary" value="Save Details" />
+                    <div id="results"></div>
                 </form>
             </div>
         </div>
@@ -173,4 +198,22 @@
 
 <script type="text/javascript">
     function jumpToAnchor (target){window.location.hash=target;}
+
+    document.addEventListener("DOMContentLoaded", function(){
+        var results = $("#results");
+        onBegin = function(){
+            results.html("<img src=\"resources/images/loader.gif\" alt=\"Loading\" />");
+        };
+        onComplete = function(){
+            results.html("");
+        };
+        onSuccess = function (xhr) {
+            alert(`Thankyou: ${xhr.valueOf('name')}! 
+            
+Your request has been forwarded to our team - we will respond as quickly as we can.`);
+        };
+        onFailed = function (xhr) {
+            alert(`Status: ${xhr.status}, Status Text: ${xhr.statusText}`);
+        };
+    });
 </script>

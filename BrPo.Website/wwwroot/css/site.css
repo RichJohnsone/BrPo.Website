@@ -77,9 +77,14 @@ body {
 
 .field-validation-error span{
     color: red;
+    font-size:.8em;
 }
 
 .input-validation-error:focus,
 .input-validation-error {
     border-color: red;
+}
+
+small {
+    margin-right: 10px;
 }

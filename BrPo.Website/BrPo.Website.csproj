@@ -111,4 +111,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\ContactForm\Persistence\" />
+  </ItemGroup>
+
 </Project>
