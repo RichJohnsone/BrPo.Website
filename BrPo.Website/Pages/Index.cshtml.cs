@@ -1,4 +1,6 @@
 ﻿using BrPo.Website.Services.ContactForm.Models;
+using BrPo.Website.Services.ContactForm.Services;
+using BrPo.Website.Services.Email;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -13,16 +15,34 @@ namespace BrPo.Website.Pages
         [BindProperty]
         public ContactModel ContactModel { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        private readonly IContactService _contactService;
+
+        public IndexModel(
+            ILogger<IndexModel> logger,
+            IContactService contactService)
         {
             _logger = logger;
+            _contactService = contactService;
         }
 
         public void OnGet() {}
 
         public async Task<IActionResult> OnPostSaveFormAsync()
         {
-            await Task.Delay(20);
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            // do some serverside validation
+            if (!ContactModel.Email.IsValidEmailAddress())
+            {
+                return BadRequest("Email address is not valid");
+            }
+            var existingContact = _contactService.Find(ContactModel);
+            if (existingContact == null)
+                await _contactService.Save(ContactModel);
+            else
+                return BadRequest("This request has been saved already");
             return Content(ContactModel.Name);
         }
     }
