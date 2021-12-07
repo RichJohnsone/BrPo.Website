@@ -33,14 +33,16 @@ namespace BrPo.Website.Pages
             {
                 return Page();
             }
-            // do some serverside validation
             if (!ContactModel.Email.IsValidEmailAddress())
             {
                 return BadRequest("Email address is not valid");
             }
             var existingContact = _contactService.Find(ContactModel);
             if (existingContact == null)
+            {
+                ContactModel.DateCreated = System.DateTime.UtcNow;
                 await _contactService.Save(ContactModel);
+            }
             else
                 return BadRequest("This request has been saved already");
             return Content(ContactModel.Name);

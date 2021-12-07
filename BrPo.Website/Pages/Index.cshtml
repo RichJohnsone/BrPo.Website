@@ -211,11 +211,12 @@
             alert(`Thankyou: ${xhr.valueOf('name')}! 
             
 Your request has been forwarded to our team - we will respond as quickly as we can.`);
+            
         };
         onFailed = function (xhr) {
-            alert(`Status: ${xhr.status}
+            alert(`Status: ${xhr.status} : Status Text: ${xhr.statusText}
             
-Status Text: ${xhr.statusText}`);
+Response Text: ${xhr.responseText}`);
         };
     });
 </script>

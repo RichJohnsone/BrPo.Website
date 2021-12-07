@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using BrPo.Website.Services.ContactForm.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BrPo.Website.Data
 {
@@ -12,5 +10,7 @@ namespace BrPo.Website.Data
             : base(options)
         {
         }
+
+        public DbSet<ContactModel> Contacts { get; set; }
     }
 }
