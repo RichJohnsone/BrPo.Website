@@ -3,21 +3,174 @@
 @{
     ViewData["Title"] = "Home page";
 }
-
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <h5>BrixtonPhotographic.com offer a high quality fine-art image printing service at a great low price.</h5>
-    <div class="container">
-  <div class="row">
-    <div class="col">
-      Column
+    <h4>High quality fine-art image printing at fantastic low prices.</h4>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-success bpi-button-spacing form-control"
+                style="min-width:110px;"
+                        onclick="jumpToAnchor('WhatWeDo');jumpToAnchor('x')">
+                    What we do
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-success bpi-button-spacing form-control"
+                        onclick="jumpToAnchor('Paper');jumpToAnchor('x')">
+                    Paper
+                </button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-success bpi-button-spacing form-control"
+                        onclick="jumpToAnchor('Pricing');jumpToAnchor('x')">
+                    Pricing
+                </button>
+            </div>
+             <div class="col">
+                <button class="btn btn-success bpi-button-spacing form-control"
+                        onclick="jumpToAnchor('OrderPrints');jumpToAnchor('x')">
+                    Order Prints
+                </button>
+            </div>
+       </div>
     </div>
-    <div class="col">
-      Column
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <a name="WhatWeDo"></a>
+                <h3>What we do</h3>
+                <p>We produce archive quality fine-art image prints at any size upto 430mm x 2000mm.</p>
+                <p>Our Premium quality prints are produced on a range of archive quality 17" roll papers using a set of 11 leading-edge Epson Ultrachrome&reg; HDR pigment-based inks. 
+ These inks are also archive quality, meaning they will not degrade over time. Featuring two extra colours - green and orange - as well as two black inks - photo black and matte black - meaning that Epson Ultrachrome&reg; HDR provides a much wider tonal range.</p>
+                <p>All of this means higher colour accuracy, greater subtlety and smoother gradations. Grass and foliage will be much more vivid and natural, while orange tones like sunsets will be more dazzling. Photographers will be delighted to see that the orange ink also lessens the graininess in skin tones.</p>
+                <p>We also offer High Quality prints on cut-sheet paper upto A4 in size using a set of 6 Epson T673 dye-based inks.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a name="Paper"></a>
+                <h3>Paper</h3>
+                <p>Our printing papers are all acid-fee archive quality. Our paper pricing is split into two bands - Standard and Fine-art.</p>
+                <p>Standard papers are made by the world-famous Ilford. We stock Heavyweight Matt 190gsm, Smooth Pearl 290gsm and Smooth Gloss 310gsm. We also stock Olmec Photo Matt 230gsm.</p>
+                <p>Fine art papers are made by market leaders Hahnemeuhle. We stock matt Photo Rag&reg; 188gsm, matt Photo Rag&reg; Ultra Smooth 305gsm, matt textured Albrecht Dürer 210gsm, high gloss Baryta FB 350gsm.</p>
+                <p>We also stock 17" rolls of matt white self-adheisive poly vinyl.</p>
+                <p>If you are looking for another paper type please let us know and we will be happy to give you a quote for it.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a name="Pricing"></a>
+                <h3>Pricing</h3>
+                <p>All prices are in GB pounds. UK mainland delivery for upto 5 item &lt; A3 is £6, upto 5 items > A3 is £9 - prints are sent carefully packaged in cardboard mailing tubes. We are a small business under the threshold for VAT so we do not charge it.</p>
+                <h5>Premium - 17&quot; roll paper, 11 pigment-based inks.</h5>
+                <table class="table">
+                    <thead>
+					    <tr>
+						    <th scope="col">Size</th>
+						    <th scope="col">Standard paper</th>
+						    <th scope="col">Fine-art paper</th>
+						    <th scope="col">Self Adhesive poly vinyl</th>
+					    </tr>
+                    </thead>
+                    <tbody>
+					    <tr>
+						    <td>A4 - 210 x 297 mm</td>
+						    <td>5</td>
+						    <td>10</td>
+						    <td>15</td>
+					    </tr>
+					    <tr>
+						    <td>upto A3 - 297 x 420 mm</td>
+						    <td>15</td>
+						    <td>25</td>
+						    <td>20</td>
+					    </tr>
+					    <tr>
+						    <td>upto A2 - 420 x 594 mm</td>
+						    <td>20</td>
+						    <td>35</td>
+						    <td>25</td>
+					    </tr>
+					    <tr>
+						    <td>upto 430 x 1000mm</td>
+						    <td>30</td>
+						    <td>50</td>
+						    <td>35</td>
+					    </tr>
+					    <tr>
+						    <td>upto 430 x 2000mm</td>
+						    <td>50</td>
+						    <td>80</td>
+						    <td>60</td>
+					    </tr>                    
+                    </tbody>
+                </table>
+                <h5 class="mt-3">High Quality - Cut sheets, 6 dye based inks</h5>
+                <table class="table">
+                    <thead>
+					    <tr>
+						    <th scope="col">Size</th>
+						    <th scope="col">Standard paper</th>
+						    <th scope="col">Fine-art paper</th>
+					    </tr>
+                    </thead>
+                   <tbody>
+					    <tr>
+						    <td>upto A4 - 210 x 297 mm</td>
+						    <td>2</td>
+						    <td>5</td>
+					    </tr>
+                    </tbody>
+				</table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a name="OrderPrints"></a>
+                <h3>Order Prints</h3>
+                <p>This website is still under construction. In the meantime please use this contact form to let us know your requirements and we will get right back to you with a quote.</p>
+                <form>
+                    @Html.ValidationSummary(true)
+                    <div class="form-group row">
+                        <label for="exampleInputEmail1" class="col-sm-2 col-form-label">Email address</label>
+                        <div class="col-sm-10">
+                            <input type="email" 
+                                class="form-control" 
+                                id="exampleInputEmail1" 
+                                aria-describedby="emailHelp" 
+                                placeholder="Enter email" 
+                                data-val-required="Email address is required." 
+                                data-val="true"
+                                name="emailInput">
+                            <small id="emailHelp" class="form-text text-muted float-left">We'll never share your email with anyone ese.</small>
+                            <div class="field-validation-valid float-left" data-valmsg-for="emailInput" data-valmsg-replace="true"></div>                     
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="exampleFormControlTextarea1" class="col-sm-2 col-form-label">Your message</label>
+                        <div class="col-sm-10">
+                           <textarea class="form-control" 
+                               id="exampleFormControlTextarea1" 
+                               rows="3" 
+                               name="messageTextarea"
+                               placeholder="Enter your message"
+                               data-val-required="Message is required." 
+                               data-val="true"
+                               data-val-regex="This field may only contain alpha-numerics and the the following characters: . , / _ :"
+                               data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$">
+                           </textarea>
+                           <div class="field-validation-valid float-left" data-valmsg-for="messageTextarea" data-valmsg-replace="true"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="col">
-      Column
-    </div>
-  </div>
 </div>
-</div>
+
+<script type="text/javascript">
+    function jumpToAnchor (target){window.location.hash=target;}
+</script>

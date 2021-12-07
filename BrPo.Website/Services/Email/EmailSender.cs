@@ -25,7 +25,7 @@ namespace BrPo.Website.Services.Email
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("Info@BrixtonPhotographic.com", "Password Recovery"),
+                From = new EmailAddress("Info@BrixtonPhotographic.com", "Brixton Photographic Password Services"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
