@@ -42,6 +42,7 @@ namespace BrPo.Website.Pages
             {
                 ContactModel.DateCreated = System.DateTime.UtcNow;
                 await _contactService.Save(ContactModel);
+                await _contactService.Email(ContactModel);
             }
             else
                 return BadRequest("This request has been saved already");

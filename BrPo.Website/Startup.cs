@@ -3,18 +3,11 @@ using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BrPo.Website
 {
@@ -35,12 +28,13 @@ namespace BrPo.Website
                 mySqlOptionsAction: options => { options.EnableRetryOnFailure(); }
             ));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, IdentityEmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<BrPo.Website.Services.Email.IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,6 +2,8 @@
 using BrPo.Website.Services.ContactForm.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
+using BrPo.Website.Services.Email;
 
 namespace BrPo.Website.Services.ContactForm.Services
 {
@@ -9,15 +11,20 @@ namespace BrPo.Website.Services.ContactForm.Services
     {
         Task Save(ContactModel contactModel);
         Task<ContactModel> Find(ContactModel contactModel);
+        Task Email(ContactModel contactModel);
     }
 
     public class ContactService : IContactService
     {
         private readonly ApplicationDbContext context;
+        private readonly IEmailSender _emailSender;
 
-        public ContactService(ApplicationDbContext applicationDbContext)
+        public ContactService(
+            ApplicationDbContext applicationDbContext, 
+            IEmailSender emailSender)
         {
             context = applicationDbContext;
+            _emailSender = emailSender;
         }
 
         public async Task Save(ContactModel contactModel)
@@ -37,6 +44,31 @@ namespace BrPo.Website.Services.ContactForm.Services
                 return Task.FromResult(contacts.OrderBy(c => c.Id).Last());
             }
             return null;
+        }
+
+        public async Task Email(ContactModel contactModel)
+        {
+            var plainTextBody = new StringBuilder();
+            plainTextBody.AppendLine($"Name: {contactModel.Name}");
+            plainTextBody.AppendLine(" ");
+            plainTextBody.AppendLine($"Email: {contactModel.Email}");
+            plainTextBody.AppendLine(" ");
+            plainTextBody.AppendLine($"Message: {contactModel.Message}");
+
+            var htmlBody = new StringBuilder();
+            htmlBody.AppendLine("<html><head></head><body>");
+            htmlBody.AppendLine($"<p>Name: {contactModel.Name}</p>");
+            htmlBody.AppendLine($"<p>Email: {contactModel.Email}</p>");
+            htmlBody.AppendLine($"<p>Message: {contactModel.Message}</p>");
+            htmlBody.AppendLine("</body></html>");
+
+            await _emailSender.SendEmailAsync(
+                "Info@BrixtonPhotographic.com",
+                "New Contact Enquiry",
+                plainTextBody.ToString(),
+                "Info@BrixtonPhotographic.com",
+                "BrPo New Contact Enquiries",
+                htmlBody.ToString());
         }
     }
 }
