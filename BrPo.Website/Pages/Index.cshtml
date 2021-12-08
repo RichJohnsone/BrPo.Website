@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = "Home page";
 }
+
+<style>
+    button {
+        margin-top:10px;
+        max-height:38px;
+    }
+</style>
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <h4>High quality fine-art image printing at fantastic low prices.</h4>
@@ -10,7 +18,7 @@
         <div class="row">
             <div class="col">
                 <button class="btn btn-success bpi-button-spacing form-control"
-                style="min-width:110px;"
+                        style="min-width:120px;"
                         onclick="jumpToAnchor('WhatWeDo');jumpToAnchor('x')">
                     What we do
                 </button>
@@ -41,9 +49,9 @@
             <div class="col">
                 <a name="WhatWeDo"></a>
                 <h3>What we do</h3>
-                <p>We produce archive quality fine-art image prints at any size upto 430mm x 2000mm.</p>
-                <p>Our Premium quality prints are produced on a range of archive quality 17" roll papers using a set of 11 leading-edge Epson Ultrachrome&reg; HDR pigment-based inks. 
- These inks are also archive quality, meaning they will not degrade over time. Featuring two extra colours - green and orange - as well as two black inks - photo black and matte black - meaning that Epson Ultrachrome&reg; HDR provides a much wider tonal range.</p>
+                <p>We produce archive-quality fine-art image prints at any size upto 430mm x 2000mm.</p>
+                <p>Our Premium quality prints are produced on a range of archive-quality 17" roll papers using a set of 11 leading-edge Epson Ultrachrome&reg; HDR pigment-based inks. 
+Featuring two extra colours - green and orange - as well as two black inks - photo black and matte black - meaning that Epson Ultrachrome&reg; HDR provides a much wider tonal range.</p>
                 <p>All of this means higher colour accuracy, greater subtlety and smoother gradations. Grass and foliage will be much more vivid and natural, while orange tones like sunsets will be more dazzling. Photographers will be delighted to see that the orange ink also lessens the graininess in skin tones.</p>
                 <p>We also offer High Quality prints on cut-sheet paper upto A4 in size using a set of 6 Epson T673 dye-based inks.</p>
             </div>
@@ -52,7 +60,7 @@
             <div class="col">
                 <a name="Paper"></a>
                 <h3>Paper</h3>
-                <p>Our printing papers are all acid-fee archive quality. Our paper pricing is split into two bands - Standard and Fine-art.</p>
+                <p>Our printing papers are all acid-fee archive-quality. Our paper pricing is split into two bands - Standard and Fine-art.</p>
                 <p>Standard papers are made by the world-famous Ilford. We stock Heavyweight Matt 190gsm, Smooth Pearl 290gsm and Smooth Gloss 310gsm. We also stock Olmec Photo Matt 230gsm.</p>
                 <p>Fine art papers are made by market leaders Hahnemeuhle. We stock matt Photo Rag&reg; 188gsm, matt Photo Rag&reg; Ultra Smooth 305gsm, matt textured Albrecht Dürer 210gsm, high gloss Baryta FB 350gsm.</p>
                 <p>We also stock 17" rolls of matt white self-adheisive poly vinyl.</p>
@@ -63,7 +71,7 @@
             <div class="col">
                 <a name="Pricing"></a>
                 <h3>Pricing</h3>
-                <p>All prices are in GB pounds. UK mainland delivery for upto 5 item &lt; A3 is £6, upto 5 items > A3 is £9 - prints are sent carefully packaged in cardboard mailing tubes. We are a small business under the threshold for VAT so we do not charge it.</p>
+                <p>All prices are in GB pounds.</p>
                 <h5>Premium - 17&quot; roll paper, 11 pigment-based inks.</h5>
                 <table class="table">
                     <thead>
@@ -124,13 +132,14 @@
 					    </tr>
                     </tbody>
 				</table>
+                <p>UK mainland delivery for upto 5 items upto A3 size is £6, upto 5 items > A3 is £10 - prints are sent carefully packaged in cardboard mailing tubes. Local pickup or express delivery around Brixton available on request. We are a small business under the threshold for VAT so we do not charge it.</p>
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <a name="OrderPrints"></a>
                 <h3>Order Prints</h3>
-                <p>This website is still under construction. In the meantime please use this contact form to let us know your requirements and we will get right back to you with a quote.</p>
+                <p>We're ready to do your printing right now, but our website is still under construction. So, whilst we're busy getting our website finished, please use this contact form to let us know your requirements and we will get right back to you with a quote.</p>
                 <form data-ajax-begin="onBegin" 
                     data-ajax-complete="onComplete"
                     data-ajax-failure="onFailed" 
@@ -190,6 +199,16 @@
                     </div>
                     <input type="submit" class="btn btn-primary" value="Save Details" />
                     <div id="results"></div>
+                    <div class="row mt-3">
+                        <h4>Privacy statement</h4>
+                        <div class="text-left">
+                            <p>The data supplied by the form on this page is stored securely in our database.</p>
+                            <p>We will store your data for upto 1 year, after which contact enquiries are automatically deleted.</p>
+                            <p>We will use your data only for the purpose of this enquiry and nothing else. We will not use it for our own marketing. We will not supply it to any other party.</p>
+                            <p>If you want us to delete your data sooner then please use this form again and request that we delete all contact enquiries from your email address -  we will promptly do just that.</p>
+                            <p>If you have any other enquiries about your data then please use this form again with your enquiry and we will get right back to you.</p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
