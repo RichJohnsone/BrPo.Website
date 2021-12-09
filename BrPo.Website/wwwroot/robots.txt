@@ -1,0 +1,7 @@
+﻿User-agent: *
+Allow: /
+Dissolow: /Privacy
+Dissolow: /Error
+Dissolow: /Identity/
+
+Sitemap: https://BrixtonPhotographic.com/sitemap.xml
