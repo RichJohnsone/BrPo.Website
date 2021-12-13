@@ -33,8 +33,17 @@ namespace BrPo.Website
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
+            services.AddRazorPages(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Uploads");
+            });
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<BrPo.Website.Services.Email.IEmailSender, EmailSender>();
+            services.AddAntiforgery(option =>
+            {
+                option.HeaderName = "XSRF-TOKEN";
+                option.SuppressXFrameOptionsHeader = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,131 @@
 ﻿@page
+@using BrPo.Website.Areas.Prints.Services
+@using Microsoft.AspNetCore.Http
 @model BrPo.Website.Areas.Prints.Pages.UploadModel
-@{
-}
+
+<style>
+    #fileImages li img {
+        max-width: 200px;
+        max-height: 200px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <h5 class="card-header">
+                File Upload
+            </h5>
+            <div class="card-body">
+                <h6>Use this form to upload your print file.</h6>
+                <form id="uploadForm">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <input type="file" asp-for="UploadFile" name="UploadFile" class="form-control-file" />
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="uploadButton" class="btn btn-primary">Upload File</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <h5 class="card-title">Information</h5>
+                <p>You can upload the following file types: @Model.AllowedExtensions. Max file size is @Model.AllowedSize MB.</p>
+                <ul>
+                    <li>For logged in users:</li>
+                    <li>
+                        <ul>
+                            <li>We will hold files for 30 days, after which they are automatically deleted.</li>
+                            <li>You can delete files from your account at any time.</li>
+                        </ul>
+                    </li>
+                    <li>For guest users:</li>
+                    <li>
+                        <ul>
+                            <li>We will hold files for 1 day, after which they are automatically deleted.</li>
+                            <li>You can access uploaded files only for the duration of your session.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card" id="files">
+            <h5 class="card-header">
+                Your Files
+            </h5>
+            <div class="card-body">
+                <ul id="fileImages"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="importModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Uploading your file...</span>
+                </div>
+                <h5>Updating...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setUpFileUpload();
+    });
+
+    function setUpFileUpload() {
+        $('input').on('mousedown',
+            function () {
+                $("#uploadButton").removeAttr('disabled');
+                $("#UploadedFile").val('');
+            });
+
+        $('button').on('click',
+            function (event) {
+                //if (!AreYouSure("Have you read and understood the Information notes on this page? Are you sure you want to carry on?")) return;
+                $("#uploadButton").attr('disabled', 'disabled');
+                //$('#importModal').modal({ backdrop: 'static', keyboard: false });
+                //$('#importModal').modal('show');
+                var currentBtn = event.currentTarget;
+                var currentBtnText = $(currentBtn)[0].textContent;
+                var currentFormId = getCurrentFormId(event);
+                submitForm(currentFormId, currentBtnText);
+            });
+    }
+
+    function getCurrentFormId(htmlElement) {
+        var inputElement = htmlElement.currentTarget;
+        var form = $(inputElement).closest('form')[0];
+        var formId = $(form).attr("id");
+        return formId;
+    }
+
+    function submitForm(formId, handler) {
+        var url = 'Upload?handler=UploadFile';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            data: new FormData(document.getElementById(formId)),
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $("#uploadButton").removeAttr('disabled');
+                $('#importModal').modal('hide');
+                var img = `<li><img src="${response}" /></li>`;
+                $("#fileImages").append(img);
+            },
+            error: function (response) {
+                $("#uploadButton").removeAttr('disabled');
+                $('#importModal').modal('hide');
+                alert(response.responseJSON.value);
+            }
+        });
+    }
+</script>

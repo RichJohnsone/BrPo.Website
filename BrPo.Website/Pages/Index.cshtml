@@ -10,6 +10,17 @@
         max-height:38px;
     }
 </style>
+@if (Model.Environment == "Development")
+{
+    <style>
+        .navbar {
+            background-color: #EEEEEE !important;
+        }
+    </style>
+}
+<script>
+    console.log("Environment: @Model.Environment");
+</script>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>

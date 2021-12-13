@@ -19,12 +19,12 @@ namespace BrPo.Website.Pages
         public string Environment { get; set; }
 
         private readonly IContactService _contactService;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
 
         public IndexModel(
             ILogger<IndexModel> logger,
             IContactService contactService,
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             _logger = logger;
             _contactService = contactService;
