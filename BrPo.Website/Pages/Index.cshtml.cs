@@ -1,6 +1,7 @@
 ﻿using BrPo.Website.Services.ContactForm.Models;
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -14,15 +15,21 @@ namespace BrPo.Website.Pages
 
         [BindProperty]
         public ContactModel ContactModel { get; set; }
+        [BindProperty]
+        public string Environment { get; set; }
 
         private readonly IContactService _contactService;
+        private readonly IHostingEnvironment _env;
 
         public IndexModel(
             ILogger<IndexModel> logger,
-            IContactService contactService)
+            IContactService contactService,
+            IHostingEnvironment env)
         {
             _logger = logger;
             _contactService = contactService;
+            _env = env;
+            Environment = env.EnvironmentName;
         }
 
         public void OnGet() {}
