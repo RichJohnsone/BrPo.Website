@@ -50,10 +50,10 @@ namespace BrPo.Website.Areas.Prints.Pages
                 if (UploadHelpers.CheckSize(UploadFile, _configuration))
                     return new BadRequestObjectResult(new JsonResult(UploadHelpers.FileSizeError(_configuration)));
                 string filePath = UploadHelpers.GetFilePath(UploadFile, _configuration, _environment);
-                var path = Request.Path;
                 try
                 {
                     await UploadHelpers.SaveUploadedFileAsync(UploadFile, filePath);
+
                     return new OkObjectResult(filePath);
                 }
                 catch (Exception e)

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http.Features
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,6 +23,21 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png"> 
     <meta name="description" content="A website to sell High Quality Photo Prints, Professional Photo Printing, Fine-Art Printing, Brixton London UK">
+
+    <script>
+        var mustAcceptCookies = false;
+    </script>
+@*    @{
+        var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+        if (!consentFeature?.CanTrack ?? false)
+        {
+            <script>
+                mustAcceptCookies = true;
+            </script>
+        }
+    }*@
+
+    @RenderSection("Head", required: false)
 </head>
 <style>
     .navbar-toggler {
@@ -53,6 +69,7 @@
         </nav>
     </header>
     <div class="container">
+        <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

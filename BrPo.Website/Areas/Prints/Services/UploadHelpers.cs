@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using NetVips;
 
 namespace BrPo.Website.Areas.Prints.Services
 {
@@ -67,6 +68,27 @@ namespace BrPo.Website.Areas.Prints.Services
             {
                 await file.CopyToAsync(fileStream);
             }
+        }
+
+        private static Image GetThumbnail(string path, int maxDim = 300)
+        {
+            using var im = Image.NewFromFile(path);
+            var maxImgDim = im.Height > im.Width ? im.Height : im.Width;
+            int height = maxDim;
+            int width = maxDim;
+            float ratio = 1;
+            if (im.Height > im.Width)
+            {
+                ratio = im.Height / im.Width;
+                width = (int)Math.Round(maxDim * ratio);
+            }
+            else
+            {
+                ratio = im.Width / im.Height;
+                height = (int)Math.Round(maxDim * ratio);
+            }
+            using var thumbnail = Image.Thumbnail(path, width, height);
+            return thumbnail;
         }
     }
 }
