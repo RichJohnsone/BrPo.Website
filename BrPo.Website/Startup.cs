@@ -1,6 +1,7 @@
 using BrPo.Website.Data;
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
+using BrPo.Website.Services.Image.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,13 +40,13 @@ namespace BrPo.Website
             services.AddRazorPages();
             services.AddRazorPages(options =>
             {
-                options.Conventions.AuthorizeFolder("/Uploads");
+                options.Conventions.AllowAnonymousToFolder("/Uploads");
             })
                 .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; })
                 .AddCookieTempDataProvider(options => { options.Cookie.IsEssential = true; });
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<BrPo.Website.Services.Email.IEmailSender, EmailSender>();
-
+            services.AddTransient<IImageService, ImageService>();
             services.AddAntiforgery(option =>
             {
                 option.HeaderName = "XSRF-TOKEN";

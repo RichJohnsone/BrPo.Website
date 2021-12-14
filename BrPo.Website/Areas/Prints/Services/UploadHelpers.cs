@@ -6,6 +6,9 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using NetVips;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Text;
 
 namespace BrPo.Website.Areas.Prints.Services
 {
@@ -53,7 +56,7 @@ namespace BrPo.Website.Areas.Prints.Services
         public static string GetFilePath(IFormFile file, IConfiguration configuration, IWebHostEnvironment environment)
         {
             var uploadDirectory = configuration["FileUpload:FolderPath"];
-            var webRootPath = environment.EnvironmentName == "Development" ? environment.ContentRootPath + "\\bin\\Debug\\net5.0" : environment.WebRootPath; 
+            var webRootPath = environment.EnvironmentName == "Development" ? environment.ContentRootPath + "\\bin\\Debug\\net5.0\\wwwroot" : environment.WebRootPath; 
             if (!Directory.Exists(Path.Combine(webRootPath, uploadDirectory))) 
                 Directory.CreateDirectory(Path.Combine(webRootPath, uploadDirectory));
             var timeStamp = DateTime.UtcNow.ToString("yyMMddHHmmss");
@@ -70,9 +73,9 @@ namespace BrPo.Website.Areas.Prints.Services
             }
         }
 
-        private static Image GetThumbnail(string path, int maxDim = 300)
+        private static NetVips.Image GetThumbnail(string path, int maxDim = 300)
         {
-            using var im = Image.NewFromFile(path);
+            using var im = NetVips.Image.NewFromFile(path);
             var maxImgDim = im.Height > im.Width ? im.Height : im.Width;
             int height = maxDim;
             int width = maxDim;
@@ -87,7 +90,7 @@ namespace BrPo.Website.Areas.Prints.Services
                 ratio = im.Width / im.Height;
                 height = (int)Math.Round(maxDim * ratio);
             }
-            using var thumbnail = Image.Thumbnail(path, width, height);
+            using var thumbnail = NetVips.Image.Thumbnail(path, width, height);
             return thumbnail;
         }
     }

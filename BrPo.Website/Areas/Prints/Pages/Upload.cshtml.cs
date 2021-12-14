@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BrPo.Website.Areas.Prints.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using BrPo.Website.Services.Image.Services;
 
 namespace BrPo.Website.Areas.Prints.Pages
 {
@@ -16,7 +17,7 @@ namespace BrPo.Website.Areas.Prints.Pages
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private readonly IImageService _imageService;
         public IFormFile UploadFile { get; set; }
         public string AllowedExtensions;
         public string AllowedSize;
@@ -25,12 +26,14 @@ namespace BrPo.Website.Areas.Prints.Pages
             ILogger<UploadModel> logger,
             IConfiguration configuration,
             IWebHostEnvironment environment,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IImageService imageService)
         {
             _logger = logger;
             _configuration = configuration;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
+            _imageService = imageService;
             AllowedExtensions = UploadHelpers.GetAllowedExtensions(_configuration);
             AllowedSize = UploadHelpers.GetMaxAllowedSize(_configuration);
         }
@@ -55,9 +58,11 @@ namespace BrPo.Website.Areas.Prints.Pages
                 string filePath = UploadHelpers.GetFilePath(UploadFile, _configuration, _environment);
                 try
                 {
+                    var originalFileName = UploadFile.FileName;
+                    var userId = Request.Cookies["BrPoSession"].ToString();
                     await UploadHelpers.SaveUploadedFileAsync(UploadFile, filePath);
-
-                    return new OkObjectResult(filePath);
+                    var imageFile = await _imageService.CreateImageRecord(filePath, userId, originalFileName);
+                    return new OkObjectResult(imageFile.Id);
                 }
                 catch (Exception e)
                 {

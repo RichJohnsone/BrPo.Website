@@ -124,7 +124,8 @@
             error: function (response) {
                 $("#uploadButton").removeAttr('disabled');
                 $('#importModal').modal('hide');
-                alert(response.responseJSON.value);
+                var message = response.responseJSON.value;
+                alert(`Error response from server:\n\n${message}`);
             }
         });
     }
