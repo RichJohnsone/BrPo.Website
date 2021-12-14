@@ -113,6 +113,7 @@
                 "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
             },
             data: new FormData(document.getElementById(formId)),
+            dataType: 'json', 
             contentType: false,
             processData: false,
             success: function (response) {
@@ -121,10 +122,16 @@
                 var img = `<li><img src="${response}" /></li>`;
                 $("#fileImages").append(img);
             },
-            error: function (response) {
+            error: function (response, status, error) {
                 $("#uploadButton").removeAttr('disabled');
                 $('#importModal').modal('hide');
-                var message = response.responseJSON.value;
+                var res = JSON.parse(response.responseText);
+                var message = res.value;
+                if (message === undefined){
+                    var start = response.responseText.indexOf("\"Value\":\"") + 9;
+                    var end = response.responseText.lastIndexOf("\"");
+                    message = response.responseText.substring(start, end);
+                }
                 alert(`Error response from server:\n\n${message}`);
             }
         });

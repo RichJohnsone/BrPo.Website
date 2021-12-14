@@ -52,9 +52,9 @@ namespace BrPo.Website.Areas.Prints.Pages
                 }
                 _logger.LogInformation($"FileInfo: name: {UploadFile.FileName} - Size: {UploadFile.Length}");
                 if (!UploadHelpers.CheckExtension(UploadFile, _configuration))
-                    return new BadRequestObjectResult(new JsonResult(UploadHelpers.FileExtensionError(_configuration)));
-                if (UploadHelpers.CheckSize(UploadFile, _configuration))
-                    return new BadRequestObjectResult(new JsonResult(UploadHelpers.FileSizeError(_configuration)));
+                    return new BadRequestObjectResult(UploadHelpers.FileExtensionError(_configuration));
+                if (!UploadHelpers.CheckSize(UploadFile, _configuration))
+                    return new BadRequestObjectResult(UploadHelpers.FileSizeError(_configuration));
                 string filePath = UploadHelpers.GetFilePath(UploadFile, _configuration, _environment);
                 try
                 {
@@ -67,13 +67,13 @@ namespace BrPo.Website.Areas.Prints.Pages
                 catch (Exception e)
                 {
                     _logger.LogError("from UploadModel.OnPostUploadFile", e);
-                    return new BadRequestObjectResult(new JsonResult(UploadHelpers.FileSaveError));
+                    return new BadRequestObjectResult(UploadHelpers.FileSaveError);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError("from UploadModel.OnPostAsync", ex);
-                return new BadRequestObjectResult(new JsonResult(UploadHelpers.FileUploadError));
+                return new BadRequestObjectResult(UploadHelpers.FileUploadError);
             }
         }
     }

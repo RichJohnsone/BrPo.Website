@@ -48,9 +48,9 @@ namespace BrPo.Website.Areas.Prints.Services
 
         public static bool CheckSize(IFormFile file, IConfiguration configuration)
         {
-            var fileSize = file.Length;
+            var fileSize = (int)Math.Round(file.Length / (double)1024 / 1024);
             var maxAllowedSizeinMB = GetMaxAllowedSize(configuration).ToInt();
-            return (fileSize / 1024) < maxAllowedSizeinMB;
+            return (fileSize) < maxAllowedSizeinMB;
         }
 
         public static string GetFilePath(IFormFile file, IConfiguration configuration, IWebHostEnvironment environment)
