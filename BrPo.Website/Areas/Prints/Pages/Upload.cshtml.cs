@@ -15,6 +15,7 @@ namespace BrPo.Website.Areas.Prints.Pages
         private readonly ILogger<UploadModel> _logger;
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public IFormFile UploadFile { get; set; }
         public string AllowedExtensions;
@@ -23,11 +24,13 @@ namespace BrPo.Website.Areas.Prints.Pages
         public UploadModel(
             ILogger<UploadModel> logger,
             IConfiguration configuration,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _configuration = configuration;
             _environment = environment;
+            _httpContextAccessor = httpContextAccessor;
             AllowedExtensions = UploadHelpers.GetAllowedExtensions(_configuration);
             AllowedSize = UploadHelpers.GetMaxAllowedSize(_configuration);
         }

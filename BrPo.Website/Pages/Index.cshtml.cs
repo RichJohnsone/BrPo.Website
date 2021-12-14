@@ -2,9 +2,11 @@
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace BrPo.Website.Pages
@@ -12,6 +14,7 @@ namespace BrPo.Website.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         [BindProperty]
         public ContactModel ContactModel { get; set; }
@@ -24,15 +27,25 @@ namespace BrPo.Website.Pages
         public IndexModel(
             ILogger<IndexModel> logger,
             IContactService contactService,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
             _contactService = contactService;
             _env = env;
             Environment = env.EnvironmentName;
         }
 
-        public void OnGet() {}
+        public void OnGet() {
+            if (!Request.Cookies.ContainsKey("BrPoSession")){
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.Now.AddMinutes(30);
+                options.IsEssential = true;
+                options.HttpOnly = true;
+                Response.Cookies.Append("BrPoSession", _httpContextAccessor.HttpContext.Session.Id, options);
+            }
+        }
 
         public async Task<IActionResult> OnPostSaveFormAsync()
         {
