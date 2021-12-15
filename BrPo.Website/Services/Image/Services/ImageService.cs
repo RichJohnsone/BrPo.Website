@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Globalization;
 
 namespace BrPo.Website.Services.Image.Services
 {
@@ -31,20 +33,68 @@ namespace BrPo.Website.Services.Image.Services
 
         public async Task<ImageFileModel> CreateImageRecord(string path, string userId, string originalFileName)
         {
+            string dateFormat = "yyyy:MM:dd HH:mm:ss"; // TODO check that MM and dd are the correct way round with suitable input file
             var model = new ImageFileModel();
             model.OriginalFileName = originalFileName;
             model.UserId = userId;
             model.Location = path;
-            using (var fs = System.IO.File.OpenRead(path))
-            using (var bitmap = new Bitmap(fs))
-            {
-                model.Width = bitmap.Width;
-                model.Height = bitmap.Height;
-            }
+            await GetImageMetaData(path, dateFormat, model);
             model.DateCreated = DateTime.UtcNow;
             context.ImageFiles.Add(model);
             await context.SaveChangesAsync();
             return model;
+        }
+
+        private async Task GetImageMetaData(string path, string dateFormat, ImageFileModel model)
+        {
+            using (var image = await SixLabors.ImageSharp.Image.LoadAsync(path))
+            {
+                model.Width = image.Width;
+                model.Height = image.Height;
+                try
+                {
+                    if (image.Metadata.IptcProfile?.Values?.Any() ?? false)
+                    {
+                        foreach (var prop in image.Metadata.IptcProfile.Values)
+                        {
+                            if (prop.Tag.ToString() == "Creator") model.Creator = prop.Value;
+                            if (prop.Tag.ToString() == "Description") model.Description = prop.Value;
+                            if (prop.Tag.ToString() == "Keywords") model.Keywords = prop.Value;
+                            if (prop.Tag.ToString() == "Credit") model.Credit = prop.Value;
+                            if (prop.Tag.ToString() == "DateTimeOriginal")
+                            {
+                                if (DateTime.TryParseExact(prop.Value, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                                    model.ImageCreatedDate = date;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("from ImageService.GetImageMetaData IptcPrifile", ex);
+                }
+                try
+                {
+                    if (image.Metadata.ExifProfile?.Values?.Any() ?? false)
+                    {
+                        foreach (var prop in image.Metadata.ExifProfile.Values)
+                        {
+                            if (prop.Tag.ToString() == "ColorSpace")
+                                model.ColourSpace = prop.ToString();
+                            if (prop.Tag.ToString() == "DateTimeOriginal")
+                            {
+                                DateTime date;
+                                if (DateTime.TryParseExact(prop.ToString(), dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                    model.ImageCreatedDate = date;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("from ImageService.GetImageMetaData Exif", ex);
+                }
+            }
         }
 
         public string GetBase64(int id)

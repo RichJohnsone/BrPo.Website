@@ -24,5 +24,16 @@ namespace BrPo.Website.Services.Image.Models
         public int Width { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
+        [MaxLength(100)]
+        public string Creator { get; set; }
+        public DateTime? ImageCreatedDate { get; set; }
+        [MaxLength(100)]
+        public string Description { get; set; }
+        [MaxLength(100)]
+        public string Keywords { get; set; }
+        [MaxLength(100)]
+        public string Credit { get; set; }
+        [MaxLength(10)]
+        public string ColourSpace { get; set; }
     }
 }
