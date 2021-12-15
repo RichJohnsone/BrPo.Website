@@ -8,11 +8,15 @@
         max-width: 200px;
         max-height: 200px;
     }
+    .uploadImage{
+        max-height: 300px;
+        margin: 0 15px 15px 0 !important;
+    }
 </style>
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="card">
+        <div class="card mb-3">
             <h5 class="card-header">
                 File Upload
             </h5>
@@ -29,7 +33,6 @@
                 </form>
             </div>
             <div class="card-footer">
-                <h5 class="card-title">Information</h5>
                 <p>You can upload the following file types: @Model.AllowedExtensions. Max file size is @Model.AllowedSize MB.</p>
                 <ul>
                     <li>For logged in users:</li>
@@ -49,12 +52,12 @@
                 </ul>
             </div>
         </div>
-        <div class="card" id="files">
+        <div class="card" id="images">
             <h5 class="card-header">
-                Your Files
+                Your Images
             </h5>
             <div class="card-body">
-                <ul id="fileImages"></ul>
+                <div id="imagesDiv"></div>
             </div>
         </div>
     </div>
@@ -64,9 +67,9 @@
         <div class="modal-content">
             <div class="modal-body text-center">
                 <div class="spinner-border" role="status">
-                    <span class="sr-only">Uploading your file...</span>
+                    <span class="sr-only">Uploading your image ...</span>
                 </div>
-                <h5>Updating...</h5>
+                <h5>Uploading your image ...</h5>
             </div>
         </div>
     </div>
@@ -86,10 +89,9 @@
 
         $('button').on('click',
             function (event) {
-                //if (!AreYouSure("Have you read and understood the Information notes on this page? Are you sure you want to carry on?")) return;
                 $("#uploadButton").attr('disabled', 'disabled');
-                //$('#importModal').modal({ backdrop: 'static', keyboard: false });
-                //$('#importModal').modal('show');
+                $('#importModal').modal({ backdrop: 'static', keyboard: false });
+                $('#importModal').modal('show');
                 var currentBtn = event.currentTarget;
                 var currentBtnText = $(currentBtn)[0].textContent;
                 var currentFormId = getCurrentFormId(event);
@@ -119,20 +121,12 @@
             success: function (response) {
                 $("#uploadButton").removeAttr('disabled');
                 $('#importModal').modal('hide');
-                var img = `<li><img src="${response}" /></li>`;
-                $("#fileImages").append(img);
+                $('#imagesDiv').load('Upload?handler=UploadedImagesPartial');
             },
             error: function (response, status, error) {
                 $("#uploadButton").removeAttr('disabled');
                 $('#importModal').modal('hide');
-                var res = JSON.parse(response.responseText);
-                var message = res.value;
-                if (message === undefined){
-                    var start = response.responseText.indexOf("\"Value\":\"") + 9;
-                    var end = response.responseText.lastIndexOf("\"");
-                    message = response.responseText.substring(start, end);
-                }
-                alert(`Error response from server:\n\n${message}`);
+                alert(`Error response from server:\n\n${response.responseText}`);
             }
         });
     }

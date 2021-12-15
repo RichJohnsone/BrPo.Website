@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using BrPo.Website.Services.Email;
+using Microsoft.Extensions.Logging;
 
 namespace BrPo.Website.Services.ContactForm.Services
 {
@@ -18,13 +19,16 @@ namespace BrPo.Website.Services.ContactForm.Services
     {
         private readonly ApplicationDbContext context;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<ContactService> _logger;
 
         public ContactService(
             ApplicationDbContext applicationDbContext, 
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ILogger<ContactService> logger)
         {
             context = applicationDbContext;
             _emailSender = emailSender;
+            _logger = logger;
         }
 
         public async Task Save(ContactModel contactModel)

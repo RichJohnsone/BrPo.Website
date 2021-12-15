@@ -73,25 +73,25 @@ namespace BrPo.Website.Areas.Prints.Services
             }
         }
 
-        private static NetVips.Image GetThumbnail(string path, int maxDim = 300)
-        {
-            using var im = NetVips.Image.NewFromFile(path);
-            var maxImgDim = im.Height > im.Width ? im.Height : im.Width;
-            int height = maxDim;
-            int width = maxDim;
-            float ratio = 1;
-            if (im.Height > im.Width)
-            {
-                ratio = im.Height / im.Width;
-                width = (int)Math.Round(maxDim * ratio);
-            }
-            else
-            {
-                ratio = im.Width / im.Height;
-                height = (int)Math.Round(maxDim * ratio);
-            }
-            using var thumbnail = NetVips.Image.Thumbnail(path, width, height);
-            return thumbnail;
-        }
+        //private static NetVips.Image GetThumbnail(string path, int maxDim = 300)
+        //{
+        //    using var im = NetVips.Image.NewFromFile(path);
+        //    var maxImgDim = im.Height > im.Width ? im.Height : im.Width;
+        //    int height = maxDim;
+        //    int width = maxDim;
+        //    float ratio = 1;
+        //    if (im.Height > im.Width)
+        //    {
+        //        ratio = im.Height / im.Width;
+        //        width = (int)Math.Round(maxDim * ratio);
+        //    }
+        //    else
+        //    {
+        //        ratio = im.Width / im.Height;
+        //        height = (int)Math.Round(maxDim * ratio);
+        //    }
+        //    using var thumbnail = NetVips.Image.Thumbnail(path, width, height);
+        //    return thumbnail;
+        //}
     }
 }

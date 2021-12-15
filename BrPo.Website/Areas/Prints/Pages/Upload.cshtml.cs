@@ -8,6 +8,7 @@ using BrPo.Website.Areas.Prints.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using BrPo.Website.Services.Image.Services;
+using System.Linq;
 
 namespace BrPo.Website.Areas.Prints.Pages
 {
@@ -21,6 +22,21 @@ namespace BrPo.Website.Areas.Prints.Pages
         public IFormFile UploadFile { get; set; }
         public string AllowedExtensions;
         public string AllowedSize;
+
+        public string UploadedFileIds
+        {
+            get
+            {
+                object value = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds");
+                return value == null ? "" : (string)value;
+            }
+            set
+            {
+                var currentValue = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds") ?? string.Empty;
+                var newValue = currentValue == string.Empty ? value : currentValue + "," + value;
+                _httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", newValue);
+            }
+        }
 
         public UploadModel(
             ILogger<UploadModel> logger,
@@ -40,7 +56,7 @@ namespace BrPo.Website.Areas.Prints.Pages
 
         public void OnGet()
         {
-            _logger.LogInformation("Hello, this is the UploadModel!");
+            _logger.LogInformation("UploadModel page loaded");
         }
 
         public async Task<IActionResult> OnPostUploadFile()
@@ -48,7 +64,7 @@ namespace BrPo.Website.Areas.Prints.Pages
             try
             {
                 if (UploadFile == null) {
-                    return new BadRequestObjectResult(new JsonResult(UploadHelpers.SelectAFile));
+                    return new BadRequestObjectResult(UploadHelpers.SelectAFile);
                 }
                 _logger.LogInformation($"FileInfo: name: {UploadFile.FileName} - Size: {UploadFile.Length}");
                 if (!UploadHelpers.CheckExtension(UploadFile, _configuration))
@@ -62,7 +78,8 @@ namespace BrPo.Website.Areas.Prints.Pages
                     var userId = Request.Cookies["BrPoSession"].ToString();
                     await UploadHelpers.SaveUploadedFileAsync(UploadFile, filePath);
                     var imageFile = await _imageService.CreateImageRecord(filePath, userId, originalFileName);
-                    return new OkObjectResult(imageFile.Id);
+                    UploadedFileIds = imageFile.Id.ToString();
+                    return new OkObjectResult(1);
                 }
                 catch (Exception e)
                 {
@@ -75,6 +92,12 @@ namespace BrPo.Website.Areas.Prints.Pages
                 _logger.LogError("from UploadModel.OnPostAsync", ex);
                 return new BadRequestObjectResult(UploadHelpers.FileUploadError);
             }
+        }
+
+        public PartialViewResult OnGetUploadedImagesPartial()
+        {
+            var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();
+            return Partial("UploadedImagesPartial", ids);
         }
     }
 }
