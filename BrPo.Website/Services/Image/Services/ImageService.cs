@@ -16,6 +16,7 @@ namespace BrPo.Website.Services.Image.Services
         Task<ImageFileModel> CreateImageRecord(string path, string userId, string originalFileName);
         string GetBase64(int id);
         string GetBase64Thumbnail(int id, int height = 300);
+        Task<string> GetBase64ThumbnailAsync(int id, int height = 300);
         Task<ImageFileModel> GetImageAsync(int id);
     }
 
@@ -145,6 +146,31 @@ namespace BrPo.Website.Services.Image.Services
                 }
             }
             catch (Exception ex) 
+            {
+                _logger.LogError("from ImageService.GetBase64Thumbnail", ex);
+                throw;
+            }
+        }
+
+        public async Task<string> GetBase64ThumbnailAsync(int id, int height = 170)
+        {
+            var imageFile = await context.ImageFiles.FindAsync(id);
+            try
+            {
+                using (System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile.Location))
+                {
+                    var ratio = (double)image.Width / image.Height;
+                    var width = (int)(ratio * height);
+                    using var thumbnail = ResizeImage(image, height, width);
+                    using (MemoryStream m = new MemoryStream())
+                    {
+                        thumbnail.Save(m, image.RawFormat);
+                        byte[] imageBytes = m.ToArray();
+                        return Convert.ToBase64String(imageBytes);
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 _logger.LogError("from ImageService.GetBase64Thumbnail", ex);
                 throw;

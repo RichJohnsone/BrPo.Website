@@ -24,12 +24,27 @@ namespace BrPo.Website.Areas.Prints.Pages
         [BindProperty(SupportsGet = true)]
         public List<ImageFileModel> Files { get; set; } = new List<ImageFileModel>();
 
+        [BindProperty(SupportsGet = true)]
+        public ImageFileModel SelectedFile { get; set; }
+
         public string UploadedFileIds
         {
             get
             {
                 object value = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds");
                 return value == null ? "" : (string)value;
+            }
+        }
+        public string SelectedFileId
+        {
+            get
+            {
+                object value = _httpContextAccessor.HttpContext.Session.GetString("SelectedFileId");
+                return value == null ? "" : (string)value;
+            }
+            set
+            {
+                _httpContextAccessor.HttpContext.Session.SetString("SelectedFileId", value);
             }
         }
 
@@ -47,17 +62,33 @@ namespace BrPo.Website.Areas.Prints.Pages
             _imageService = imageService;
         }
 
-        public async Task<IActionResult> OnGetAsync ()
-        {
-            _httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", "77");
-            if (_httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds") != ""){
+        public void OnGet () {
+            _httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", "76,77");
+            if (_httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds") != "")
+            {
                 var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();
                 foreach (var id in ids)
                 {
-                    Files.Add(await _imageService.GetImageAsync(id.ToInt()));
+                    Files.Add(_imageService.GetImageAsync(id.ToInt()).Result);
+                    if (Files.Count == 1)
+                    {
+                        SelectedFile = Files[0];
+                        SelectedFileId = id;
+                    }
                 }
             }
-            return Page();
         }
+
+        public PartialViewResult OnGetOrderDisplayPanelPartial(string id)
+        {
+            var model = _imageService.GetImageAsync(id.ToInt()).Result;
+            return Partial("OrderDisplayPanelPartial", model);
+        }
+
+        //public PartialViewResult OnGetDoSomeStuff(string id)
+        //{
+        //    var model = _imageService.GetImageAsync(id.ToInt()).Result;
+        //    return Partial("OrderDisplayPanelPartial", model);
+        //}
     }
 }

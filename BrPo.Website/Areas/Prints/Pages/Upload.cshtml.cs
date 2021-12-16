@@ -94,7 +94,7 @@ namespace BrPo.Website.Areas.Prints.Pages
             }
         }
 
-        public PartialViewResult OnGetUploadedImagesPartial()
+        public IActionResult OnGetUploadedImagesPartial()
         {
             var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();
             return Partial("UploadedImagesPartial", ids);

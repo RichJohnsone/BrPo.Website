@@ -1,0 +1,12 @@
+﻿@using BrPo.Website.Services.Image.Services
+@using BrPo.Website.Services.Image.Models
+@model ImageFileModel
+@inject IImageService ImageService
+
+@{
+Layout=null;
+}
+@{
+    var x = 1;
+}
+<img class="displayPanelImage" src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(Model.Id, 500)">
