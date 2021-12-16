@@ -1,0 +1,34 @@
+﻿@using BrPo.Website.Services.Image.Models
+@using BrPo.Website.Areas.Prints.Pages
+@using BrPo.Website.Services.Image.Services
+@model List<ImageFileModel> 
+@inject IImageService ImageService
+
+@foreach( var imageFile in Model)
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <a title="click the image to select it">
+                        <img class="uploadImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(imageFile.Id, 100)" class="uploadImage">
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col table-responsive-sm">
+                    <table class="table-sm">
+                        <tr><th>Original File Name</th><td>@imageFile.OriginalFileName</td></tr>
+                        <tr><th>Dimensions</th><td>@imageFile.Height * @imageFile.Width</td></tr>
+                        @if (!string.IsNullOrEmpty(imageFile.ColourSpace)) {
+                            <tr><th>Colour Space</th><td>@imageFile.ColourSpace</td></tr>
+                        }
+                        @if (imageFile.ImageCreatedDate != null) {
+                            <tr><th>Image Created Date</th><td>@imageFile.ImageCreatedDate.ToString()</td></tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

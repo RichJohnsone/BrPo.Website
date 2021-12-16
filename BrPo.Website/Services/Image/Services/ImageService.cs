@@ -48,8 +48,16 @@ namespace BrPo.Website.Services.Image.Services
 
         public async Task<ImageFileModel> GetImageAsync(int id)
         {
-            var imageFile = await context.ImageFiles.FindAsync(id);
-            return imageFile ?? null;
+            try
+            {
+                var imageFile = await context.ImageFiles.FindAsync(id);
+                return imageFile ?? null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from ImageService.GetImageAsync", ex);
+                throw;
+            }
         }
 
         private async Task GetImageMetaData(string path, string dateFormat, ImageFileModel model)

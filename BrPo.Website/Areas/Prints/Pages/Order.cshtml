@@ -1,0 +1,74 @@
+﻿@page
+@model BrPo.Website.Areas.Prints.Pages.OrderModel
+
+<style>
+    .uploadImage{
+        max-height: 100px !important;
+    }
+    .table-sm{
+        font-size: 0.8em !important;
+    }
+    th, td {
+        padding: 0.1rem 0.3rem 0 0 !important; 
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            One of three columns
+        </div>
+        <div class="col-sm-4">
+
+            <!--Accordion wrapper-->
+            <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+                <!-- Accordion card -->
+                <div class="card">
+                    <!-- Card header -->
+                    <div class="card-header" role="tab" id="headingOne1">
+                        <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="true"
+                        aria-controls="collapseOne1">
+                            <h5 class="mb-0">
+                                File: <span id="fileHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon"></i></span>
+                            </h5>
+                        </a>
+                    </div>
+                    <!-- Card body -->
+                    <div id="collapseOne1" class="collapse show" role="tabpanel" aria-labelledby="headingOne1"
+                        data-parent="#accordionEx">
+                        <div class="card-body" id="fileBody"">
+@*                            <partial name="OrderFilesPartial" model="@Model.Files" />
+*@                            @Html.Partial("OrderFilesPartial", @Model.Files)
+                        </div>
+                    </div>
+                </div><!-- Accordion card -->
+
+                <!-- Accordion card -->
+                <div class="card">
+                    <!-- Card header -->
+                    <div class="card-header" role="tab" id="headingTwo2">
+                        <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
+                        aria-controls="collapseTwo2">
+                            <h5 class="mb-0">
+                                Size: <span id="sizeHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon"></i></span>
+                            </h5>
+                        </a>
+                    </div>
+                    <!-- Card body -->
+                    <div id="collapseTwo2" class="collapse show" role="tabpanel" aria-labelledby="headingTwo2"
+                        data-parent="#accordionEx">
+                        <div class="card-body" id="sizeBody"></div>
+                    </div>
+                </div><!-- Accordion card -->
+
+            </div><!-- Accordion wrapper -->
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $("#main_layout_container").removeClass("container").addClass("container-fluid");
+    });
+</script>
