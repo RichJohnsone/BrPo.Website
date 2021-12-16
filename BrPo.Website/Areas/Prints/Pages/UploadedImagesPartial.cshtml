@@ -5,5 +5,29 @@
 @inject IImageService ImageService
 @foreach( var id in Model)
 {
-    <img  class="uploadImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(id.ToInt())" class="uploadImage">
+    var imageFile = await ImageService.GetImageAsync(id.ToInt());
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <a title="click the image to order prints">
+                        <img  class="uploadImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(id.ToInt())" class="uploadImage">
+                    </a>
+                </div>
+                <div class="col-sm-8 table-responsive-sm">
+                    <table class="table-sm">
+                        <tr><th>Original File Name</th><td>@imageFile.OriginalFileName</td></tr>
+                        <tr><th>Height</th><td>@imageFile.Height</td></tr>
+                        <tr><th>Width</th><td>@imageFile.Width</td></tr>
+                        @if (!string.IsNullOrEmpty(imageFile.ColourSpace)) {
+                            <tr><th>Colour Space</th><td>@imageFile.ColourSpace</td></tr>
+                        }
+                        @if (imageFile.ImageCreatedDate != null) {
+                            <tr><th>Image Created Date</th><td>@imageFile.ImageCreatedDate.ToString()</td></tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 }

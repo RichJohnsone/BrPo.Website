@@ -16,6 +16,7 @@ namespace BrPo.Website.Services.Image.Services
         Task<ImageFileModel> CreateImageRecord(string path, string userId, string originalFileName);
         string GetBase64(int id);
         string GetBase64Thumbnail(int id, int height = 300);
+        Task<ImageFileModel> GetImageAsync(int id);
     }
 
     public class ImageService : IImageService
@@ -43,6 +44,12 @@ namespace BrPo.Website.Services.Image.Services
             context.ImageFiles.Add(model);
             await context.SaveChangesAsync();
             return model;
+        }
+
+        public async Task<ImageFileModel> GetImageAsync(int id)
+        {
+            var imageFile = await context.ImageFiles.FindAsync(id);
+            return imageFile ?? null;
         }
 
         private async Task GetImageMetaData(string path, string dateFormat, ImageFileModel model)
@@ -111,7 +118,7 @@ namespace BrPo.Website.Services.Image.Services
             }
         }
 
-        public string GetBase64Thumbnail(int id, int height = 300)
+        public string GetBase64Thumbnail(int id, int height = 170)
         {
             var imageFile = context.ImageFiles.FindAsync(id).Result;
             try

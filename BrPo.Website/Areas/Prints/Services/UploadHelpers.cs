@@ -5,10 +5,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using NetVips;
-using System.Drawing.Imaging;
-using System.Drawing;
-using System.Text;
 
 namespace BrPo.Website.Areas.Prints.Services
 {
@@ -43,7 +39,7 @@ namespace BrPo.Website.Areas.Prints.Services
         {
             var fileName = file.FileName;
             var fileExtension = Path.GetExtension(fileName);
-            return GetAllowedExtensions(configuration).Contains(fileExtension);
+            return GetAllowedExtensions(configuration).Contains(fileExtension.ToLower());
         }
 
         public static bool CheckSize(IFormFile file, IConfiguration configuration)
