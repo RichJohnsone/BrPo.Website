@@ -3,10 +3,22 @@
 @model ImageFileModel
 @inject IImageService ImageService
 
-@{
+@*@{
 Layout=null;
-}
+}*@
 @{
     var x = 1;
 }
-<img class="displayPanelImage" src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(Model.Id, 500)">
+
+<div id="displayPanelRoom" class="container border">
+    <div class="row" id="displayPanelImageRow">
+        <div class="col-sm-4" id="personImageContainer">
+            <img id="personImage" src="/resources/images/Person1.png">
+        </div>
+        <div class="col-sm-8">
+            <div id="displayImageContainer">
+                <img id="displayPanelImage" src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(Model.Id, 500)">
+            </div>
+        </div>
+    </div>
+</div>

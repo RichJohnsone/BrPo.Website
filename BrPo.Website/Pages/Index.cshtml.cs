@@ -37,7 +37,7 @@ namespace BrPo.Website.Pages
             Environment = env.EnvironmentName;
         }
 
-        public void OnGet() {
+        public IActionResult OnGet() {
             if (!Request.Cookies.ContainsKey("BrPoSession")){
                 CookieOptions options = new CookieOptions();
                 options.Expires = DateTime.Now.AddMinutes(30);
@@ -45,6 +45,7 @@ namespace BrPo.Website.Pages
                 options.HttpOnly = true;
                 Response.Cookies.Append("BrPoSession", _httpContextAccessor.HttpContext.Session.Id, options);
             }
+            return Redirect("/prints/order");
         }
 
         public async Task<IActionResult> OnPostSaveFormAsync()

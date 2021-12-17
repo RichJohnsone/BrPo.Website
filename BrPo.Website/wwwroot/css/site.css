@@ -61,14 +61,13 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  margin-bottom: 50px;
 }
 .footer {
-  position: absolute;
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+  line-height: 50px; /* Vertically center the text there */
 }
 
 .field-validation-error {
@@ -87,4 +86,28 @@ body {
 
 small {
     margin-right: 10px;
+}
+
+.opacity-0 {
+    opacity: 0 !important;
+}
+
+.opacity-1 {
+    opacity: 0.2 !important;
+}
+
+.opacity-2 {
+    opacity: 0.4 !important;
+}
+
+.opacity-3 {
+    opacity: 0.6 !important;
+}
+
+.opacity-4 {
+    opacity: .8 !important;
+}
+
+.opacity-5 {
+    opacity: 1 !important;
 }

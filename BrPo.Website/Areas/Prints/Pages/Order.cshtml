@@ -11,15 +11,38 @@
     th, td {
         padding: 0.1rem 0.3rem 0 0 !important; 
     }
-    .displayPanelImage {
-        max-height: 500px;
-        max-width: 500px;
+    #displayPanelImage {
+        max-height: 300px;
+        max-width: 300px;
+        position: relative;
+    }
+    #personImage {
+        position: absolute;
+        bottom: 50px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #displayPanelRoom {
+        position: absolute;
+        top: 0;
+        width: 97%;
+    }
+    #personImageContainer{
+        height: 100%;
+        position: relative;
+        padding-left: 50px;
+    }
+    #displayPanelImageRow{
+        height: 100%;
+    }
+    #displayImageContainer {
+        text-align: center; 
     }
 </style>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-8" id="displayPanelContainer">
             <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
         </div>
         <div class="col-sm-4">
@@ -76,22 +99,89 @@
     document.addEventListener('DOMContentLoaded', function () {
         $("#main_layout_container").removeClass("container").addClass("container-fluid");
         SetUpDisplayPanel();
+        
+        function setDisplayPanelSize(){
+            $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
+            setPersonSize();
+            setPicturePosition();
+        }
 
-    });
+        $("#sizeA4").on('click', function (){
+            $("#height").val("210");
+            $("#width").val("297");
+            setPicturePosition();
+        });
 
-    function SetUpDisplayPanel(){
-        $(".uploadImage").on('mousedown',
-            function () {
-                loadDisplayPanel($(this).attr("data-val-id"));
-            });
+        $("#sizeA3").on('click', function (){
+            $("#height").val("297");
+            $("#width").val("420");
+            setPicturePosition();
+        });
+
+        $("#sizeA2").on('click', function (){
+            $("#height").val("420");
+            $("#width").val("594");
+            setPicturePosition();
+        });  
+
+        function setPersonSize(){
+            $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
+        }
+
+        function setPicturePosition(){
+            setPictureHeight();
+            let boxTop = getOffset( document.getElementById('displayImageContainer') ).top;
+            let personOffset = ( $("#personImage").height() * .25);
+            let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
+            $("#displayPanelImage").css('top', pictureTop + 'px')
+        }
+
+        function setPictureHeight(){
+            let oneMm = $("#personImage").height() / 1800;
+            let newHeight = $("#height").val() * oneMm;
+            $("#displayPanelImage").css('height', newHeight + 'px');
+        }
+
+        $("#height").val("420");
+        $("#width").val("594");
+
+        $("#height").on('keyup', function(){
+            setPicturePosition();
+        });
+
+        $("#width").on('keyup', function(){
+            setPicturePosition();
+        });
+
+        setDisplayPanelSize();
+
+        window.addEventListener('resize', function(){
+            setDisplayPanelSize();
+        });
+
+        $(".uploadImage").on('mousedown', function () {
+            loadDisplayPanel($(this).attr("data-val-id"));
+        });
 
         function loadDisplayPanel(id){
-            $("#displayPanel").empty();
-            $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`);
+            $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`, function(){
+                setDisplayPanelSize()
+            });
         }
+    });
+
+    function getOffset( el ) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+          _x += el.offsetLeft - el.scrollLeft;
+          _y += el.offsetTop - el.scrollTop;
+          el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
     }
 
-    function sizeA4(){
-        $("#height").val("666")
+    function SetUpDisplayPanel(){
+
     }
 </script>

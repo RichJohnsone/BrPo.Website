@@ -43,17 +43,20 @@
     .navbar-toggler {
         margin-top:-50px;
     }
+    main {
+        margin-top: 100px;
+    }
 </style>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">
                     <img src="/resources/images/BPLogo1s.png" alt="Brixton Photographic logo" style="width:50px" class="float-left"/>
                     <img src="/resources/images/BrixtonPhotograpic.com.png" alt="BrixtonPhotographic.com" style="width:25%; min-width:250px; padding-top:15px; padding-left:10px;" class="float-left"/>
                 </a>
-@*                <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -64,7 +67,7 @@
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
-                </div>*@
+                </div>
             </div>
         </nav>
     </header>
@@ -75,7 +78,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted fixed-bottom bg-white box-shadow">
         <div class="container">
             &copy; 2021 - Brixton Photographic@* - <a asp-area="" asp-page="/Privacy">Privacy*@</a>
         </div>
