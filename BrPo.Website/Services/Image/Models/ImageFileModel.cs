@@ -35,5 +35,7 @@ namespace BrPo.Website.Services.Image.Models
         public string Credit { get; set; }
         [MaxLength(10)]
         public string ColourSpace { get; set; }
+        [MaxLength(10)]
+        public string Orientation { get; set; }
     }
 }

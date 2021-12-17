@@ -42,10 +42,10 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-8" id="displayPanelContainer">
+        <div class="col-sm-7" id="displayPanelContainer">
             <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
 
             <!--Accordion wrapper-->
             <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
@@ -159,22 +159,37 @@
         }
 
         $("#sizeA4").on('click', function (){
-            $("#height").val("210");
-            $("#width").val("297");
+            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                $("#height").val("297");
+                $("#width").val("210");
+            }else{
+                $("#height").val("210");
+                $("#width").val("297");
+            }
             setPicturePosition();
             setSizeHeader();
         });
 
         $("#sizeA3").on('click', function (){
-            $("#height").val("297");
-            $("#width").val("420");
+            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                $("#height").val("420");
+                $("#width").val("297");
+            }else{
+                $("#height").val("297");
+                $("#width").val("420");
+            }
             setPicturePosition();
             setSizeHeader();
         });
 
         $("#sizeA2").on('click', function (){
-            $("#height").val("420");
-            $("#width").val("594");
+            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                $("#height").val("594");
+                $("#width").val("420");
+            }else{
+                $("#height").val("420");
+                $("#width").val("594");
+            }
             setPicturePosition();
             setSizeHeader();
         });  
@@ -242,6 +257,13 @@
                 setDisplayPanelSize()
             });
         }
+
+        $(".changeOrientation-js").on('click', function(){
+            var id = $(this).attr("data-id");
+            //working here!!
+        });
+
+        //function changeOrientation
     });
 
     function getOffset( el ) {

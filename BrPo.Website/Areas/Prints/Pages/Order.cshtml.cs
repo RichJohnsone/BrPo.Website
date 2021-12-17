@@ -63,7 +63,7 @@ namespace BrPo.Website.Areas.Prints.Pages
         }
 
         public void OnGet () {
-            _httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", "76,77");
+            _httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", "80,81,82,77");
             if (_httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds") != "")
             {
                 var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();

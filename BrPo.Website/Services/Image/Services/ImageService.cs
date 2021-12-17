@@ -8,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Globalization;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using SixLabors.ImageSharp.Processing;
 
 namespace BrPo.Website.Services.Image.Services
 {
@@ -42,6 +44,7 @@ namespace BrPo.Website.Services.Image.Services
             model.Location = path;
             await GetImageMetaData(path, dateFormat, model);
             model.DateCreated = DateTime.UtcNow;
+            //model.Orientation = model.Height > model.Width ? "Portrait" : "Landscape";
             context.ImageFiles.Add(model);
             await context.SaveChangesAsync();
             return model;
@@ -65,8 +68,6 @@ namespace BrPo.Website.Services.Image.Services
         {
             using (var image = await SixLabors.ImageSharp.Image.LoadAsync(path))
             {
-                model.Width = image.Width;
-                model.Height = image.Height;
                 try
                 {
                     if (image.Metadata.IptcProfile?.Values?.Any() ?? false)
@@ -93,6 +94,7 @@ namespace BrPo.Website.Services.Image.Services
                 {
                     if (image.Metadata.ExifProfile?.Values?.Any() ?? false)
                     {
+                        model.Orientation = image.Metadata?.ExifProfile?.GetValue(ExifTag.Orientation)?.ToString()?.Replace("Rotate ", string.Empty);
                         foreach (var prop in image.Metadata.ExifProfile.Values)
                         {
                             if (prop.Tag.ToString() == "ColorSpace")
@@ -109,6 +111,15 @@ namespace BrPo.Website.Services.Image.Services
                 catch (Exception ex)
                 {
                     _logger.LogError("from ImageService.GetImageMetaData Exif", ex);
+                }
+                if (model.Orientation.Contains("CW")){
+                    model.Width = image.Height;
+                    model.Height = image.Width;
+                }
+                else
+                {
+                    model.Width = image.Width;
+                    model.Height = image.Height;
                 }
             }
         }
@@ -155,20 +166,34 @@ namespace BrPo.Website.Services.Image.Services
         public async Task<string> GetBase64ThumbnailAsync(int id, int height = 170)
         {
             var imageFile = await context.ImageFiles.FindAsync(id);
+            RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
+            switch(imageFile.Orientation)
+            {
+                case "90 CW":
+                    rotate = RotateFlipType.Rotate90FlipNone;
+                    break;
+            }
             try
             {
                 using (System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile.Location))
                 {
                     var ratio = (double)image.Width / image.Height;
                     var width = (int)(ratio * height);
-                    using var thumbnail = ResizeImage(image, height, width);
+                    using System.Drawing.Image thumbnail = ResizeImage(image, height, width);
                     using (MemoryStream m = new MemoryStream())
                     {
+                        thumbnail.RotateFlip(rotate);
                         thumbnail.Save(m, image.RawFormat);
                         byte[] imageBytes = m.ToArray();
                         return Convert.ToBase64String(imageBytes);
                     }
                 }
+                //using (var image = await SixLabors.ImageSharp.Image.LoadAsync(imageFile.Location))
+                //{
+                //    var ratio = (double)image.Width / image.Height;
+                //    var width = (int)(ratio * height);
+                //    var tmp = image.Mutate(x => x.Rotate(90));
+                //}
             }
             catch (Exception ex)
             {
