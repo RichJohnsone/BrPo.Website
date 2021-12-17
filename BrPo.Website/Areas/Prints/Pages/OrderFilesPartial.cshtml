@@ -11,8 +11,10 @@
                 <a title="click the image to select it">
                     <img class="uploadImage" 
                             src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(imageFile.Id, 100)"
-                            data-val-id="@imageFile.Id">
+                            data-id="@imageFile.Id",
+                            data-fileName="@imageFile.OriginalFileName">
                 </a>
+                <i class="fas fa-portrait rotate-icon float-right" idtitle="click to change orientation"></i>
             </div>
             <div class="col table-responsive-sm">
                 <table class="table-sm">

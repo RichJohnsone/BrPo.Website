@@ -57,7 +57,7 @@
                         <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="true"
                         aria-controls="collapseOne1">
                             <h5 class="mb-0">
-                                File: <span id="fileHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon"></i></span>
+                                File: <span id="fileHeader">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
@@ -77,7 +77,7 @@
                         <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
                         aria-controls="collapseTwo2">
                             <h5 class="mb-0">
-                                Size: <span id="sizeHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon"></i></span>
+                                Size: <span id="sizeHeaderHeight"></span> (w) * <span id="sizeHeaderWidth"> </span> (h) mm<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
@@ -86,6 +86,46 @@
                         data-parent="#accordionEx">
                         <div class="card-body" id="sizeBody">
                             @await Html.PartialAsync("OrderSizePartial")
+                        </div>
+                    </div>
+                </div><!-- Accordion card -->
+
+                <!-- Accordion card -->
+                <div class="card">
+                    <!-- Card header -->
+                    <div class="card-header" role="tab" id="headingThree3">
+                        <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3" aria-expanded="true"
+                        aria-controls="collapseThree3">
+                            <h5 class="mb-0">
+                                Paper: <span id="paperHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                            </h5>
+                        </a>
+                    </div>
+                    <!-- Card body -->
+                    <div id="collapseThree3" class="collapse show" role="tabpanel" aria-labelledby="headingThree3"
+                        data-parent="#accordionEx">
+                        <div class="card-body" id="sizeBody">
+                            @await Html.PartialAsync("OrderPaperPartial")
+                        </div>
+                    </div>
+                </div><!-- Accordion card -->
+
+                <!-- Accordion card -->
+                <div class="card">
+                    <!-- Card header -->
+                    <div class="card-header" role="tab" id="headingFour4">
+                        <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFour4" aria-expanded="true"
+                        aria-controls="collapseFour4">
+                            <h5 class="mb-0">
+                                Border: <span id="borderHeader"></span> mm<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                            </h5>
+                        </a>
+                    </div>
+                    <!-- Card body -->
+                    <div id="collapseFour4" class="collapse show" role="tabpanel" aria-labelledby="headingFour4"
+                        data-parent="#accordionEx">
+                        <div class="card-body" id="sizeBody">
+                            @await Html.PartialAsync("OrderBorderPartial")
                         </div>
                     </div>
                 </div><!-- Accordion card -->
@@ -101,7 +141,19 @@
         SetUpDisplayPanel();
         
         function setDisplayPanelSize(){
-            $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
+            if ($(window).width() < 570){
+                $("#displayPanelRoom").css('width', $("#accordionEx").width() + 'px');
+                $("#displayPanelRoom").height($("#displayPanelRoom").width());
+                $("#accordionEx").css('margin-top', ($("#displayPanelRoom").height() + 20) + 'px')
+                $("#personImageContainer").css('width', '160px');
+                $("#displayImageContainer").css('width', '300px');
+            } else {
+                $("#displayPanelRoom").css('width', '97%')
+                $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
+                $("#accordionEx").css('margin-top', '')
+                $("#personImageContainer").css('width', '');
+                $("#displayImageContainer").css('width', '');
+        }
             setPersonSize();
             setPicturePosition();
         }
@@ -110,18 +162,21 @@
             $("#height").val("210");
             $("#width").val("297");
             setPicturePosition();
+            setSizeHeader();
         });
 
         $("#sizeA3").on('click', function (){
             $("#height").val("297");
             $("#width").val("420");
             setPicturePosition();
+            setSizeHeader();
         });
 
         $("#sizeA2").on('click', function (){
             $("#height").val("420");
             $("#width").val("594");
             setPicturePosition();
+            setSizeHeader();
         });  
 
         function setPersonSize(){
@@ -142,17 +197,35 @@
             $("#displayPanelImage").css('height', newHeight + 'px');
         }
 
+        $("#height").on('keyup change input', function(){
+            setPicturePosition();
+            setSizeHeader();
+        });
+
+        $("#width").on('keyup change input', function(){
+            setPicturePosition();
+            setSizeHeader();
+        });
+
+        $("#border").on('keyup change input', function(){
+            setBorderHeader()
+        });
+
+        function setSizeHeader(){
+            $("#sizeHeaderHeight").html($("#height").val());
+            $("#sizeHeaderWidth").html($("#width").val());
+        }
+
+        function setBorderHeader(){
+            $("#borderHeader").html($("#border").val());
+        }
+
         $("#height").val("420");
         $("#width").val("594");
+        $("#border").val("0");
 
-        $("#height").on('keyup', function(){
-            setPicturePosition();
-        });
-
-        $("#width").on('keyup', function(){
-            setPicturePosition();
-        });
-
+        setBorderHeader()
+        setSizeHeader();
         setDisplayPanelSize();
 
         window.addEventListener('resize', function(){
@@ -160,11 +233,12 @@
         });
 
         $(".uploadImage").on('mousedown', function () {
-            loadDisplayPanel($(this).attr("data-val-id"));
+            loadDisplayPanel($(this).attr("data-id"), $(this).attr("data-fileName") );
         });
 
-        function loadDisplayPanel(id){
+        function loadDisplayPanel(id, fileName){
             $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`, function(){
+                $("#fileHeader").html(fileName);
                 setDisplayPanelSize()
             });
         }
