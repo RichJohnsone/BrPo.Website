@@ -1,0 +1,75 @@
+﻿@page
+@model BrPo.Website.Areas.Admin.Pages.Paper.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PaperModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PaperModel.Id" />
+            <div class="form-group">
+                <label asp-for="PaperModel.Name" class="control-label"></label>
+                <input asp-for="PaperModel.Name" class="form-control" />
+                <span asp-validation-for="PaperModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.Description" class="control-label"></label>
+                <input asp-for="PaperModel.Description" class="form-control" />
+                <span asp-validation-for="PaperModel.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.GSMWeight" class="control-label"></label>
+                <input asp-for="PaperModel.GSMWeight" class="form-control" />
+                <span asp-validation-for="PaperModel.GSMWeight" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="PaperModel.RollPaper" /> @Html.DisplayNameFor(model => model.PaperModel.RollPaper)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.DateCreated" class="control-label"></label>
+                <input asp-for="PaperModel.DateCreated" class="form-control" />
+                <span asp-validation-for="PaperModel.DateCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.ColourProfilePath" class="control-label"></label>
+                <input asp-for="PaperModel.ColourProfilePath" class="form-control" />
+                <span asp-validation-for="PaperModel.ColourProfilePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.RollWidth" class="control-label"></label>
+                <input asp-for="PaperModel.RollWidth" class="form-control" />
+                <span asp-validation-for="PaperModel.RollWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.CutSheetHeight" class="control-label"></label>
+                <input asp-for="PaperModel.CutSheetHeight" class="form-control" />
+                <span asp-validation-for="PaperModel.CutSheetHeight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.CutSheetWidth" class="control-label"></label>
+                <input asp-for="PaperModel.CutSheetWidth" class="form-control" />
+                <span asp-validation-for="PaperModel.CutSheetWidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
