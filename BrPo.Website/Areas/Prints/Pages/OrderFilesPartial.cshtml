@@ -34,7 +34,9 @@
                     @if (imageFile.ImageCreatedDate != null) {
                         <tr><th>Created Date</th><td>@imageFile.ImageCreatedDate.ToString()</td></tr>
                     }
-                </table>
+                    @if (imageFile.Orientation != null) {
+                        <tr><th>Orientation</th><td>@imageFile.Orientation</td></tr>
+                    }                </table>
             </div>
         </div>
     </div>

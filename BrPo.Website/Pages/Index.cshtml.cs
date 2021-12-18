@@ -40,12 +40,13 @@ namespace BrPo.Website.Pages
         public IActionResult OnGet() {
             if (!Request.Cookies.ContainsKey("BrPoSession")){
                 CookieOptions options = new CookieOptions();
-                options.Expires = DateTime.Now.AddMinutes(30);
+                options.Expires = DateTime.Now.AddMinutes(120);
                 options.IsEssential = true;
                 options.HttpOnly = true;
                 Response.Cookies.Append("BrPoSession", _httpContextAccessor.HttpContext.Session.Id, options);
             }
-            return Redirect("/prints/order");
+            //return Redirect("/prints/order");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostSaveFormAsync()
