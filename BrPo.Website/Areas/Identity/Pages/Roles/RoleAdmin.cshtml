@@ -1,0 +1,43 @@
+﻿@page
+@model BrPo.Website.Areas.Admin.Pages.RoleAdminModel
+@{
+    ViewData["Title"] = "Role Admin";
+}
+
+<div class="row bpi-header-spacing">
+    <div class="col-lg-6">
+        <h2>Roles Admin</h2>
+    </div>
+    <div class="col-lg-6 text-right">
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/Roles/CreateRole">Create role</a>
+    </div>
+</div>
+
+<form method="post">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var role in @Model.Roles)
+        {
+            <tr>
+                <td>
+                    @role.Name
+                </td>
+                <td class="text-right">
+                    <a asp-area="Identity" asp-page="/Roles/EditRole" asp-route-name="@role.Name" class="btn btn-primary">Edit</a>
+                    <button type="submit"
+                            asp-page-handler="DeleteRole"
+                            asp-route-name="@role.Name"
+                            onclick="return confirm('Are you sure you want to delete @role.Name?')"
+                            class="btn btn-danger">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </table>
+</form>

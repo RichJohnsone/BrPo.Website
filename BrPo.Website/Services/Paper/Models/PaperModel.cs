@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BrPo.Website.Services.Paper.Models
 {
+    [BindProperties]
     [Table("Papers")]
     public class PaperModel
     {
         [Key]
-        public int Id { get; set; }   
+        public int Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }

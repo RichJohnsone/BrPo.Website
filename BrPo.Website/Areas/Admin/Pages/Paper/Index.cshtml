@@ -2,49 +2,54 @@
 @model BrPo.Website.Areas.Admin.Pages.Paper.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Paper Admin";
 }
 
-<h1>Index</h1>
+<div class="row bpi-header-spacing">
+    <div class="col-lg-6">
+        <h2>Paper Admin</h2>
+    </div>
+    <div class="col-lg-6 text-right">
+        <a class="btn btn-primary text-white" asp-area="Admin" asp-page="/Paper/Create">Create Paper</a>
+    </div>
+</div>
+            <form method="post">
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].Name)
+                @Html.DisplayNameFor(model => model.PaperModels[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].Description)
+                @Html.DisplayNameFor(model => model.PaperModels[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].GSMWeight)
+                @Html.DisplayNameFor(model => model.PaperModels[0].GSMWeight)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].RollPaper)
+                @Html.DisplayNameFor(model => model.PaperModels[0].RollPaper)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].DateCreated)
+                @Html.DisplayNameFor(model => model.PaperModels[0].DateCreated)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].ColourProfilePath)
+                @Html.DisplayNameFor(model => model.PaperModels[0].ColourProfilePath)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].RollWidth)
+                @Html.DisplayNameFor(model => model.PaperModels[0].RollWidth)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].CutSheetHeight)
+                @Html.DisplayNameFor(model => model.PaperModels[0].CutSheetHeight)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaperModel[0].CutSheetWidth)
+                @Html.DisplayNameFor(model => model.PaperModels[0].CutSheetWidth)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.PaperModel) {
+@foreach (var item in Model.PaperModels) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -74,11 +79,13 @@
                 @Html.DisplayFor(modelItem => item.CutSheetWidth)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-area="Admin" asp-page="/Paper/Edit" asp-route-id="@item.Id" class="btn btn-primary text-white">Edit</a>
+                <a asp-area="Admin" asp-page="/Paper/Details" asp-route-id="@item.Id" class="btn btn-primary text-white">Details</a>
+                <a asp-area="Admin" asp-page="/Paper/Delete" asp-route-id="@item.Id" class="btn btn-danger text-white">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+</form>

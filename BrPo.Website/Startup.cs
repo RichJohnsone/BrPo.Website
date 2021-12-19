@@ -1,7 +1,9 @@
+using BrPo.Website.Areas.Identity.Services;
 using BrPo.Website.Data;
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
+using BrPo.Website.Services.Paper.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +38,7 @@ namespace BrPo.Website
             services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, IdentityEmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddRazorPages(options =>
@@ -47,6 +50,8 @@ namespace BrPo.Website
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<BrPo.Website.Services.Email.IEmailSender, EmailSender>();
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IPaperService, PaperService>();
             services.AddAntiforgery(option =>
             {
                 option.HeaderName = "XSRF-TOKEN";

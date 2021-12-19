@@ -117,6 +117,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Services\" />
+    <Folder Include="Areas\Identity\Pages\Roles\" />
+    <Folder Include="Config\" />
     <Folder Include="Services\ContactForm\Persistence\" />
   </ItemGroup>
 

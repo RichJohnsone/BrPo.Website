@@ -3,29 +3,32 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using BrPo.Website.Services.Paper.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BrPo.Website.Services.Paper.Services
 {
-    public interface IImageService
+    public interface IPaperService
     {
-        Task<PaperModel> CreatepaperRecord(PaperModel model);
+        Task<PaperModel> CreatePaperRecord(PaperModel model);
         Task<PaperModel> GetPaperAsync(int id);
+        List<PaperModel> GetPapers();
     }
 
-    public class ImageService : IImageService
+    public class PaperService : IPaperService
     {
         private readonly ApplicationDbContext context;
-        private readonly ILogger<ImageService> _logger;
+        private readonly ILogger<PaperService> _logger;
 
-        public ImageService(
+        public PaperService(
             ApplicationDbContext applicationDbContext,
-            ILogger<ImageService> logger)
+            ILogger<PaperService> logger)
         {
             context = applicationDbContext;
             _logger = logger;
         }
 
-        public async Task<PaperModel> CreatepaperRecord(PaperModel model)
+        public async Task<PaperModel> CreatePaperRecord(PaperModel model)
         {
             model.DateCreated = DateTime.UtcNow;
             context.Papers.Add(model);
@@ -42,7 +45,21 @@ namespace BrPo.Website.Services.Paper.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("from PaperService.GetImageAsync", ex);
+                _logger.LogError("from PaperService.GetPaperAsync", ex);
+                throw;
+            }
+        }
+
+        public List<PaperModel> GetPapers()
+        {
+            try
+            {
+                var paperModels = context.Papers.ToList<PaperModel>();
+                return paperModels ?? new List<PaperModel>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from PaperService.GetPaperAsync", ex);
                 throw;
             }
         }

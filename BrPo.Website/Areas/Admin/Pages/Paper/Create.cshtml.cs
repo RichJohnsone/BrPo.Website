@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BrPo.Website.Data;
 using BrPo.Website.Services.Paper.Models;
+using BrPo.Website.Services.Paper.Services;
 
 namespace BrPo.Website.Areas.Admin.Pages.Paper
 {
+    [BindProperties(SupportsGet = true)]
     public class CreateModel : PageModel
     {
-        private readonly BrPo.Website.Data.ApplicationDbContext _context;
+        private readonly IPaperService _paperService;
 
-        public CreateModel(BrPo.Website.Data.ApplicationDbContext context)
+        public CreateModel(
+            IPaperService paperService)
         {
-            _context = context;
+            _paperService = paperService;
         }
 
         public IActionResult OnGet()
@@ -24,21 +22,22 @@ namespace BrPo.Website.Areas.Admin.Pages.Paper
             return Page();
         }
 
-        [BindProperty]
+        //public IActionResult OnGet(PaperModel paperModel)
+        //{
+        //    PaperModel = paperModel;
+        //    return Page();
+        //}
         public PaperModel PaperModel { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(PaperModel paperModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return Page();
+                await _paperService.CreatePaperRecord(paperModel);
+                return RedirectToPage("Index");
             }
-
-            _context.Papers.Add(PaperModel);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            return Page();
         }
     }
 }

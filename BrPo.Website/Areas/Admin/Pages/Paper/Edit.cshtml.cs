@@ -66,7 +66,7 @@ namespace BrPo.Website.Areas.Admin.Pages.Paper
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Paper/Index", new { area = "Admin" });
         }
 
         private bool PaperModelExists(int id)

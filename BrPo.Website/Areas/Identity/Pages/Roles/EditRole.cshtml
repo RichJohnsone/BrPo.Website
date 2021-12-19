@@ -1,0 +1,17 @@
+﻿@page
+@model BrPo.Website.Areas.Admin.Pages.EditRoleModel
+
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<h2 class="bpi-header-spacing">Edit Role</h2>
+
+<form method="post">
+    <div class="form-group">
+        <input asp-for="IdentityRole.Id" hidden />
+        <label asp-for="IdentityRole.Name"></label>
+        <input class="form-control" asp-for="IdentityRole.Name" />
+    </div>
+    <button class="btn btn-primary bpi-button-spacing" type="submit">Save</button>
+</form>

@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BrPo.Website.Data;
 using BrPo.Website.Services.Paper.Models;
+using BrPo.Website.Services.Paper.Services;
 
 namespace BrPo.Website.Areas.Admin.Pages.Paper
 {
     public class IndexModel : PageModel
     {
-        private readonly BrPo.Website.Data.ApplicationDbContext _context;
+        private readonly IPaperService _paperService;
 
-        public IndexModel(BrPo.Website.Data.ApplicationDbContext context)
+        public IndexModel(IPaperService paperService)
         {
-            _context = context;
+            _paperService = paperService;
         }
 
-        public IList<PaperModel> PaperModel { get;set; }
+        public IList<PaperModel> PaperModels { get;set; }
 
-        public async Task OnGetAsync()
+        public void OnGetAsync()
         {
-            PaperModel = await _context.Papers.ToListAsync();
+            PaperModels = _paperService.GetPapers();
         }
     }
 }

@@ -1,0 +1,17 @@
+﻿@page
+@model BrPo.Website.Areas.Admin.Pages.CreateRoleModel
+
+@{
+    ViewData["Title"] = "Create Role";
+}
+
+<h2 class="bpi-header-spacing">Create Role</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary bpi-button-spacing">Create</button>
+</form>

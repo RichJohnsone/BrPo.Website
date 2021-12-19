@@ -1,4 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http.Features
+@using BrPo.Website.Config
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,20 +66,33 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Prints" asp-page="/Upload">Upload</a>
+                        @if (SignInManager.IsSignedIn(User)){
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown">Prints</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Prints" asp-page="/Upload">Upload</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Prints" asp-page="/Order">Order</a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Prints" asp-page="/Order">Order</a>
-                        </li>
+                        }
+                        @if (User.IsInRole(RolesConfig.Administrator))
+                        {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown">Admin</a>
                             <ul class="dropdown-menu">
-                                <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Index">Paper</a></li>
+                                <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Index">Paper - Admin</a></li>
                                 <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Create">Paper - Create</a></li>
                                 <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Edit">Paper - Edit</a></li>
+                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/RoleAdmin">Role - Admin</a></li>
+                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/CreateRole">Role - Create</a></li>
+                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/EditRole">Role - Edit</a></li>
                             </ul>
                         </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
