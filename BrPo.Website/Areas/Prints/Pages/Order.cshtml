@@ -105,7 +105,9 @@
                     <div id="collapseThree3" class="collapse show" role="tabpanel" aria-labelledby="headingThree3"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
-                            @await Html.PartialAsync("OrderPaperPartial")
+                            @*@await Html.PartialAsync("OrderPaperPartial", @Model.Papers)*@
+                            @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "Paper"})
+                            @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "Model.SelectedPaperId", id = "Model.SelectedPaperId"})
                         </div>
                     </div>
                 </div><!-- Accordion card -->

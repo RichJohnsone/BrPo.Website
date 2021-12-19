@@ -8,7 +8,8 @@ using BrPo.Website.Areas.Prints.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using BrPo.Website.Services.Image.Services;
-using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace BrPo.Website.Areas.Prints.Pages
 {
@@ -19,6 +20,8 @@ namespace BrPo.Website.Areas.Prints.Pages
         private IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IImageService _imageService;
+        private readonly UserManager<IdentityUser> _userManager;
+
         public IFormFile UploadFile { get; set; }
         public string AllowedExtensions;
         public string AllowedSize;
@@ -43,13 +46,15 @@ namespace BrPo.Website.Areas.Prints.Pages
             IConfiguration configuration,
             IWebHostEnvironment environment,
             IHttpContextAccessor httpContextAccessor,
-            IImageService imageService)
+            IImageService imageService, 
+            UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _configuration = configuration;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
             _imageService = imageService;
+            _userManager = userManager;
             AllowedExtensions = UploadHelpers.GetAllowedExtensions(_configuration);
             AllowedSize = UploadHelpers.GetMaxAllowedSize(_configuration);
         }
@@ -75,7 +80,7 @@ namespace BrPo.Website.Areas.Prints.Pages
                 try
                 {
                     var originalFileName = UploadFile.FileName;
-                    var userId = Request.Cookies["BrPoSession"].ToString();
+                    string userId = GetUserOrSessionId();
                     await UploadHelpers.SaveUploadedFileAsync(UploadFile, filePath);
                     var imageFile = await _imageService.CreateImageRecord(filePath, userId, originalFileName);
                     UploadedFileIds = imageFile.Id.ToString();
@@ -94,9 +99,39 @@ namespace BrPo.Website.Areas.Prints.Pages
             }
         }
 
+        private string GetUserOrSessionId()
+        {
+            var principle = this.User;
+            if (principle.Identity.IsAuthenticated)
+            {
+                return _userManager.GetUserId(principle);
+            }
+            else
+            {
+                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("BrPoSession", out var sessionId))
+                    return sessionId.ToString();
+                else
+                {
+                    throw new ApplicationException("Your session has expired");
+                }
+            }
+        }
+
         public IActionResult OnGetUploadedImagesPartial()
         {
-            var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();
+            var ids = new List<string>();
+            var principle = this.User;
+            if (principle.Identity.IsAuthenticated)
+            {
+                ids = _imageService.GetIds(_userManager.GetUserId(principle));
+            }
+            else
+            {
+                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("BrPoSession", out var sessionId))
+                {
+                    ids = _imageService.GetIds(sessionId);
+                }
+            }
             return Partial("UploadedImagesPartial", ids);
         }
     }

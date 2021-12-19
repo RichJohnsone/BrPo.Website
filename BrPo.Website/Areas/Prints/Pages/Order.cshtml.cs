@@ -1,18 +1,20 @@
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Models;
 using BrPo.Website.Services.Image.Services;
+using BrPo.Website.Services.Paper.Models;
+using BrPo.Website.Services.Paper.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BrPo.Website.Areas.Prints.Pages
 {
+    [BindProperties]
     public class OrderModel : PageModel
     {
         private readonly ILogger<UploadModel> _logger;
@@ -20,12 +22,17 @@ namespace BrPo.Website.Areas.Prints.Pages
         private IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IImageService _imageService;
+        private readonly IPaperService _paperService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        [BindProperty(SupportsGet = true)]
+        //[BindProperty(SupportsGet = true)]
         public List<ImageFileModel> Files { get; set; } = new List<ImageFileModel>();
 
-        [BindProperty(SupportsGet = true)]
+        //[BindProperty(SupportsGet = true)]
         public ImageFileModel SelectedFile { get; set; }
+
+        public List<PaperModel> Papers { get; set; } = new List<PaperModel>();
+        public int SelectedPaperId { get; set; }
 
         public string UploadedFileIds
         {
@@ -53,30 +60,38 @@ namespace BrPo.Website.Areas.Prints.Pages
             IConfiguration configuration,
             IWebHostEnvironment environment,
             IHttpContextAccessor httpContextAccessor,
-            IImageService imageService)
+            IImageService imageService,
+            IPaperService paperService,
+            UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _configuration = configuration;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
             _imageService = imageService;
+            _paperService = paperService;   
+            _userManager = userManager;
         }
 
         public void OnGet () {
-            //_httpContextAccessor.HttpContext.Session.SetString("UploadedFileIds", "80,81,82,77");
-            if (_httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds") != "")
+            var principle = this.User;
+            if (principle.Identity.IsAuthenticated)
             {
-                var ids = _httpContextAccessor.HttpContext.Session.GetString("UploadedFileIds").Split(',').ToList().Reverse<string>().ToList();
-                foreach (var id in ids)
+                Files = _imageService.GetImages(_userManager.GetUserId(principle));
+            }
+            else
+            {
+                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("BrPoSession", out var sessionId))
                 {
-                    Files.Add(_imageService.GetImageAsync(id.ToInt()).Result);
-                    if (Files.Count == 1)
-                    {
-                        SelectedFile = Files[0];
-                        SelectedFileId = id;
-                    }
+                    Files = _imageService.GetImages(sessionId);
                 }
             }
+            if (Files.Count > 0) { 
+                SelectedFile = Files[0];
+                SelectedFileId = Files[0].Id.ToString();
+            }
+
+            Papers = _paperService.GetPapers();
         }
 
         public PartialViewResult OnGetOrderDisplayPanelPartial(string id)
@@ -84,11 +99,5 @@ namespace BrPo.Website.Areas.Prints.Pages
             var model = _imageService.GetImageAsync(id.ToInt()).Result;
             return Partial("OrderDisplayPanelPartial", model);
         }
-
-        //public PartialViewResult OnGetDoSomeStuff(string id)
-        //{
-        //    var model = _imageService.GetImageAsync(id.ToInt()).Result;
-        //    return Partial("OrderDisplayPanelPartial", model);
-        //}
     }
 }

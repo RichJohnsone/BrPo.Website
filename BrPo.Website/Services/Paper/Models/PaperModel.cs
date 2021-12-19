@@ -28,5 +28,7 @@ namespace BrPo.Website.Services.Paper.Models
         public int RollWidth { get; set; }
         public int CutSheetHeight { get; set; }
         public int CutSheetWidth { get; set; }
+        [Required]
+        public bool IsActive { get; set; }
     }
 }

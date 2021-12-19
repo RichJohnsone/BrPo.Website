@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Globalization;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using SixLabors.ImageSharp.Processing;
+using System.Collections.Generic;
 
 namespace BrPo.Website.Services.Image.Services
 {
@@ -20,6 +20,8 @@ namespace BrPo.Website.Services.Image.Services
         string GetBase64Thumbnail(int id, int height = 300);
         Task<string> GetBase64ThumbnailAsync(int id, int height = 300);
         Task<ImageFileModel> GetImageAsync(int id);
+        List<string> GetIds(string userId);
+        List<ImageFileModel> GetImages(string userId);
     }
 
     public class ImageService : IImageService
@@ -209,6 +211,42 @@ namespace BrPo.Website.Services.Image.Services
             g.InterpolationMode = InterpolationMode.High;
             g.DrawImage(image, 0, 0, new_width, new_height);
             return (System.Drawing.Image)new_image;
+        }
+    
+        public List<string> GetIds(string userId)
+        {
+            try
+            {
+                var imageFiles = context.ImageFiles.Where(i => i.UserId == userId);
+                if (imageFiles.Any())
+                {
+                    return imageFiles.Select(i => i.Id.ToString()).ToList<string>();
+                }
+                return new List<string>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from ImageService.GetIds", ex);
+                throw;
+            }
+        }
+
+        public List<ImageFileModel> GetImages(string userId)
+        {
+            try
+            {
+                var imageFiles = context.ImageFiles.Where(i => i.UserId == userId);
+                if (imageFiles.Any())
+                {
+                    return imageFiles.ToList<ImageFileModel>();
+                }
+                return new List<ImageFileModel>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from ImageService.GetIds", ex);
+                throw;
+            }
         }
     }
 }

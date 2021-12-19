@@ -113,6 +113,12 @@
                 <div class="field-validation-valid float-left" data-valmsg-for="PaperModel.CutSheetWidth" data-valmsg-replace="true"></div>    
             </div>
 
+            <div class="form-group checkbox">
+                @Html.CheckBoxFor(model => model.PaperModel.IsActive) 
+                <label class="" for="PaperModel.IsActive">@Html.DisplayNameFor(model => model.PaperModel.IsActive)</label>
+                <div class="field-validation-valid float-left" data-valmsg-for="PaperModel.IsActive" data-valmsg-replace="true"></div>    
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
