@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BrPo.Website.Areas.Prints.Pages
 {
@@ -92,12 +93,21 @@ namespace BrPo.Website.Areas.Prints.Pages
             }
 
             Papers = _paperService.GetPapers();
+            SelectedPaperId = Papers[0].Id;
         }
 
         public PartialViewResult OnGetOrderDisplayPanelPartial(string id)
         {
             var model = _imageService.GetImageAsync(id.ToInt()).Result;
             return Partial("OrderDisplayPanelPartial", model);
+        }
+
+        public async Task<IActionResult> OnGetPaper(int id)
+        {
+            if (id == 0) return new BadRequestObjectResult("You must specify a non-zero id");
+            var paper = await _paperService.GetPaperAsync(id);
+            if (paper == null) return NotFound();
+            return new JsonResult(paper);
         }
     }
 }

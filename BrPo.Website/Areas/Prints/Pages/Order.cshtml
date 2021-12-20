@@ -180,7 +180,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         $("#main_layout_container").removeClass("container").addClass("container-fluid");
-        SetUpDisplayPanel();
+        //SetUpDisplayPanel();
         
         function setDisplayPanelSize(){
             if ($(window).width() < 570){
@@ -300,13 +300,6 @@
             });
         }
 
-        //$("#displayPanelImage").on('loaded', function(){
-        //    processPanelLoad();
-        //});
-
-        //var img = $("#displayPanelImage")
-        //img.load(function() { processPanelLoad(); });
-
         function processPanelLoad(){
             if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
                 if ($("#height").val() < $("#width").val())
@@ -326,13 +319,36 @@
             setSizeHeader();
         }
 
-        $(".changeOrientation-js").on('click', function(){
-            var id = $(this).attr("data-id");
-            //working here!!
+        //$(".changeOrientation-js").on('click', function(){
+        //    var id = $(this).attr("data-id");
+        //    //working here!!
+        //});
+
+        ////function changeOrientation
+
+        $("#Model.SelectedPaper").on('input change', function(){
+            getSelectedPaper();
         });
 
-        //function changeOrientation
+        function getSelectedPaper(){
+            $.ajax({
+                url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
+                success: function(paperModel){   
+                    PaperModel = paperModel;
+                    $("#paperHeader").html(paperModel["Name"]);
+                },
+                error: function(data){
+                    alert(`status = ${data.status}
+
+description: ${data.statusText}`);
+                }
+            });        
+        }
+
+        getSelectedPaper();
     });
+
+    var PaperModel = null;
 
     function getOffset( el ) {
     var _x = 0;
@@ -345,7 +361,7 @@
     return { top: _y, left: _x };
     }
 
-    function SetUpDisplayPanel(){
+    //function SetUpDisplayPanel(){
 
-    }
+    //}
 </script>

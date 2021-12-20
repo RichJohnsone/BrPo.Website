@@ -3,6 +3,7 @@ using BrPo.Website.Services.Image.Models;
 using BrPo.Website.Services.Paper.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BrPo.Website.Data
 {
@@ -11,6 +12,19 @@ namespace BrPo.Website.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Set default precision to decimal property
+            foreach (var property in modelBuilder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetProperties())
+                .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+            {
+                property.SetColumnType("decimal(10, 2)");
+            }
         }
 
         public DbSet<ContactModel> Contacts { get; set; }

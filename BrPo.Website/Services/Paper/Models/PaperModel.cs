@@ -30,5 +30,9 @@ namespace BrPo.Website.Services.Paper.Models
         public int CutSheetWidth { get; set; }
         [Required]
         public bool IsActive { get; set; }
+        [MaxLength(50)]
+        public string ProductCode { get; set; }
+        public Decimal CostPerMeter { get; set; }
+        public Decimal CostPerSheet { get; set; }
     }
 }
