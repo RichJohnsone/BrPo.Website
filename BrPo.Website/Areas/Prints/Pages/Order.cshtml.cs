@@ -35,6 +35,7 @@ namespace BrPo.Website.Areas.Prints.Pages
         public List<string> Qualities{ get; set; }
         public string SelectedQuality { get; set; }
         public bool IsDraftPrint { get; set; } = false;
+        public int Quantity { get; set; } = 1;
 
         public string UploadedFileIds
         {

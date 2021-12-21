@@ -181,7 +181,7 @@
                             }
                             <div class="form-group checkbox mb-0">
                                 @Html.CheckBoxFor(model => model.IsDraftPrint) 
-                                <label class="" for="IsDraftPrint"><span class="font-weight-bold">Draft</span> - a reduced price, water-marked draft print</label>
+                                <label class="" for="IsDraftPrint"><span class="font-weight-bold ml-1">Draft</span> - a reduced price, water-marked draft print</label>
                             </div>
                         </div>
                     </div>
@@ -203,7 +203,23 @@
                     <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
-                            @await Html.PartialAsync("OrderPricePartial")
+                            <div class="form-group row mb-3">
+                                <label for="height" class="col-sm-3 col-form-label">Quantity</label>
+                                <div class="col-sm-3">
+                                    <input type="number" 
+                                        class="form-control" 
+                                        id="Quantity" 
+                                        placeholder="quantity" 
+                                        name="Quantity" 
+                                        value="@Model.Quantity" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="text mt-2" id="pricePerPrint"></div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="text mt-2">per print</div>
+                                </div>
+                            </div>
                             <button class="btn btn-primary btn-lg btn-block orderBbutton"> Order Prints </button>
                         </div>
                     </div>
@@ -235,6 +251,24 @@
             setPersonSize();
             setPicturePosition();
         }
+
+        function getSelectedPaper(){
+            $.ajax({
+                url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
+                success: function(paperModel){   
+                    PaperModel = paperModel;
+                    $("#paperHeader").html(paperModel["Name"]);
+                    getPrice();
+                },
+                error: function(data){
+                    alert(`status = ${data.status}
+
+description: ${data.statusText}`);
+                }
+            });    
+        }
+
+        getSelectedPaper();
 
         $("#sizeA4").on('click', function (){
             if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
@@ -285,6 +319,7 @@
             let personOffset = ( $("#personImage").height() * .25);
             let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
             $("#displayPanelImage").css('top', pictureTop + 'px')
+            getPrice();
         }
 
         function setPictureHeight(){
@@ -405,22 +440,7 @@
             $("input[name=SelectedPaperId]").val(valueSelected);
             getSelectedPaper();
         });
-
-        function getSelectedPaper(){
-            $.ajax({
-                url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
-                success: function(paperModel){   
-                    PaperModel = paperModel;
-                    $("#paperHeader").html(paperModel["Name"]);
-                },
-                error: function(data){
-                    alert(`status = ${data.status}
-
-description: ${data.statusText}`);
-                }
-            });    
-        }
-            
+        
         $('input[type="radio"].quality-js').click(function(){
     	    let selectedQuality = $(this).val();
             if (selectedQuality == "High") {
@@ -440,7 +460,57 @@ description: ${data.statusText}`);
             }
         });
 
-        getSelectedPaper();
+        $("#Quantity").on('change', function(e){
+            getPrice();
+        });
+
+        function getPrice(){
+            if (PaperModel == null) return;
+            if (PaperModel.RollPaper == true){
+                let paperLength = $("#height").val() > $("#width").val() ? parseFloat($("#height").val()) + 100 : parseFloat($("#width").val()) + 100;     
+                let pricePerPrint = (paperLength / 1000) * PaperModel.CostPerMeter;
+                pricePerPrint = getQuantityDiscountPrice(pricePerPrint, $("#Quantity").val());
+                $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
+                $("#orderHeader").html("£ " + orderValue);
+            } else {
+                pricePerPrint = getQuantityDiscountPrice(PaperModel.CostPerSheet, $("#Quantity").val());
+                $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
+                $("#orderHeader").html("£ " + orderValue);
+            }
+        }
+
+        getPrice();
+
+        function getQuantityDiscountPrice(pricePerPrint, quantity){
+            let discount = 0;
+            switch(true) {
+              case quantity == 1:
+                break;
+              case quantity <= 4:
+                discount = 5;
+                break;
+              case quantity <= 9:
+                discount = 10;
+                break;
+              case quantity <= 19:
+                discount = 15;
+                break;
+              case quantity <= 29:
+                discount = 20;
+                break;
+              case quantity <= 39:
+                discount = 25;
+                break;
+              case quantity <= 49:
+                discount = 30;
+                break;
+              default:
+            }
+            if (discount == 0) return pricePerPrint;
+            return (((100 - discount) / 100) * pricePerPrint);
+        }
     });
 
     var PaperModel = null;
