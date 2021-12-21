@@ -13,6 +13,7 @@
     }
     #displayPanelImage {
         position: relative;
+        background-color: #fff;
     }
     #personImage {
         position: absolute;
@@ -37,12 +38,25 @@
     #displayImageContainer {
         text-align: center; 
     }
+    div.card-header a:hover,
+    div.card-header a,
+    a.collapsed:hover,
+    a.collapsed { text-decoration: none; }
+    .orderBbutton {
+        font-size: 1.5em;
+    }
+    .headerLabel {
+        color: #212529;
+        margin-left: 5px;
+    }
 </style>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-7" id="displayPanelContainer">
             <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
+            @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
+            @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
         </div>
         <div class="col-sm-5">
 
@@ -50,20 +64,21 @@
             <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
                 <!-- Accordion card -->
-                <div class="card">
+                <div class="cardcard">
+                <div class="cardv">
                     <!-- Card header -->
                     <div class="card-header" role="tab" id="headingOne1">
                         <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseOne1" aria-expanded="false" class="collapsed"
                         aria-controls="collapseOne1">
                             <h5 class="mb-0">
-                                File: <span id="fileHeader">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                File: <span id="fileHeader" class="headerLabel">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
                     <!-- Card body -->
                     <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
                         @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="fileBody"">
+                        <div class="card-body border-left border-right" id="fileBody"">
                             @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
                         </div>
                     </div>
@@ -76,7 +91,10 @@
                         <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseTwo2" aria-expanded="true"
                         aria-controls="collapseTwo2">
                             <h5 class="mb-0">
-                                Size: <span id="sizeHeaderHeight"></span> (w) * <span id="sizeHeaderWidth"> </span> (h) mm<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Size: <span class="headerLabel" title="Print size in mm : height * width">
+                                          <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
+                                      </span>
+                                      <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
@@ -93,15 +111,15 @@
                 <div class="card">
                     <!-- Card header -->
                     <div class="card-header" role="tab" id="headingThree3">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseThree3" aria-expanded="true"
+                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseThree3" aria-expanded="false" class="collapsed"
                         aria-controls="collapseThree3">
                             <h5 class="mb-0">
-                                Paper: <span id="paperHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Paper: <span id="paperHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
                     <!-- Card body -->
-                    <div id="collapseThree3" class="collapse show" role="tabpanel" aria-labelledby="headingThree3"
+                    <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
                             @*@await Html.PartialAsync("OrderPaperPartial", @Model.Papers)*@
@@ -115,15 +133,16 @@
                 <div class="card">
                     <!-- Card header -->
                     <div class="card-header" role="tab" id="headingFour4">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFour4" aria-expanded="true"
+                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFour4" aria-expanded="false" class="collapsed"
                         aria-controls="collapseFour4">
                             <h5 class="mb-0">
-                                Border: <span id="borderHeader"></span> mm<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Border: <span class="headerLabel"><span id="borderHeader" class="headerLabel"></span> mm</span>
+                                <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
                     <!-- Card body -->
-                    <div id="collapseFour4" class="collapse show" role="tabpanel" aria-labelledby="headingFour4"
+                    <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
                             @await Html.PartialAsync("OrderBorderPartial")
@@ -135,15 +154,15 @@
                 <div class="card">
                     <!-- Card header -->
                     <div class="card-header" role="tab" id="headingFive5">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFive5" aria-expanded="true"
+                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFive5" aria-expanded="false" class="collapsed"
                         aria-controls="collapseFive5">
                             <h5 class="mb-0">
-                                Quality: <span id="qualityHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Quality: <span id="qualityHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
                     <!-- Card body -->
-                    <div id="collapseFive5" class="collapse show" role="tabpanel" aria-labelledby="headingFive5"
+                    <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
                             @await Html.PartialAsync("OrderQualityPartial")
@@ -155,18 +174,20 @@
                 <div class="card">
                     <!-- Card header -->
                     <div class="card-header" role="tab" id="headingSix6">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseSix6" aria-expanded="true"
+                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="" aria-expanded="true" 
                         aria-controls="collapseSix6">
                             <h5 class="mb-0">
-                                Price: <span id="priceHeader"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Order: <span id="orderHeader" class="headerLabel"></span> 
+                                @*<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>*@
                             </h5>
                         </a>
                     </div>
                     <!-- Card body -->
-                    <div id="collapseSix6" class="collapse show" role="tabpanel" aria-labelledby="headingSix6"
+                    <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
                             @await Html.PartialAsync("OrderPricePartial")
+                            <button class="btn btn-primary btn-lg btn-block orderBbutton"> Order Prints </button>
                         </div>
                     </div>
                 </div><!-- Accordion card -->
@@ -206,6 +227,7 @@
                 $("#height").val("210");
                 $("#width").val("297");
             }
+            heightChange();
             setPicturePosition();
             setSizeHeader();
         });
@@ -218,6 +240,7 @@
                 $("#height").val("297");
                 $("#width").val("420");
             }
+            heightChange();
             setPicturePosition();
             setSizeHeader();
         });
@@ -230,6 +253,7 @@
                 $("#height").val("420");
                 $("#width").val("594");
             }
+            heightChange();
             setPicturePosition();
             setSizeHeader();
         });  
@@ -250,17 +274,36 @@
             let oneMm = $("#personImage").height() / 1800;
             let newHeight = $("#height").val() * oneMm;
             $("#displayPanelImage").css('height', newHeight + 'px');
+            //let newWidth = Math.round(($("#height").val() * (1 /getLoadedPictureAspectRatio())) * 10) / 10;
+            //$("#width").unbind();
+            //$("#width").val(newWidth);
+            //$("#width").on('keyup change input', widthChange);
+            setBorderDisplay();
         }
 
-        $("#height").on('keyup change input', function(){
-            setPicturePosition();
-            setSizeHeader();
-        });
+        $("#height").on('keyup change input', heightChange);
 
-        $("#width").on('keyup change input', function(){
+        function heightChange(){
+            let newWidth = Math.round((Math.round($("#height").val()) * (1 /getLoadedPictureAspectRatio())) * 10) / 10;
+            $("#width").unbind();
+            $("#width").val(newWidth);
+            $("#width").on('keyup change input', widthChange);
+            console.log(`#height change: newWidth: ${newWidth}`);
             setPicturePosition();
             setSizeHeader();
-        });
+        }
+
+        $("#width").on('keyup change input', widthChange);
+
+        function widthChange(){
+            let newHeight = Math.round((Math.round($("#width").val()) * getLoadedPictureAspectRatio()) * 10) / 10;
+            $("#height").unbind();
+            $("#height").val(newHeight);
+            $("#height").on('keyup change input', heightChange);
+            console.log(`#width change: newHeight: ${newHeight}`);
+            setPicturePosition();
+            setSizeHeader();
+        }
 
         $("#border").on('keyup change input', function(){
             setBorderHeader();
@@ -294,6 +337,7 @@
         $("#border").val("0");
 
         setBorderHeader()
+        heightChange();
         setSizeHeader();
         setDisplayPanelSize();
 
@@ -302,14 +346,25 @@
         });
 
         $(".uploadImage").on('mousedown', function () {
-            loadDisplayPanel($(this).attr("data-id"), $(this).attr("data-fileName") );
+            loadDisplayPanel(
+                $(this).attr("data-id"), 
+                $(this).attr("data-fileName"),
+                $(this).attr("data-pixel-height"),
+                $(this).attr("data-pixel-width") );
         });
 
-        function loadDisplayPanel(id, fileName){
+        function loadDisplayPanel(id, fileName, pixelHeight, pixelWidth){
             $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`, function(){
                 $("#fileHeader").html(fileName);
+                $("input[name=SelectedPicturePixelHeight]").val(pixelHeight);
+                $("input[name=SelectedPicturePixelWidth]").val(pixelWidth);
                 setTimeout(processPanelLoad(), 500);
             });
+        }
+
+        function getLoadedPictureAspectRatio(){
+            let aspect = $("input[name=SelectedPicturePixelHeight]").val() / $("input[name=SelectedPicturePixelWidth]").val();
+            return aspect;
         }
 
         function processPanelLoad(){

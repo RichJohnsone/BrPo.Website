@@ -26,12 +26,10 @@ namespace BrPo.Website.Areas.Prints.Pages
         private readonly IPaperService _paperService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        //[BindProperty(SupportsGet = true)]
         public List<ImageFileModel> Files { get; set; } = new List<ImageFileModel>();
-
-        //[BindProperty(SupportsGet = true)]
         public ImageFileModel SelectedFile { get; set; }
-
+        public int SelectedPicturePixelHeight { get; set; }
+        public int SelectedPicturePixelWidth { get; set; }
         public List<PaperModel> Papers { get; set; } = new List<PaperModel>();
         public int SelectedPaperId { get; set; }
 
@@ -90,6 +88,8 @@ namespace BrPo.Website.Areas.Prints.Pages
             if (Files.Count > 0) { 
                 SelectedFile = Files[0];
                 SelectedFileId = Files[0].Id.ToString();
+                SelectedPicturePixelWidth = Files[0].Width;
+                SelectedPicturePixelHeight = Files[0].Height;
             }
 
             Papers = _paperService.GetPapers();

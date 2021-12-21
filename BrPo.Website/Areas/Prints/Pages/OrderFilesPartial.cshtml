@@ -12,17 +12,10 @@
                     <img class="uploadImage" 
                             src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(imageFile.Id, 100)"
                             data-id="@imageFile.Id",
-                            data-fileName="@imageFile.OriginalFileName">
+                            data-fileName="@imageFile.OriginalFileName"
+                            data-pixel-height="@imageFile.Height"
+                            data-pixel-width="@imageFile.Width">
                 </a>
-@*                @{
-                    var orientationFasTag = "portrait";
-                    if (!string.IsNullOrEmpty(imageFile.Orientation))
-                        orientationFasTag = imageFile.Orientation.Contains("CW") ? "portrait" : "image";
-                    var orientationId = "orientation" + imageFile.Id.ToString();
-                }
-                <span id="@orientationId" title="image orientation">
-                    <i class="fas fa-@orientationFasTag rotate-icon float-right changeOrientation-js" data-id="@imageFile.Id"></i>
-                </span>*@
             </div>
             <div class="col table-responsive-sm">
                 <table class="table-sm">
