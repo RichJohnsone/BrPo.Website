@@ -20,7 +20,7 @@ namespace BrPo.Website.Areas.Prints.Pages
     {
         private readonly ILogger<UploadModel> _logger;
         private readonly IConfiguration _configuration;
-        private IWebHostEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IImageService _imageService;
         private readonly IPaperService _paperService;
@@ -32,6 +32,9 @@ namespace BrPo.Website.Areas.Prints.Pages
         public int SelectedPicturePixelWidth { get; set; }
         public List<PaperModel> Papers { get; set; } = new List<PaperModel>();
         public int SelectedPaperId { get; set; }
+        public List<string> Qualities{ get; set; }
+        public string SelectedQuality { get; set; }
+        public bool IsDraftPrint { get; set; } = false;
 
         public string UploadedFileIds
         {
@@ -94,6 +97,9 @@ namespace BrPo.Website.Areas.Prints.Pages
 
             Papers = _paperService.GetPapers();
             SelectedPaperId = Papers[0].Id;
+
+            Qualities = new List<string>() { "Premium", "High" };
+            SelectedQuality = "Premium";
         }
 
         public PartialViewResult OnGetOrderDisplayPanelPartial(string id)

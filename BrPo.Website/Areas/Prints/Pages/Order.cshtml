@@ -157,7 +157,7 @@
                         <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFive5" aria-expanded="false" class="collapsed"
                         aria-controls="collapseFive5">
                             <h5 class="mb-0">
-                                Quality: <span id="qualityHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                Quality: <span id="qualityHeader" class="headerLabel">@Model.SelectedQuality</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
                             </h5>
                         </a>
                     </div>
@@ -165,7 +165,24 @@
                     <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
                         @*data-parent="#accordionEx"*@>
                         <div class="card-body" id="sizeBody">
-                            @await Html.PartialAsync("OrderQualityPartial")
+                            @foreach (var quality in Model.Qualities)
+                            {
+                                var selected = quality.Equals(Model.SelectedQuality) ? "checked=\"checked\"" : string.Empty;
+                                var label = quality == "Premium" 
+                                    ? " - 11 inks - available on sizes A4 and larger"
+                                    : " - 6 inks - available on sizes up to A4";
+                                <div class="form-check">
+                                    <input  class="form-check-input quality-js"
+                                            type="radio" 
+                                            asp-for="SelectedQuality" 
+                                            name="SelectedQuality" 
+                                            value="@quality" @selected/><span class="font-weight-bold">@quality</span> @label<br />
+                                </div>
+                            }
+                            <div class="form-group checkbox mb-0">
+                                @Html.CheckBoxFor(model => model.IsDraftPrint) 
+                                <label class="" for="IsDraftPrint"><span class="font-weight-bold">Draft</span> - a reduced price, water-marked draft print</label>
+                            </div>
                         </div>
                     </div>
                 </div><!-- Accordion card -->
@@ -274,10 +291,6 @@
             let oneMm = $("#personImage").height() / 1800;
             let newHeight = $("#height").val() * oneMm;
             $("#displayPanelImage").css('height', newHeight + 'px');
-            //let newWidth = Math.round(($("#height").val() * (1 /getLoadedPictureAspectRatio())) * 10) / 10;
-            //$("#width").unbind();
-            //$("#width").val(newWidth);
-            //$("#width").on('keyup change input', widthChange);
             setBorderDisplay();
         }
 
@@ -405,8 +418,27 @@
 
 description: ${data.statusText}`);
                 }
-            });        
+            });    
         }
+            
+        $('input[type="radio"].quality-js').click(function(){
+    	    let selectedQuality = $(this).val();
+            if (selectedQuality == "High") {
+                $("#IsDraftPrint").prop("checked", false);
+                $("#IsDraftPrint").prop("disabled", true);
+            } else {
+                $("#IsDraftPrint").prop("disabled", false);
+            }
+            $("#qualityHeader").html(selectedQuality);
+        });
+        
+        $('#IsDraftPrint').click(function(){
+            if(!$(this).is(":checked")){
+                $("#qualityHeader").html($("#qualityHeader").html().replace(" - Draft", ""));
+            } else {
+                $("#qualityHeader").html($("#qualityHeader").html() + " - Draft");
+            }
+        });
 
         getSelectedPaper();
     });
