@@ -9,27 +9,47 @@
         <label for="height" class="col-sm-4 col-form-label">Height</label>
         <div class="col-sm-4">
             <input type="number" 
+                @*onclick="this.elementToStepDown.stepDown();this.elementToStepDown.dispatchEvent(new Event('change'))"*@
                 class="form-control" 
                 id="height" 
                 placeholder="Height" 
+                data-val="true"
+                data-val-number="The Height field must be a number." 
+                data-val-range-min="100" 
+                data-val-range-max="2000" 
+                min="100" 
+                max="2000" 
+                data-val-range="The Height field must be between 100 and 2000."
                 name="height" />
         </div>
         <div class="col-sm-4">
             <div class="text mt-2">mm</div>
         </div>
     </div>
+    <div class="field-validation-valid row ml-1" data-valmsg-for="height" data-valmsg-replace="true"></div>    
     <div class="form-group row mb-0">
         <label for="height" class="col-sm-4 col-form-label">Width</label>
         <div class="col-sm-4">
             <input type="number" 
+                @*onclick="this.elementToStepDown.stepDown();this.elementToStepDown.dispatchEvent(new Event('change'))"*@
                 class="form-control" 
                 id="width" 
                 placeholder="Width" 
+                data-val="true"
+                data-val-number="The Width field must be a number." 
+                data-val-range-min="100" 
+                data-val-range-max="440" 
+                min="100" 
+                max="440" 
+                data-val-range="The Width field must be between 100 and 440."
                 name="width" />
         </div>
         <div class="col-sm-4">
             <div class="text mt-2">mm</div>
         </div>
     </div>
+    <div class="field-validation-valid row ml-1" data-valmsg-for="width" data-valmsg-replace="true"></div>    
 </div>
+
+
 
