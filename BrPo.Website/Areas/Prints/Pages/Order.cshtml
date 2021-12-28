@@ -15,22 +15,27 @@
         position: relative;
         background-color: #fff;
     }
+    #sofaImage {
+        position: absolute;
+        bottom: 50px;
+    }
     #personImage {
         position: absolute;
         bottom: 50px;
-        margin-left: auto;
-        margin-right: auto;
+        padding-left: 50px;
     }
     #displayPanelRoom {
         position: absolute;
         top: 0;
-        width: 97%;
+        width: 100%;
+        left: 20px;
         background-color: rgba(0,0,0,.03);
+        overflow: hidden;
     }
     #personImageContainer{
         height: 100%;
         position: relative;
-        padding-left: 50px;
+        /*padding-left: 50px;*/
     }
     #displayPanelImageRow{
         height: 100%;
@@ -49,6 +54,9 @@
         color: #212529;
         margin-left: 5px;
     }
+    #bg-controls{
+        position: relative;
+    }
 </style>
 
 <div class="container-fluid">
@@ -58,6 +66,47 @@
                 <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
                 @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
                 @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
+
+                <div id="bg-controls" class="float-right">
+                    <div class="form-check form-check-inline">
+                        <h5>Background:</h5>
+                    </div>
+                    <div class="form-check form-check-inline" title="Scale display to an image of a sofa - the man is 1.8m wide">
+                       <input class="form-check-input bg-type-js" 
+                              type="radio" 
+                              name="bgRadio" 
+                              id="bgRadio-sofa"                           
+                              value="sofa">
+                       <label class="form-check-label" for="bgRadio-sofa">
+                       Sofa
+                       </label>
+                    </div>
+                    <div class="form-check form-check-inline" title="Scale display to an image of a man - the man is 1.8m tall">
+                       <input class="form-check-input bg-type-js" 
+                              type="radio" 
+                              name="bgRadio" 
+                              id="bgRadio-man" 
+                              value="man"                           
+                              checked>
+                       <label class="form-check-label" for="bgRadio-man">
+                       Man
+                       </label>
+                    </div>
+                    <div class="form-check form-check-inline" title="fit picture to display window">
+                       <input class="form-check-input bg-type-js" 
+                              type="radio" 
+                              name="bgRadio" 
+                              id="bgRadio-plain"                          
+                              value="plain">
+                       <label class="form-check-label" for="bgRadio-plain">
+                       Plain
+                       </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <h5 type="button" class="" id="bg-colour" title="Set the background colour of the display window"><i class="fas fa-palette"></i></h5>
+                    </div>
+                </div>
+
             </div>
             <div class="col-sm-5">
                 @Html.ValidationSummary(true)
@@ -237,18 +286,25 @@
 </div>
 
 <script>
+    var PixelHeight = 0;
+    var PixelWidth = 0;
+
     document.addEventListener('DOMContentLoaded', function () {
         $("#main_layout_container").removeClass("container").addClass("container-fluid");
 
-        // Load picture function
+        // Load picture functions
 
         $("body").on('mousedown', '.thumbnail', function () {
+            PixelHeight = $(this).attr("data-pixel-height");
+            PixelWidth = $(this).attr("data-pixel-width");
             loadDisplayPanel(
                 $(this).attr("data-id"), 
                 $(this).attr("data-fileName"),
                 $(this).attr("data-pixel-height"),
-                $(this).attr("data-pixel-width") );
-            });
+                $(this).attr("data-pixel-width") 
+            );
+            //setTimeout(processPanelLoad(), 1500);
+        });
 
         function loadDisplayPanel(id, fileName, pixelHeight, pixelWidth){
             try {
@@ -256,9 +312,12 @@
                     $("#fileHeader").html(fileName);
                     $("input[name=SelectedPicturePixelHeight]").val(pixelHeight);
                     $("input[name=SelectedPicturePixelWidth]").val(pixelWidth);
-                    setTimeout(processPanelLoad(), 500);
+                    //PixelHeight = pixelHeight;
+                    //PixelWidth = pixelWidth;
+                    setTimeout(processPanelLoad(), 1000);
                 });
-                setTimeout(processPanelLoad(), 500);
+                //setTimeout(processPanelLoad(), 500);
+                //setTimeout(processPanelLoad(), 1000);
             }
             catch(e) {
                 console.log(`Error from loadDisplayPanel: ${e.name} : ${e.description}` );
@@ -277,8 +336,8 @@
 
         function processPanelLoad(){
             try {
-                let height = $("input[name=SelectedPicturePixelHeight]").val();
-                let width = $("input[name=SelectedPicturePixelWidth]").val();
+                let height = PixelHeight; //$("input[name=SelectedPicturePixelHeight]").val();
+                let width = PixelWidth; //$("input[name=SelectedPicturePixelWidth]").val();
                 if (height > width){
                     if ($("#height").val() < $("#width").val())
                         swapHeightAndWidth();
@@ -309,20 +368,40 @@
                     $("#personImageContainer").css('width', '');
                     $("#displayImageContainer").css('width', '');
                 }
-                setPersonSize();
+                setBackgroundImage();
                 setPicturePosition();
+                setTimeout(setPicturePosition, 100);
+                setBgControlsPosition();
             }
             catch(e) {
                 console.log(`Error from setupDisplayPanel : ${e.name} : ${e.description}` );
             }
         }
 
-        function setPersonSize(){
+        function setBgControlsPosition(){
+            let top = $("#displayPanelRoom").height() - 35;
+            $("#bg-controls").css('top', top + 'px');
+        }
+
+        function setBackgroundImage(){
+            if (BackgroundType == 'sofa'){
+                $("#personImage").hide();
+                $("#sofaImage").show();
+            } else if (BackgroundType == 'man'){
+                $("#personImage").show();
+                $("#sofaImage").hide();
+            } else {
+                $("#personImage").hide();
+                $("#sofaImage").hide();
+            }
             try {
+                $("#sofaImage").width((($("#displayPanelRoom").width() - 100) / 100) * 100);
+                let sofaLeft = ($("#displayPanelImageRow").width() / 2) - ($("#sofaImage").width() / 2);
+                $("#sofaImage").css('left', sofaLeft + 'px');
                 $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
             }
             catch(e) {
-                console.log(`Error from setPersonSize : ${e.name} : ${e.description}` );
+                console.log(`Error from setBackgroundImage : ${e.name} : ${e.description}` );
             }
         }
 
@@ -331,10 +410,23 @@
                 setPictureHeight();
                 let boxTop = getOffset( document.getElementById('displayImageContainer') ).top;
                 let personOffset = ( $("#personImage").height() * .25);
-                let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
-                $("#displayPanelImage").css('top', pictureTop + 'px');
-                let left = ($("#displayPanelImageRow").width() / 2) - ($("#displayPanelImage").width() / 2);
-                $("#displayPanelImage").css('left', left + 'px');
+
+                if (BackgroundType == 'sofa'){
+                    let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
+                    $("#displayPanelImage").css('top', pictureTop + 'px');
+                    let left = ($("#displayPanelImageRow").width() / 2) - ($("#displayPanelImage").width() / 2) - 20;
+                    $("#displayPanelImage").css('left', left + 'px');
+                } else if (BackgroundType == 'man'){
+                    let pictureTop = ($("#displayPanelImageRow").height() / 2) - ($("#displayPanelImage").height() / 2);
+                    $("#displayPanelImage").css('top', pictureTop + 'px');
+                    let left = ( ( ( $("#displayPanelImageRow").width() - ($("#personImage").width() + 50)) / 2) - ($("#displayPanelImage").width() / 2) + ($("#personImage").width() + 50));
+                    $("#displayPanelImage").css('left', left + 'px');
+                } else {
+                    let pictureTop = boxTop + 20;
+                    $("#displayPanelImage").css('top', pictureTop + 'px');
+                    let left = (($("#displayPanelImageRow").width() - $("#displayPanelImage").width()) / 2) - 20;
+                    $("#displayPanelImage").css('left', left + 'px');
+                }
                 getPrice();
             }
             catch(e) {
@@ -344,9 +436,17 @@
 
         function setPictureHeight(){
             try {
-                //let oneMm = $("#personImage").height() / 1800;
-                let newHeight = $("#height").val() * getOneMmToScaleInPixels();
-                $("#displayPanelImage").css('height', newHeight + 'px');
+                if (BackgroundType == 'sofa'){
+                    let oneMm = $("#sofaImage").width() / 1800;
+                    let newHeight = $("#height").val() * oneMm;
+                    $("#displayPanelImage").css('height', newHeight + 'px');
+                } else if (BackgroundType == 'man'){
+                    let oneMm = $("#personImage").height() / 1800;
+                    let newHeight = $("#height").val() * oneMm;
+                    $("#displayPanelImage").css('height', newHeight + 'px');
+                } else {
+                    fitPictureToWindow();
+                }
                 setBorderDisplay();
             }
             catch(e) {
@@ -354,9 +454,29 @@
             }
         }
 
+        function fitPictureToWindow(){
+            let oneMm = ($("#displayPanelRoom").height() - 150) / $("#height").val();
+            let newHeight = $("#height").val() * oneMm;
+            $("#displayPanelImage").css('height', newHeight + 'px');
+       }
+
         function getOneMmToScaleInPixels(){
-            return $("#personImage").height() / 1800;
+                if (BackgroundType == 'sofa'){
+                    return $("#sofaImage").width() / 1800;
+                } else if (BackgroundType == 'man'){
+                    return $("#personImage").height() / 1800;
+                } else {
+                    return $("#sofaImage").width() / 1500;
+                }
         }
+
+        function bindBackgroundControls(){
+            $('input[type="radio"].bg-type-js').click(function(){
+    	        BackgroundType = $(this).val();      
+                setupDisplayPanel();
+            });
+        }
+
 
         // paper functions
 
@@ -727,6 +847,9 @@
         $(".integer-control-js").on('mouseup blur change input', function(){
             $(this).val(roundToInteger($(this).val()));
         });
+        bindBackgroundControls();          
+        PixelHeight = $("input[name=SelectedPicturePixelHeight]").val();
+        PixelWidth = $("input[name=SelectedPicturePixelWidth]").val();
         setupDisplayPanel();
         getSelectedPaper();
         setBorderHeader();
@@ -760,6 +883,7 @@
     });
 
     var PaperModel = null;
+    var BackgroundType = 'man';
 
     function getOffset( el ) {
         try {
