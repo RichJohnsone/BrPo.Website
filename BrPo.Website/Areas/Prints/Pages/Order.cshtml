@@ -2,7 +2,7 @@
 @model BrPo.Website.Areas.Prints.Pages.OrderModel
 
 <style>
-    .uploadImage{
+    .thumbnail{
         max-height: 100px !important;
     }
     .table-sm{
@@ -53,182 +53,187 @@
 
 <div class="container-fluid">
     <form id="orderForm">
-    <div class="row">
-        <div class="col-sm-7" id="displayPanelContainer">
-            <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
-            @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
-            @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
-        </div>
-        <div class="col-sm-5">
-            @Html.ValidationSummary(true)
-            <!--Accordion wrapper-->
-            <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+        <div class="row">
+            <div class="col-sm-7" id="displayPanelContainer">
+                <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
+                @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
+                @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
+            </div>
+            <div class="col-sm-5">
+                @Html.ValidationSummary(true)
+                <!--Accordion wrapper-->
+                <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingOne1">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseOne1" aria-expanded="false" class="collapsed"
-                        aria-controls="collapseOne1">
-                            <h5 class="mb-0">
-                                File: <span id="fileHeader" class="headerLabel">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="fileBody"">
-                            @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
+                    <!-- Files card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingOne1">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false" class="collapsed"
+                            aria-controls="collapseOne1">
+                                <h5 class="mb-0">
+                                    File: <span id="fileHeader" class="headerLabel">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                </h5>
+                            </a>
                         </div>
-                    </div>
-                </div><!-- Accordion card -->
-
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingTwo2">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseTwo2" aria-expanded="true"
-                        aria-controls="collapseTwo2">
-                            <h5 class="mb-0">
-                                Size: <span class="headerLabel" title="Print size in mm : height * width">
-                                          <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
-                                      </span>
-                                      <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseTwo2" class="collapse show" role="tabpanel" aria-labelledby="headingTwo2"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="sizeBody">
-                            @await Html.PartialAsync("OrderSizePartial")
-                        </div>
-                    </div>
-                </div><!-- Accordion card -->
-
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingThree3">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseThree3" aria-expanded="false" class="collapsed"
-                        aria-controls="collapseThree3">
-                            <h5 class="mb-0">
-                                Paper: <span id="paperHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="sizeBody">
-                            @*@await Html.PartialAsync("OrderPaperPartial", @Model.Papers)*@
-                            @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper"})
-                            @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "SelectedPaperId", id = "Model.SelectedPaperId"})
-                        </div>
-                    </div>
-                </div><!-- Accordion card -->
-
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingFour4">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFour4" aria-expanded="false" class="collapsed"
-                        aria-controls="collapseFour4">
-                            <h5 class="mb-0">
-                                Border: <span class="headerLabel"><span id="borderHeader" class="headerLabel"></span> mm</span>
-                                <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="sizeBody">
-                            @await Html.PartialAsync("OrderBorderPartial")
-                        </div>
-                    </div>
-                </div><!-- Accordion card -->
-
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingFive5">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="#collapseFive5" aria-expanded="false" class="collapsed"
-                        aria-controls="collapseFive5">
-                            <h5 class="mb-0">
-                                Quality: <span id="qualityHeader" class="headerLabel">@Model.SelectedQuality</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="sizeBody">
-                            @foreach (var quality in Model.Qualities)
-                            {
-                                var selected = quality.Equals(Model.SelectedQuality) ? "checked=\"checked\"" : string.Empty;
-                                var label = quality == "Premium" 
-                                    ? " - 11 inks - available on sizes A4 and larger"
-                                    : " - 6 inks - available on sizes up to A4";
-                                <div class="form-check">
-                                    <input  class="form-check-input quality-js"
-                                            type="radio" 
-                                            asp-for="SelectedQuality" 
-                                            name="SelectedQuality" 
-                                            value="@quality" @selected/><span class="font-weight-bold">@quality</span> @label<br />
-                                </div>
-                            }
-                            <div class="form-group checkbox mb-0">
-                                @Html.CheckBoxFor(model => model.IsDraftPrint) 
-                                <label class="" for="IsDraftPrint"><span class="font-weight-bold ml-1">Draft</span> - a reduced price, water-marked draft print</label>
+                        <!-- Card body -->
+                        <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
+                            data-parent="#accordionEx">
+                            <div class="card-body" id="fileBody"">
+                                @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
                             </div>
                         </div>
-                    </div>
-                </div><!-- Accordion card -->
+                    </div><!-- Files card -->
 
-                <!-- Accordion card -->
-                <div class="card">
-                    <!-- Card header -->
-                    <div class="card-header" role="tab" id="headingSix6">
-                        <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="" aria-expanded="true" 
-                        aria-controls="collapseSix6">
-                            <h5 class="mb-0">
-                                Order: <span id="orderHeader" class="headerLabel"></span> 
-                                @*<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>*@
-                            </h5>
-                        </a>
-                    </div>
-                    <!-- Card body -->
-                    <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
-                        @*data-parent="#accordionEx"*@>
-                        <div class="card-body" id="sizeBody">
-                            <div class="form-group row mb-3">
-                                <label for="height" class="col-sm-3 col-form-label">Quantity</label>
-                                <div class="col-sm-3">
-                                    <input type="number" 
-                                        class="form-control" 
-                                        id="Quantity" 
-                                        placeholder="quantity" 
-                                        name="Quantity" 
-                                        value="@Model.Quantity" />
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="text mt-2" id="pricePerPrint"></div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="text mt-2">per print</div>
+                    <!-- Size card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingTwo2">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
+                            aria-controls="collapseTwo2">
+                                <h5 class="mb-0">
+                                    Size: <span class="headerLabel" title="Print size in mm : height * width">
+                                              <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
+                                          </span>
+                                          <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                </h5>
+                            </a>
+                        </div>
+                        <!-- Card body -->
+                        <div id="collapseTwo2" class="collapse show" role="tabpanel" aria-labelledby="headingTwo2"
+                            data-parent="#accordionEx">
+                            <div class="card-body" id="sizeBody">
+                                @await Html.PartialAsync("OrderSizePartial")
+                            </div>
+                        </div>
+                    </div><!-- Size card -->
+
+                    <!-- Paper card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingThree3">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3" aria-expanded="false" class="collapsed"
+                            aria-controls="collapseThree3">
+                                <h5 class="mb-0">
+                                    Paper: <span id="paperHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                </h5>
+                            </a>
+                        </div>
+                        <!-- Card body -->
+                        <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
+                            data-parent="#accordionEx">
+                            <div class="card-body" id="sizeBody">
+                                @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper"})
+                                @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "SelectedPaperId", id = "Model.SelectedPaperId"})
+                            </div>
+                        </div>
+                    </div><!-- Paper card -->
+
+                    <!-- Border card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingFour4">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFour4" aria-expanded="false" class="collapsed"
+                            aria-controls="collapseFour4">
+                                <h5 class="mb-0">
+                                    Border: <span class="headerLabel"><span id="borderHeader" class="headerLabel"></span> mm</span>
+                                    <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                </h5>
+                            </a>
+                        </div>
+                        <!-- Card body -->
+                        <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4"
+                            data-parent="#accordionEx">
+                            <div class="card-body" id="sizeBody">
+                                @await Html.PartialAsync("OrderBorderPartial")
+                            </div>
+                        </div>
+                    </div><!-- Border card -->
+
+                    <!-- Quality card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingFive5">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFive5" aria-expanded="false" class="collapsed"
+                            aria-controls="collapseFive5">
+                                <h5 class="mb-0">
+                                    Quality: <span id="qualityHeader" class="headerLabel">@Model.SelectedQuality</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                </h5>
+                            </a>
+                        </div>
+                        <!-- Card body -->
+                        <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
+                            data-parent="#accordionEx">
+                            <div class="card-body" id="sizeBody">
+                                @foreach (var quality in Model.Qualities)
+                                {
+                                    var selected = quality.Equals(Model.SelectedQuality) ? "checked=\"checked\"" : string.Empty;
+                                    var label = quality == "Premium" 
+                                        ? " - 11 inks - available on sizes A4 and larger"
+                                        : " - 6 inks - available on sizes up to A4";
+                                    <div class="form-check">
+                                        <input  class="form-check-input quality-js"
+                                                type="radio" 
+                                                asp-for="SelectedQuality" 
+                                                name="SelectedQuality" 
+                                                value="@quality" @selected/><span class="font-weight-bold">@quality</span> @label<br />
+                                    </div>
+                                }
+                                <div class="form-group checkbox mb-0">
+                                    @Html.CheckBoxFor(model => model.IsDraftPrint) 
+                                    <label class="" for="IsDraftPrint"><span class="font-weight-bold ml-1">Draft</span> - a reduced price, water-marked draft print</label>
                                 </div>
                             </div>
-                            <button class="btn btn-primary btn-lg btn-block" id="orderButton"> Order Print </button>
                         </div>
-                    </div>
-                </div><!-- Accordion card -->
+                    </div><!-- Quality card -->
 
-            </div><!-- Accordion wrapper -->
+                    <!-- Order card -->
+                    <div class="card">
+                        <!-- Card header -->
+                        <div class="card-header" role="tab" id="headingSix6">
+                            <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="" aria-expanded="true" 
+                            aria-controls="collapseSix6">
+                                <h5 class="mb-0">
+                                    Order: <span id="orderHeader" class="headerLabel"></span> 
+                                    @*<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>*@
+                                </h5>
+                            </a>
+                        </div>
+                        <!-- Card body -->
+                        <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
+                            @*data-parent="#accordionEx"*@>
+                            <div class="card-body" id="sizeBody">
+                                <div class="form-group row mb-3">
+                                    <label for="height" class="col-sm-3 col-form-label">Quantity</label>
+                                    <div class="col-sm-3">
+                                        <input type="number" step="1"
+                                            class="form-control integer-control-js" 
+                                            id="Quantity" 
+                                            placeholder="quantity" 
+                                            name="Quantity" 
+                                            data-val="true"
+                                            data-val-number="The Quantity field must be an integer." 
+                                            min="0" 
+                                            max="500" 
+                                            title="Enter the number of prints required"
+                                            value="@Model.Quantity" />
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="text mt-2" id="pricePerPrint"></div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="text mt-2">per print</div>
+                                    </div>
+                                </div>
+                                <div class="field-validation-valid row ml-1" data-valmsg-for="Quantity" data-valmsg-replace="true"></div>
+                                <button class="btn btn-primary btn-lg btn-block" id="orderButton"> Order Print </button>
+                            </div>
+                        </div>
+                    </div><!-- Order card -->
+
+                </div><!-- Accordion wrapper -->
+            </div>
         </div>
-    </div>
-</form>
+    </form>
 </div>
 
 <script>
@@ -237,79 +242,120 @@
 
         // Load picture function
 
-        $(".uploadImage").on('mousedown', function () {
+        $("body").on('mousedown', '.thumbnail', function () {
             loadDisplayPanel(
                 $(this).attr("data-id"), 
                 $(this).attr("data-fileName"),
                 $(this).attr("data-pixel-height"),
                 $(this).attr("data-pixel-width") );
-        });
+            });
 
         function loadDisplayPanel(id, fileName, pixelHeight, pixelWidth){
-            $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`, function(){
-                $("#fileHeader").html(fileName);
-                $("input[name=SelectedPicturePixelHeight]").val(pixelHeight);
-                $("input[name=SelectedPicturePixelWidth]").val(pixelWidth);
+            try {
+                $("#displayPanel").load(`Order?handler=OrderDisplayPanelPartial&id=${id}`, function(){
+                    $("#fileHeader").html(fileName);
+                    $("input[name=SelectedPicturePixelHeight]").val(pixelHeight);
+                    $("input[name=SelectedPicturePixelWidth]").val(pixelWidth);
+                    setTimeout(processPanelLoad(), 500);
+                });
                 setTimeout(processPanelLoad(), 500);
-            });
-                setTimeout(processPanelLoad(), 500);
+            }
+            catch(e) {
+                console.log(`Error from loadDisplayPanel: ${e.name} : ${e.description}` );
+            }
         }
 
         function getLoadedPictureAspectRatio(){
-            let aspect = $("input[name=SelectedPicturePixelHeight]").val() / $("input[name=SelectedPicturePixelWidth]").val();
-            return aspect;
+            try {
+                let aspect = $("input[name=SelectedPicturePixelHeight]").val() / $("input[name=SelectedPicturePixelWidth]").val();
+                return aspect;
+            }
+            catch(e) {
+                console.log(`Error from getLoadedPictureAspectRatio : ${e.name} : ${e.description}` );
+            }
         }
 
         function processPanelLoad(){
-            let height = $("input[name=SelectedPicturePixelHeight]").val();
-            let width = $("input[name=SelectedPicturePixelWidth]").val();
-            if (height > width){
-                if ($("#height").val() < $("#width").val())
-                    swapHeightAndWidth();
-            }else{
-                if ($("#height").val() > $("#width").val())
-                    swapHeightAndWidth();
+            try {
+                let height = $("input[name=SelectedPicturePixelHeight]").val();
+                let width = $("input[name=SelectedPicturePixelWidth]").val();
+                if (height > width){
+                    if ($("#height").val() < $("#width").val())
+                        swapHeightAndWidth();
+                }else{
+                    if ($("#height").val() > $("#width").val())
+                        swapHeightAndWidth();
+                }
+                setPaperSizeLimits();
+                setupDisplayPanel()
             }
-            setDisplayPanelSize()
-            setPaperSizeLimits();
+            catch(e) {
+                console.log(`Error from processPanelLoad : ${e.name} : ${e.description}` );
+            }
         }
-        
-        function setDisplayPanelSize(){
-            if ($(window).width() < 570){
-                $("#displayPanelRoom").css('width', $("#accordionEx").width() + 'px');
-                $("#displayPanelRoom").height($("#displayPanelRoom").width());
-                $("#accordionEx").css('margin-top', ($("#displayPanelRoom").height() + 20) + 'px')
-                $("#personImageContainer").css('width', '160px');
-                $("#displayImageContainer").css('width', '300px');
-            } else {
-                $("#displayPanelRoom").css('width', '97%')
-                $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
-                $("#accordionEx").css('margin-top', '')
-                $("#personImageContainer").css('width', '');
-                $("#displayImageContainer").css('width', '');
+
+        function setupDisplayPanel(){
+            try {
+                if ($(window).width() < 570){
+                    $("#displayPanelRoom").css('width', $("#accordionEx").width() + 'px');
+                    $("#displayPanelRoom").height($("#displayPanelRoom").width());
+                    $("#accordionEx").css('margin-top', ($("#displayPanelRoom").height() + 20) + 'px')
+                    $("#personImageContainer").css('width', '160px');
+                    $("#displayImageContainer").css('width', '300px');
+                } else {
+                    $("#displayPanelRoom").css('width', '97%')
+                    $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
+                    $("#accordionEx").css('margin-top', '')
+                    $("#personImageContainer").css('width', '');
+                    $("#displayImageContainer").css('width', '');
+                }
+                setPersonSize();
+                setPicturePosition();
             }
-            setPersonSize();
-            setPicturePosition();
+            catch(e) {
+                console.log(`Error from setupDisplayPanel : ${e.name} : ${e.description}` );
+            }
         }
 
         function setPersonSize(){
-            $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
+            try {
+                $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
+            }
+            catch(e) {
+                console.log(`Error from setPersonSize : ${e.name} : ${e.description}` );
+            }
         }
 
         function setPicturePosition(){
-            setPictureHeight();
-            let boxTop = getOffset( document.getElementById('displayImageContainer') ).top;
-            let personOffset = ( $("#personImage").height() * .25);
-            let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
-            $("#displayPanelImage").css('top', pictureTop + 'px')
-            getPrice();
+            try {
+                setPictureHeight();
+                let boxTop = getOffset( document.getElementById('displayImageContainer') ).top;
+                let personOffset = ( $("#personImage").height() * .25);
+                let pictureTop = boxTop + personOffset - ($("#displayPanelImage").height() / 2);
+                $("#displayPanelImage").css('top', pictureTop + 'px');
+                let left = ($("#displayPanelImageRow").width() / 2) - ($("#displayPanelImage").width() / 2);
+                $("#displayPanelImage").css('left', left + 'px');
+                getPrice();
+            }
+            catch(e) {
+                console.log(`Error from setPicturePosition : ${e.name} : ${e.description}` );
+            }
         }
 
         function setPictureHeight(){
-            let oneMm = $("#personImage").height() / 1800;
-            let newHeight = $("#height").val() * oneMm;
-            $("#displayPanelImage").css('height', newHeight + 'px');
-            setBorderDisplay();
+            try {
+                //let oneMm = $("#personImage").height() / 1800;
+                let newHeight = $("#height").val() * getOneMmToScaleInPixels();
+                $("#displayPanelImage").css('height', newHeight + 'px');
+                setBorderDisplay();
+            }
+            catch(e) {
+                console.log(`Error from setPictureHeight : ${e.name} : ${e.description}` );
+            }
+        }
+
+        function getOneMmToScaleInPixels(){
+            return $("#personImage").height() / 1800;
         }
 
         // paper functions
@@ -322,127 +368,181 @@
         });
 
         function getSelectedPaper(){
-            $.ajax({
-                url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
-                success: function(paperModel){   
-                    PaperModel = paperModel;
-                    $("#paperHeader").html(paperModel["Name"]);
-                    getPrice();
-                },
-                error: function(data){
-                    alert(`status = ${data.status}
+            try {
+                $.ajax({
+                    url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
+                    success: function(paperModel){   
+                        PaperModel = paperModel;
+                        $("#paperHeader").html(paperModel["Name"]);
+                        setPaperSizeLimits();
+                        getPrice();
+                    },
+                    error: function(data){
+                        alert(`status = ${data.status}
 
-description: ${data.statusText}`);
-                }
-            });    
-            setPaperSizeLimits();
+    description: ${data.statusText}`);
+                    }
+                });    
+            }
+            catch(e) {
+                console.log(`Error from getSelectedPaper : ${e.name} : ${e.description}` );
+            }
         }
 
         function setPaperSizeLimits(){
-            if (PaperModel == null) return;
-            let orientation = $("input[name=SelectedPicturePixelHeight]").val() > $("input[name=SelectedPicturePixelWidth]").val() ? 'portrait' : 'landscape';
-            let paperHeight = PaperModel.RollPaper ? 5000 : PaperModel.CutSheetHeight;
-            let paperWidth = PaperModel.RollPaper ? PaperModel.RollWidth : PaperModel.CutSheetWidth;
-            if (orientation == 'portrait'){
-                $("#height").attr({
-                    'max': paperHeight,
-                    'data-val-range-max': paperHeight,
-                    'data-val-range': `The Height field must be between 100 and ${paperHeight}`
-                });
-                $("#width").attr({
-                    'max': paperWidth,
-                    'data-val-range-max': paperWidth,
-                    'data-val-range': `The Width field must be between 100 and ${paperWidth}`
-                });
-            } else {
-                $("#height").attr({
-                    'max': paperWidth,
-                    'data-val-range-max': paperWidth,
-                    'data-val-range': `The Height field must be between 100 and ${paperWidth}`
-                });
-                $("#width").attr({
-                    'max': paperHeight,
-                    'data-val-range-max': paperHeight,
-                    'data-val-range': `The Width field must be between 100 and ${paperHeight}`
-                });
+            try {
+                if (PaperModel == null) return;
+                let orientation = $("input[name=SelectedPicturePixelHeight]").val() > $("input[name=SelectedPicturePixelWidth]").val() ? 'portrait' : 'landscape';
+                let paperHeight = PaperModel.RollPaper ? 5000 : PaperModel.CutSheetHeight;
+                let paperWidth = PaperModel.RollPaper ? PaperModel.RollWidth : PaperModel.CutSheetWidth;
+                if (orientation == 'portrait'){
+                    $("#height").attr({
+                        'max': paperHeight,
+                        'title': `For the selected paper the Height field must be between 100 and ${paperHeight}`
+                    });
+                    $("#width").attr({
+                        'max': paperWidth,
+                        'title': `For the selected paper the Width field must be between 100 and ${paperHeight}`
+                    });
+                    $( "#height" ).rules( "remove", "max" );
+                    $( "#width" ).rules( "remove", "max" );
+                    $( "#height" ).rules( "add", {
+                        max: paperHeight,
+                        messages: {
+                            max: jQuery.validator.format("The Height field must be between 100 and {0}")
+                        }
+                    });
+                    $( "#width" ).rules( "add", {
+                        max: paperWidth,
+                        messages: {
+                            max: jQuery.validator.format("The Width field must be between 100 and {0}")
+                        }
+                    });
+                    $("#paperHeader").attr('title', `Max dimensions: ${paperHeight} * ${paperWidth} mm`);
+                } else {
+                    $("#height").attr({
+                        'max': paperWidth,
+                        'title': `For the selected paper the Height field must be between 100 and ${paperWidth}`
+                    });
+                    $("#width").attr({
+                        'max': paperHeight,
+                        'title': `For the selected paper the Width field must be between 100 and ${paperHeight}`
+                    });
+                    $( "#height" ).rules( "remove", "max" );
+                    $( "#width" ).rules( "remove", "max" );
+                    $( "#height" ).rules( "add", {
+                        max: paperWidth,
+                        messages: {
+                            max: jQuery.validator.format("The Height field must be between 100 and {0}")
+                        }
+                    });
+                    $( "#width" ).rules( "add", {
+                        max: paperHeight,
+                        messages: {
+                            max: jQuery.validator.format("The Width field must be between 100 and {0}")
+                        }
+                    });
+                    $("#paperHeader").attr('title', `Max dimensions: ${paperWidth} * ${paperHeight} mm`);
+                }
+                $.validator.unobtrusive.parse('form');
+            }
+            catch(e) {
+                console.log(`Error from  : ${e.name} : ${e.description}` );
             }
         }
 
         // Size functions
 
-        $("#sizeA4").on('click', function (){
-            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
-                $("#height").val("297");
-                $("#width").val("210");
-            }else{
-                $("#height").val("210");
-                $("#width").val("297");
+        function fitToA4(){
+            try {
+                if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                    $("#height").val("297");
+                    $("#width").val("210");
+                }else{
+                    $("#height").val("210");
+                    $("#width").val("297");
+                }
+                heightChange();
+                setPicturePosition();
+                setSizeHeader();
             }
-            heightChange();
-            setPicturePosition();
-            setSizeHeader();
-        });
+            catch(e) {
+                console.log(`Error from fitToA4 : ${e.name} : ${e.description}` );
+            }
+        }
 
-        $("#sizeA3").on('click', function (){
-            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
-                $("#height").val("420");
-                $("#width").val("297");
-            }else{
-                $("#height").val("297");
-                $("#width").val("420");
+        function fitToA3(){
+            try {
+                if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                    $("#height").val("420");
+                    $("#width").val("297");
+                }else{
+                    $("#height").val("297");
+                    $("#width").val("420");
+                }
+                heightChange();
+                setPicturePosition();
+                setSizeHeader();
             }
-            heightChange();
-            setPicturePosition();
-            setSizeHeader();
-        });
+            catch(e) {
+                console.log(`Error from fitToA3 : ${e.name} : ${e.description}` );
+            }
+        }
 
-        $("#sizeA2").on('click', function (){
-            if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
-                $("#height").val("594");
-                $("#width").val("420");
-            }else{
-                $("#height").val("420");
-                $("#width").val("594");
+        function fitToA2(){
+            try {
+                if ($("#displayPanelImage").height() > $("#displayPanelImage").width()){
+                    $("#height").val("594");
+                    $("#width").val("420");
+                }else{
+                    $("#height").val("420");
+                    $("#width").val("594");
+                }
+                heightChange();
+                setPicturePosition();
+                setSizeHeader();
             }
-            heightChange();
-            setPicturePosition();
-            setSizeHeader();
-        });  
+            catch(e) {
+                console.log(`Error from fitToA2 : ${e.name} : ${e.description}` );
+            }
+        }
 
         function addHeigthChangeEventHandler(){
-            $('#height').on('blur change keyup input mouseup', function(){
-                heightChange;
-                //$("#height").valid();
-                //$("#width").valid();
-            });
+            $('#height').on('keyup change input', heightChange);
         }
 
         function addWidthChangeEventHandler(){
-            $('#width').on('blur change keyup input mouseup', function(){
-                widthChange;
-                //$("#height").valid();
-                //$("#width").valid();
-            });
+            $('#width').on('keyup change input', widthChange);
         }
 
         function heightChange(){
-            let newWidth = Math.round((Math.round($("#height").val()) * (1 /getLoadedPictureAspectRatio())) * 10) / 10;
-            $("#width").unbind();
-            $("#width").val(newWidth);
-            $("#width").on('keyup change input', widthChange);
-            console.log(`#height change: newWidth: ${newWidth}`);
-            setPicturePosition();
-            setSizeHeader();
+            try {
+                let newWidth = Math.round((Math.round($("#height").val()) * (1 /getLoadedPictureAspectRatio())) * 10) / 10;
+                $("#width").unbind();
+                $("#width").val(newWidth);
+                addWidthChangeEventHandler();
+                //console.log(`#height change: newWidth: ${newWidth}`);
+                setPicturePosition();
+                setSizeHeader();
+            }
+            catch(e) {
+                console.log(`Error from heightChange : ${e.name} : ${e.description}` );
+            }
         }
 
         function widthChange(){
-            let newHeight = Math.round((Math.round($("#width").val()) * getLoadedPictureAspectRatio()) * 10) / 10;
-            $("#height").unbind();
-            $("#height").val(newHeight);
-            $("#height").on('keyup change input', heightChange);
-            console.log(`#width change: newHeight: ${newHeight}`);
-            setPicturePosition();
-            setSizeHeader();
+            try {
+                let newHeight = Math.round((Math.round($("#width").val()) * getLoadedPictureAspectRatio()) * 10) / 10;
+                $("#height").unbind();
+                $("#height").val(newHeight);
+                addHeigthChangeEventHandler();
+                //console.log(`#width change: newHeight: ${newHeight}`);
+                setPicturePosition();
+                setSizeHeader();
+            }
+            catch(e) {
+                console.log(`Error from widthChange : ${e.name} : ${e.description}` );
+            }
         }
 
         function setSizeHeader(){
@@ -451,25 +551,46 @@ description: ${data.statusText}`);
         }
 
         function swapHeightAndWidth(){
-            let height = $("#height").val();
-            let width = $("#width").val();
-            $("#height").val(width);
-            $("#width").val(height);
-            setSizeHeader();
+            try {
+                let height = $("#height").val();
+                let width = $("#width").val();
+                $("#height").val(width);
+                $("#width").val(height);
+                setSizeHeader();
+            }
+            catch(e) {
+                console.log(`Error from swapHeightAndWidth : ${e.name} : ${e.description}` );
+            }
         }
 
-        $("#maxSize").on('click', fitPictureToPaperSize);
-
         function fitPictureToPaperSize(){
-            if (PaperModel == null) return;
-            setPaperSizeLimits();
-            let initialHeight = $("#height").val();
-            let initialWidth = $("#width").val();
-            let maxHeight = $("#height").attr('max');
-            let maxWidth = $("#width").attr('max');
-            if (initialHeight > maxHeight) $("#height").val(maxHeight);
-            if ($("#width").val() > maxWidth) $("#width").val(maxWidth);
-            setSizeHeader();
+            try {
+                if (PaperModel == null) return;
+                setPaperSizeLimits();
+                let initialHeight = $("#height").val();
+                let initialWidth = $("#width").val();
+                let maxHeight = $("#height").attr('max');
+                let maxWidth = $("#width").attr('max');
+                if (initialHeight > maxHeight) {
+                    $("#height").val(maxHeight);
+                    heightChange();
+                    if ($("#width").val() > maxWidth) {
+                        $("#width").val(maxWidth);
+                        widthChange();
+                    }
+                } else {
+                    $("#height").val(maxHeight);
+                    heightChange();
+                    if ($("#width").val() < $("#height").val()) {
+                        $("#width").val(maxWidth);
+                        widthChange();
+                    }
+                }
+                setSizeHeader();
+            }
+            catch(e) {
+                console.log(`Error from fitPictureToPaperSize : ${e.name} : ${e.description}` );
+            }
         }
 
         // Border functions
@@ -480,15 +601,20 @@ description: ${data.statusText}`);
         });
 
         function setBorderDisplay(){
-            let borderWidth = $("#border").val()
-            if (borderWidth > 0){
-                $("#displayPanelImage").css('border', ".25px solid #ddd");
-                let oneMm = $("#displayPanelImage").height() / $("#height").val();
-                let borderWidthInPixels = (borderWidth * oneMm).toFixed(2);
-                $("#displayPanelImage").css('padding', borderWidthInPixels + "px");
-            } else {
-                $("#displayPanelImage").css('border', "");
-                $("#displayPanelImage").css('padding', '0 px');
+            try {
+                let borderWidth = $("#border").val()
+                if (borderWidth > 0){
+                    $("#displayPanelImage").css('border', ".25px solid #ddd");
+                    let oneMm = $("#displayPanelImage").height() / $("#height").val();
+                    let borderWidthInPixels = (borderWidth * oneMm).toFixed(2);
+                    $("#displayPanelImage").css('padding', borderWidthInPixels + "px");
+                } else {
+                    $("#displayPanelImage").css('border', "");
+                    $("#displayPanelImage").css('padding', '0 px');
+                }
+            }
+            catch(e) {
+                console.log(`Error from setBorderDisplay : ${e.name} : ${e.description}` );
             }
         }
 
@@ -515,6 +641,7 @@ description: ${data.statusText}`);
             } else {
                 $("#qualityHeader").html($("#qualityHeader").html() + " - Draft");
             }
+            getPrice(); 
         });
 
         $("#Quantity").on('change', function(e){
@@ -523,83 +650,139 @@ description: ${data.statusText}`);
             $("#orderButton").html(buttonLabel);
         });
 
+        function roundToInteger(input){
+            return Math.round(input); 
+        }
+
         // Price functions
 
         function getPrice(){
-            if (PaperModel == null) return;
-            if (PaperModel.RollPaper == true){
-                let paperLength = $("#height").val() > $("#width").val() ? parseFloat($("#height").val()) + 100 : parseFloat($("#width").val()) + 100;     
-                let pricePerPrint = (paperLength / 1000) * PaperModel.CostPerMeter;
-                pricePerPrint = getQuantityDiscountPrice(pricePerPrint, $("#Quantity").val());
-                $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
-                let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
-                $("#orderHeader").html("£ " + orderValue);
-            } else {
-                pricePerPrint = getQuantityDiscountPrice(PaperModel.CostPerSheet, $("#Quantity").val());
-                $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
-                let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
-                $("#orderHeader").html("£ " + orderValue);
+            try {
+                if (PaperModel == null) return;
+                if (PaperModel.RollPaper == true){
+                    let paperLength = $("#height").val() > $("#width").val() ? parseFloat($("#height").val()) + 100 : parseFloat($("#width").val()) + 100;     
+                    let pricePerPrint = (paperLength / 1000) * PaperModel.CostPerMeter;
+                    pricePerPrint = getQuantityDiscountPrice(pricePerPrint, $("#Quantity").val());
+                    if ($("#IsDraftPrint").prop("checked") == true) pricePerPrint = pricePerPrint / 2;
+                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                    let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
+                    $("#orderHeader").html("£ " + orderValue);
+                } else {
+                    pricePerPrint = getQuantityDiscountPrice(PaperModel.CostPerSheet, $("#Quantity").val());
+                    if ($("#IsDraftPrint").prop("checked") == true) pricePerPrint = pricePerPrint / 2;
+                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                    let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
+                    $("#orderHeader").html("£ " + orderValue);
+                }
+            }
+            catch(e) {
+                console.log(`Error from getPrice : ${e.name} : ${e.description}` );
             }
         }
 
         function getQuantityDiscountPrice(pricePerPrint, quantity){
-            let discount = 0;
-            switch(true) {
-              case quantity == 1:
-                break;
-              case quantity <= 4:
-                discount = 5;
-                break;
-              case quantity <= 9:
-                discount = 10;
-                break;
-              case quantity <= 19:
-                discount = 15;
-                break;
-              case quantity <= 29:
-                discount = 20;
-                break;
-              case quantity <= 39:
-                discount = 25;
-                break;
-              case quantity <= 49:
-                discount = 30;
-                break;
-              default:
+            try {
+                let discount = 0;
+                switch(true) {
+                  case quantity == 1:
+                    break;
+                  case quantity <= 4:
+                    discount = 5;
+                    break;
+                  case quantity <= 9:
+                    discount = 10;
+                    break;
+                  case quantity <= 19:
+                    discount = 15;
+                    break;
+                  case quantity <= 29:
+                    discount = 20;
+                    break;
+                  case quantity <= 39:
+                    discount = 25;
+                    break;
+                  case quantity <= 49:
+                    discount = 30;
+                    break;
+                  default:
+                }
+                if (discount == 0) return pricePerPrint;
+                return (((100 - discount) / 100) * pricePerPrint);
             }
-            if (discount == 0) return pricePerPrint;
-            return (((100 - discount) / 100) * pricePerPrint);
+            catch(e) {
+                console.log(`Error from getQuantityDiscountPrice : ${e.name} : ${e.description}` );
+            }
         }
 
         // initialisation
 
+        $("#sizeA4").on('click', fitToA4);
+        $("#sizeA3").on('click', fitToA3);
+        $("#sizeA2").on('click', fitToA2);  
+        $("#maxSize").on('click', fitPictureToPaperSize);
+        window.addEventListener('resize', setupDisplayPanel);
         $("#height").val("420");
         $("#width").val("594");
         $("#border").val("0");
-        setDisplayPanelSize();
+        $(".integer-control-js").on('mouseup blur change input', function(){
+            $(this).val(roundToInteger($(this).val()));
+        });
+        setupDisplayPanel();
         getSelectedPaper();
         setBorderHeader();
         addHeigthChangeEventHandler();
         addWidthChangeEventHandler();
         heightChange();
         setSizeHeader();
-        window.addEventListener('resize', function(){
-            setDisplayPanelSize();
-        });
         getPrice();
         setPaperSizeLimits();
+        fitPictureToPaperSize();
+        setTimeout(fitPictureToPaperSize, 500);
+        setTimeout(addHeigthChangeEventHandler, 1000);
+        $("body").on('change input', function(){
+            setTimeout(function(){
+                $("#height").valid();
+                $("#width").valid();
+            }, 250)
+        })
+        $("body").on('mouseup', 'select, a', function(){
+            setTimeout(function(){
+                $("#height").valid();
+                $("#width").valid();
+            }, 250)
+        })
+        $("body").on('mouseup', 'button', function(){
+            setTimeout(function(){
+                $("#height").valid();
+                $("#width").valid();
+            }, 250)
+        })    
     });
 
     var PaperModel = null;
 
     function getOffset( el ) {
-        let _x = 0;
-        let _y = 0;
-        while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-              _x += el.offsetLeft - el.scrollLeft;
-              _y += el.offsetTop - el.scrollTop;
-              el = el.offsetParent;
+        try {
+            let _x = 0;
+            let _y = 0;
+            while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+                  _x += el.offsetLeft - el.scrollLeft;
+                  _y += el.offsetTop - el.scrollTop;
+                  el = el.offsetParent;
+            }
+            return { top: _y, left: _x };
         }
-        return { top: _y, left: _x };
+        catch(e) {
+            console.log(`Error from getOffset : ${e.name} : ${e.description}` );
+        }
     }
+
+        function defaultFunctionBody(){
+            try {
+
+            }
+            catch(e) {
+                console.log(`Error from  : ${e.name} : ${e.description}` );
+            }
+        }
 </script>

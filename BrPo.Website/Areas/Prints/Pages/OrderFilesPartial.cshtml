@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col">
                 <a title="click the image to select it">
-                    <img class="uploadImage" 
+                    <img class="thumbnail" 
                             src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(imageFile.Id, 100)"
                             data-id="@imageFile.Id",
                             data-fileName="@imageFile.OriginalFileName"
