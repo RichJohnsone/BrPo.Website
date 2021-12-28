@@ -8,7 +8,7 @@
     <div class="mb-3">
         <div class="row">
             <div class="col">
-                <a title="click the image to select it">
+                <a data-toggle="tooltip" title="click the image to select it">
                     <img class="thumbnail" 
                             src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(imageFile.Id, 100)"
                             data-id="@imageFile.Id",
@@ -20,7 +20,7 @@
             <div class="col table-responsive-sm">
                 <table class="table-sm">
                     <tr><th>File Name</th><td>@imageFile.OriginalFileName</td></tr>
-                    <tr><th>Dimensions</th><td><span title="Height in pixels"> @imageFile.Height</span> * <span title="Width in pixels"> @imageFile.Width</span></td></tr>
+                    <tr><th>Dimensions</th><td><span data-toggle="tooltip" title="Height in pixels"> @imageFile.Height</span> * <span data-toggle="tooltip" title="Width in pixels"> @imageFile.Width</span></td></tr>
                     @if (!string.IsNullOrEmpty(imageFile.ColourSpace)) {
                         <tr><th>Colour Space</th><td>@imageFile.ColourSpace</td></tr>
                     }

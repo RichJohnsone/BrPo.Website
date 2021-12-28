@@ -140,3 +140,12 @@ small {
 .white-bg {
     background: #ffffff !important;
 }
+
+.tooltip {
+    font-size: 1em;
+}
+
+.tooltip-inner {
+    background: #333;
+}
+

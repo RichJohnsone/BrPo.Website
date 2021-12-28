@@ -69,7 +69,7 @@
                     <div class="form-check form-check-inline ml-2">
                         <h5>Background:</h5>
                     </div>
-                    <div class="form-check form-check-inline" title="Scale display to an image of a sofa - the man is 1.8m wide">
+                    <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a sofa - the man is 1.8m wide">
                        <input class="form-check-input bg-type-js" 
                               type="radio" 
                               name="bgRadio" 
@@ -80,7 +80,7 @@
                        Sofa
                        </label>
                     </div>
-                    <div class="form-check form-check-inline" title="Scale display to an image of a man - the man is 1.8m tall">
+                    <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a man - the man is 1.8m tall">
                        <input class="form-check-input bg-type-js" 
                               type="radio" 
                               name="bgRadio" 
@@ -90,7 +90,7 @@
                        Man
                        </label>
                     </div>
-                    <div class="form-check form-check-inline" title="fit picture to display window">
+                    <div class="form-check form-check-inline" data-toggle="tooltip" title="fit picture to display window">
                        <input class="form-check-input bg-type-js" 
                               type="radio" 
                               name="bgRadio" 
@@ -103,7 +103,12 @@
                     <div class="form-check form-check-inline">
                         <div id="bg-colour" class="input-group">
                             <input type="hidden" class="form-control input-lg" value="#F0F0F0"/>
-                            <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;"><i class="border rounded" title="Set the background colour of the display window"></i></h5>
+                            <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;">
+                                <i class="border rounded" 
+                                   data-toggle="tooltip" 
+                                   title="Set the background colour of the display window">
+                               </i>
+                            </h5>
                         </div>
                     </div>
                 </div>
@@ -141,7 +146,7 @@
                             <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
                             aria-controls="collapseTwo2">
                                 <h5 class="mb-0">
-                                    Size: <span class="headerLabel" title="Print size in mm : height * width">
+                                    Size: <span class="headerLabel" data-toggle="tooltip" title="Print size in mm : height * width">
                                               <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
                                           </span>
                                           <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
@@ -253,7 +258,7 @@
                             @*data-parent="#accordionEx"*@>
                             <div class="card-body" id="sizeBody">
                                 <div class="form-group row mb-3">
-                                    <label for="height" class="w-25 col-form-label">Quantity</label>
+                                    <label for="height" class="w-25 ml-3 col-form-label">Quantity</label>
                                     <div class="w-25">
                                         <input type="number" step="1"
                                             class="form-control integer-control-js" 
@@ -264,13 +269,13 @@
                                             data-val-number="The Quantity field must be an integer." 
                                             min="0" 
                                             max="500" 
-                                            title="Enter the number of prints required"
+                                            data-toggle="tooltip" title="Enter the number of prints required"
                                             value="@Model.Quantity" />
                                     </div>
                                     <div class="w-25">
                                         <div class="text mt-2 float-right mr-2" id="pricePerPrint"></div>
                                     </div>
-                                    <div class="w-25">
+                                    <div class="w-20">
                                         <div class="text mt-2">per print</div>
                                     </div>
                                 </div>
@@ -582,6 +587,18 @@
                     });
                     $("#paperHeader").attr('title', `Max dimensions: ${paperWidth} * ${paperHeight} mm`);
                 }
+                $("#height").tooltip('dispose');
+                $("#width").tooltip('dispose');
+                $("#height").tooltip({
+                    delay: {show: 400, hide: 300}
+                }).click(function () {
+                    $('[data-toggle="tooltip"]').tooltip("hide");
+                });
+                $("#width").tooltip({
+                    delay: {show: 400, hide: 300}
+                }).click(function () {
+                    $('[data-toggle="tooltip"]').tooltip("hide");
+                });
                 $.validator.unobtrusive.parse('form');
             }
             catch(e) {
@@ -874,15 +891,18 @@
         setupDisplayPanel();
         getSelectedPaper();
         setBorderHeader();
-        addHeigthChangeEventHandler();
+        //addHeigthChangeEventHandler();
         addWidthChangeEventHandler();
         heightChange();
         setSizeHeader();
         getPrice();
         setPaperSizeLimits();
         fitPictureToPaperSize();
-        setTimeout(fitPictureToPaperSize, 500);
-        setTimeout(addHeigthChangeEventHandler, 1000);
+        setTimeout(function(){
+            fitPictureToPaperSize();
+            setPaperSizeLimits();
+        }, 250);
+        setTimeout(addHeigthChangeEventHandler, 490);
         $("body").on('change input', function(){
             setTimeout(function(){
                 $("#height").valid();
@@ -905,7 +925,13 @@
             $("#height").focus();
             $("#width").focus();
             $("#height").focus();
-        }, 500)
+            $("#height").blur();
+        }, 300)
+        $('[data-toggle="tooltip"]').tooltip({
+            delay: {show: 400, hide: 300}
+        }).click(function () {
+            $('[data-toggle="tooltip"]').tooltip("hide");
+        });
     });
 
     var PaperModel = null;
