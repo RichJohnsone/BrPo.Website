@@ -21,18 +21,17 @@
     }
     #sofaImage {
         position: absolute;
-        bottom: 50px;
+        bottom: 5%;
     }
     #personImage {
         position: absolute;
-        bottom: 50px;
+        bottom: 5%;
         padding-left: 50px;
     }
     #displayPanelRoom {
-        /*position: absolute;*/
-        top: 0;
-        width: 100%;
-        left: 20px;
+        /*top: 0*/;
+        /*width: 100%;*/
+        /*left: 20px;*/
         background-color: rgba(0,0,0,.03);
         overflow: hidden;
     }
@@ -363,23 +362,19 @@
         function setupDisplayPanel(){
             try {
                 if ($(window).width() < 768){
-                    //$("#displayPanelRoom").css('position', 'relative');
                     $("#displayPanelRoom").css('width', $("#displayPanelContainer").width() + 'px !important');
-                    $("#displayPanelRoom").css('max-width', $("#displayPanelContainer").width() + 'px !important');
                     $("#displayPanelRoom").css('left', '0px');;
                     $("#displayPanelRoom").height($("#displayPanelRoom").width());
                     $("#accordionEx").addClass("mt-2");
-                    //$("#personImageContainer").css('width', '160px');
-                    //$("#displayImageContainer").css('width', '300px');
                 } else {
-                    $("#displayPanelRoom").css('left', '');;
-                    //$("#displayPanelRoom").css('position', 'absolute');
-                    //$("#displayPanelRoom").css('width', '97%');
-                    $("#displayPanelRoom").css('max-width', '');
-                    $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 165);
+                    $("#displayPanelRoom").width($("#displayPanelContainer").width() - 30);
+                    $("#displayPanelRoom").css('left', '');
+                    let newHeight = $(this).height() - $("header").height() - $("footer").height() - 165;
+                    if (newHeight > $("#displayPanel").width()){
+                        newHeight = $("#displayPanelRoom").width();
+                    } 
+                    $("#displayPanelRoom").height(newHeight);
                     $("#accordionEx").removeClass("mt-2");
-                    $("#personImageContainer").css('width', '');
-                    $("#displayImageContainer").css('width', '');
                 }
                 setBackgroundImage();
                 setPicturePosition();
@@ -389,13 +384,6 @@
             catch(e) {
                 console.log(`Error from setupDisplayPanel : ${e.name} : ${e.description}` );
             }
-        }
-
-        function setBgControlsPosition(){
-            //let top = $("#displayPanelRoom").height() - 700;
-            //$("#bg-controls").css('top', top + 'px');
-            //let right = 8;
-            //$("#bg-controls").css('right', right + 'px');
         }
 
         function setBackgroundImage(){
@@ -410,10 +398,14 @@
                 $("#sofaImage").hide();
             }
             try {
-                $("#sofaImage").width((($("#displayPanelRoom").width() - 200) / 100) * 100);
+                if ($("#displayPanelRoom").height() >= $("#displayPanelRoom").width() - 10){
+                    $("#sofaImage").css("width", "90%");
+                } else {
+                    $("#sofaImage").css("width", "80%");
+                }
                 let sofaLeft = ($("#displayPanelImageRow").width() / 2) - ($("#sofaImage").width() / 2);
                 $("#sofaImage").css('left', sofaLeft + 'px');
-                $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
+                $("#personImage").css("height", "90%");
             }
             catch(e) {
                 console.log(`Error from setBackgroundImage : ${e.name} : ${e.description}` );
