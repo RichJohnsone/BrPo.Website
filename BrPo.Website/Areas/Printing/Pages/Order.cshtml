@@ -1,5 +1,5 @@
 ﻿@page
-@model BrPo.Website.Areas.Prints.Pages.OrderModel
+@model BrPo.Website.Areas.Printing.Pages.OrderModel
 
 <style>
     .thumbnail{
@@ -10,6 +10,10 @@
     }
     th, td {
         padding: 0.1rem 0.3rem 0 0 !important; 
+    }
+    #displayPanel {
+        width: 100%;
+        height: 100%;
     }
     #displayPanelImage {
         position: relative;
@@ -25,7 +29,7 @@
         padding-left: 50px;
     }
     #displayPanelRoom {
-        position: absolute;
+        /*position: absolute;*/
         top: 0;
         width: 100%;
         left: 20px;
@@ -55,66 +59,73 @@
     }
     #bg-controls{
         position: relative;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: fit-content;
     }
 </style>
 
 <div class="container-fluid">
     <form id="orderForm">
         <div class="row">
-            <div class="col-sm-7" id="displayPanelContainer">
-                <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
-                @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
-                @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
-                <div id="bg-controls" class="float-right border rounded white-bg p-0 m-0">
-                    <div class="form-check form-check-inline ml-2">
-                        <h5>Background:</h5>
-                    </div>
-                    <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a sofa - the man is 1.8m wide">
-                       <input class="form-check-input bg-type-js" 
-                              type="radio" 
-                              name="bgRadio" 
-                              id="bgRadio-sofa"                           
-                              value="sofa"                           
-                              checked>
-                       <label class="form-check-label" for="bgRadio-sofa">
-                       Sofa
-                       </label>
-                    </div>
-                    <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a man - the man is 1.8m tall">
-                       <input class="form-check-input bg-type-js" 
-                              type="radio" 
-                              name="bgRadio" 
-                              id="bgRadio-man" 
-                              value="man">
-                       <label class="form-check-label" for="bgRadio-man">
-                       Man
-                       </label>
-                    </div>
-                    <div class="form-check form-check-inline" data-toggle="tooltip" title="fit picture to display window">
-                       <input class="form-check-input bg-type-js" 
-                              type="radio" 
-                              name="bgRadio" 
-                              id="bgRadio-plain"                          
-                              value="plain">
-                       <label class="form-check-label" for="bgRadio-plain">
-                       Plain
-                       </label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <div id="bg-colour" class="input-group">
-                            <input type="hidden" class="form-control input-lg" value="#F0F0F0"/>
-                            <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;">
-                                <i class="border rounded" 
-                                   data-toggle="tooltip" 
-                                   title="Set the background colour of the display window">
-                               </i>
-                            </h5>
+            <div class="col-sm12 col-md-6 col-lg-7" id="displayPanelContainer">
+                <div class="row">
+                    <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
+                    @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
+                    @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
+                </div>
+                <div class="row">
+                    <div id="bg-controls" class="border rounded white-bg p-0 mt-2">
+                        <div class="form-check form-check-inline ml-2">
+                            <h5>Background:</h5>
+                        </div>
+                        <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a sofa - the man is 1.8m wide">
+                           <input class="form-check-input bg-type-js" 
+                                  type="radio" 
+                                  name="bgRadio" 
+                                  id="bgRadio-sofa"                           
+                                  value="sofa"                           
+                                  checked>
+                           <label class="form-check-label" for="bgRadio-sofa">
+                           Sofa
+                           </label>
+                        </div>
+                        <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a man - the man is 1.8m tall">
+                           <input class="form-check-input bg-type-js" 
+                                  type="radio" 
+                                  name="bgRadio" 
+                                  id="bgRadio-man" 
+                                  value="man">
+                           <label class="form-check-label" for="bgRadio-man">
+                           Man
+                           </label>
+                        </div>
+                        <div class="form-check form-check-inline" data-toggle="tooltip" title="fit picture to display window">
+                           <input class="form-check-input bg-type-js" 
+                                  type="radio" 
+                                  name="bgRadio" 
+                                  id="bgRadio-plain"                          
+                                  value="plain">
+                           <label class="form-check-label" for="bgRadio-plain">
+                           Plain
+                           </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <div id="bg-colour" class="input-group">
+                                <input type="hidden" class="form-control input-lg" value="#F0F0F0"/>
+                                <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;">
+                                    <i class="border rounded" 
+                                       data-toggle="tooltip" 
+                                       title="Set the background colour of the display window">
+                                   </i>
+                                </h5>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-sm-12 col-md-6 col-lg-5">
                 @Html.ValidationSummary(true)
                 <!--Accordion wrapper-->
                 <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
@@ -351,16 +362,22 @@
 
         function setupDisplayPanel(){
             try {
-                if ($(window).width() < 570){
-                    $("#displayPanelRoom").css('width', $("#accordionEx").width() + 'px');
+                if ($(window).width() < 768){
+                    //$("#displayPanelRoom").css('position', 'relative');
+                    $("#displayPanelRoom").css('width', $("#displayPanelContainer").width() + 'px !important');
+                    $("#displayPanelRoom").css('max-width', $("#displayPanelContainer").width() + 'px !important');
+                    $("#displayPanelRoom").css('left', '0px');;
                     $("#displayPanelRoom").height($("#displayPanelRoom").width());
-                    $("#accordionEx").css('margin-top', ($("#displayPanelRoom").height() + 20) + 'px')
-                    $("#personImageContainer").css('width', '160px');
-                    $("#displayImageContainer").css('width', '300px');
+                    $("#accordionEx").addClass("mt-2");
+                    //$("#personImageContainer").css('width', '160px');
+                    //$("#displayImageContainer").css('width', '300px');
                 } else {
-                    $("#displayPanelRoom").css('width', '97%')
-                    $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 120);
-                    $("#accordionEx").css('margin-top', '')
+                    $("#displayPanelRoom").css('left', '');;
+                    //$("#displayPanelRoom").css('position', 'absolute');
+                    //$("#displayPanelRoom").css('width', '97%');
+                    $("#displayPanelRoom").css('max-width', '');
+                    $("#displayPanelRoom").height($(this).height() - $("header").height() - $("footer").height() - 165);
+                    $("#accordionEx").removeClass("mt-2");
                     $("#personImageContainer").css('width', '');
                     $("#displayImageContainer").css('width', '');
                 }
@@ -375,8 +392,10 @@
         }
 
         function setBgControlsPosition(){
-            let top = $("#displayPanelRoom").height() - 45;
-            $("#bg-controls").css('top', top + 'px');
+            //let top = $("#displayPanelRoom").height() - 700;
+            //$("#bg-controls").css('top', top + 'px');
+            //let right = 8;
+            //$("#bg-controls").css('right', right + 'px');
         }
 
         function setBackgroundImage(){
@@ -391,7 +410,7 @@
                 $("#sofaImage").hide();
             }
             try {
-                $("#sofaImage").width((($("#displayPanelRoom").width() - 100) / 100) * 100);
+                $("#sofaImage").width((($("#displayPanelRoom").width() - 200) / 100) * 100);
                 let sofaLeft = ($("#displayPanelImageRow").width() / 2) - ($("#sofaImage").width() / 2);
                 $("#sofaImage").css('left', sofaLeft + 'px');
                 $("#personImage").height((($("#displayPanelRoom").height() - 100) / 100) * 100);
@@ -418,7 +437,7 @@
                     let left = ( ( ( $("#displayPanelImageRow").width() - ($("#personImage").width() + 50)) / 2) - ($("#displayPanelImage").width() / 2) + ($("#personImage").width() + 50));
                     $("#displayPanelImage").css('left', left + 'px');
                 } else {
-                    let pictureTop = boxTop + 20;
+                    let pictureTop = boxTop + (($("#displayPanelRoom").height() - $("#displayPanelImage").height()) / 2);
                     $("#displayPanelImage").css('top', pictureTop + 'px');
                     let left = (($("#displayPanelImageRow").width() - $("#displayPanelImage").width()) / 2) - 20;
                     $("#displayPanelImage").css('left', left + 'px');

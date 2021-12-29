@@ -59,7 +59,7 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">
                     <img src="/resources/images/BPLogo1s.png" alt="Brixton Photographic logo" style="width:50px" class="float-left"/>
-                    <img src="/resources/images/BrixtonPhotograpic.com.png" alt="BrixtonPhotographic.com" style="width:25%; min-width:250px; padding-top:15px; padding-left:10px;" class="float-left"/>
+                    <img src="/resources/images/BrixtonPhotograpic.com.png" id="textLogo" alt="BrixtonPhotographic.com" style="width:25%; min-width:250px; padding-top:15px; padding-left:10px;" class="float-left"/>
                 </a>
                 <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -69,13 +69,13 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (SignInManager.IsSignedIn(User)){
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown">Prints</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Printing</a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Prints" asp-page="/Upload">Upload</a>
+                                    <a class="nav-link text-dark" asp-area="Printing" asp-page="/Upload">Upload</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Prints" asp-page="/Order">Order</a>
+                                    <a class="nav-link text-dark" asp-area="Printing" asp-page="/Order">Order</a>
                                 </li>
                             </ul>
                         </li>
@@ -127,6 +127,15 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+            window.addEventListener('resize', textLogoDisplay);
+
+            function textLogoDisplay(){
+                if ($(window).width() < 800){
+                    $("#textLogo").hide();
+                } else {
+                    $("#textLogo").show();
+                }
+            }
         });
     </script>
 </body>

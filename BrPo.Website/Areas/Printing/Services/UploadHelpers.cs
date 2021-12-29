@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BrPo.Website.Areas.Prints.Services
+namespace BrPo.Website.Areas.Printing.Services
 {
     public class UploadHelpers
     {

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BrPo.Website.Areas.Prints.Pages
+namespace BrPo.Website.Areas.Printing.Pages
 {
     [BindProperties]
     public class OrderModel : PageModel

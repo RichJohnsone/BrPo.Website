@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using BrPo.Website.Areas.Prints.Services;
+using BrPo.Website.Areas.Printing.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using BrPo.Website.Services.Image.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
-namespace BrPo.Website.Areas.Prints.Pages
+namespace BrPo.Website.Areas.Printing.Pages
 {
     public class UploadModel : PageModel
     {
