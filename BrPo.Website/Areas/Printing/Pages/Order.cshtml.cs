@@ -3,6 +3,8 @@ using BrPo.Website.Services.Image.Models;
 using BrPo.Website.Services.Image.Services;
 using BrPo.Website.Services.Paper.Models;
 using BrPo.Website.Services.Paper.Services;
+using BrPo.Website.Services.ShoppingBasket.Models;
+using BrPo.Website.Services.ShoppingBasket.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +27,7 @@ namespace BrPo.Website.Areas.Printing.Pages
         private readonly IImageService _imageService;
         private readonly IPaperService _paperService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IShoppingBasketService _shoppingBasketService;
 
         public List<ImageFileModel> Files { get; set; } = new List<ImageFileModel>();
         public ImageFileModel SelectedFile { get; set; }
@@ -65,7 +68,8 @@ namespace BrPo.Website.Areas.Printing.Pages
             IHttpContextAccessor httpContextAccessor,
             IImageService imageService,
             IPaperService paperService,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            IShoppingBasketService shoppingBasketService)
         {
             _logger = logger;
             _configuration = configuration;
@@ -74,6 +78,7 @@ namespace BrPo.Website.Areas.Printing.Pages
             _imageService = imageService;
             _paperService = paperService;   
             _userManager = userManager;
+            _shoppingBasketService = shoppingBasketService;
         }
 
         public void OnGet () {
@@ -103,38 +108,44 @@ namespace BrPo.Website.Areas.Printing.Pages
 
         public async Task<IActionResult> OnPostOrderPrints()
         {
+            var printOrder = new PrintOrder();
             try
             {
-                var fileId = Request.Form["SelectedFileId"].ToString().ToInt();
-                if (fileId == 0) return new BadRequestObjectResult("Print file not specified");
-                var height = Request.Form["height"].ToString().ToInt();
-                var width = Request.Form["width"].ToString().ToInt();
-                if (height == 0 || width == 0) return new BadRequestObjectResult("Print height or width not specified");
-                var paperId = Request.Form["selectedPaperId"].ToString().Split(',')[0].ToInt();
-                if (paperId == 0) return new BadRequestObjectResult("Paper not specified");
-                var border = Request.Form["border"].ToString().ToInt();
-                var quality = Request.Form["selectedQuality"].ToString();
-                var draft = Request.Form["isDraftPrint"].ToString();
-                var quantity = Request.Form["quantity"].ToString().ToInt();
-                if (quantity == 0) return new BadRequestObjectResult("Quantity not specified");
-                var paper = await _paperService.GetPaperAsync(paperId);
-                var file = await _imageService.GetImageAsync(fileId);
+                printOrder.FileId = Request.Form["SelectedFileId"].ToString().ToInt();
+                if (printOrder.FileId == 0) return new BadRequestObjectResult("Print file not specified");
+                printOrder.Height = Request.Form["height"].ToString().ToInt();
+                printOrder.Width = Request.Form["width"].ToString().ToInt();
+                if (printOrder.Height == 0 || printOrder.Width == 0) return new BadRequestObjectResult("Print height or width not specified");
+                printOrder.PaperId = Request.Form["selectedPaperId"].ToString().Split(',')[0].ToInt();
+                if (printOrder.PaperId == 0) return new BadRequestObjectResult("Paper not specified");
+                printOrder.Border = Request.Form["border"].ToString().ToInt();
+                printOrder.Quality = Request.Form["selectedQuality"].ToString();
+                printOrder.IsDraft = Request.Form["isDraftPrint"].ToString().Contains("true");
+                printOrder.Quantity = Request.Form["quantity"].ToString().ToInt();
+                if (printOrder.Quantity == 0) return new BadRequestObjectResult("Quantity not specified");
+                printOrder.Value = Request.Form["orderValue"].ToString().ToCurrency();
+                var paper = await _paperService.GetPaperAsync(printOrder.PaperId);
+                if (!_shoppingBasketService.PriceIsCorrect(printOrder, paper))
+                    return new BadRequestObjectResult("Price discrepancy");
+                var file = await _imageService.GetImageAsync(printOrder.FileId);
                 var orientation = file.Height > file.Width ? "portrait" : "landscape";
-                if (!PrintDimenisonsFitOnPaper(height, width, paper, orientation))
+                if (!PrintDimenisonsFitOnPaper(printOrder.Height, printOrder.Width, paper, orientation))
                     return new BadRequestObjectResult("Print dimensions too large for paper");
             }
             catch (System.Exception ex)
             {
-                return new BadRequestObjectResult("There was an error validating your request information: " + ex.Message);
+                _logger.LogError("from Order.OnPostOrderPrints", ex);
+                return new BadRequestObjectResult("There was an error validating your order information: " + ex.Message);
             }
             try
             {
-
+                await _shoppingBasketService.CreatePrintOrderAsync(printOrder);
+                await _shoppingBasketService.AddPrintOrderToBasketAsync(printOrder);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                return new BadRequestObjectResult("There was an error saving your order information: " + ex.Message);
             }
             return new OkResult();
         }

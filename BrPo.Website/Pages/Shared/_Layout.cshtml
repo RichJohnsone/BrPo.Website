@@ -80,8 +80,10 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Printing" asp-page="/ShoppingBasket">
-                                <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket"></i>
+                            <a class="nav-link" asp-area="Printing" asp-page="/ShoppingBasket">
+                                <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket">
+                                    <span class="badge badge-pill badge-danger" id="shoppingBasketCount"></span>
+                                </i>                                
                             </a>
                         </li>
                         }
@@ -99,8 +101,8 @@
                             </ul>
                         </li>
                         }
+                        <partial name="_LoginPartial" />
                     </ul>
-                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

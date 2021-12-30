@@ -121,8 +121,6 @@
     <Folder Include="Areas\Identity\Pages\Roles\" />
     <Folder Include="Config\" />
     <Folder Include="Services\ContactForm\Persistence\" />
-    <Folder Include="Services\ShoppingBasket\Models\" />
-    <Folder Include="Services\ShoppingBasket\Services\" />
   </ItemGroup>
 
 </Project>

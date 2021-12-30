@@ -265,6 +265,7 @@
                         <!-- Card body -->
                         <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
                             @*data-parent="#accordionEx"*@>
+                            <input type="hidden" name="orderValue" id="orderValue" />
                             <div class="card-body" id="sizeBody">
                                 <div class="form-group row mb-3">
                                     <label for="height" class="w-33 ml-3 col-form-label">Quantity</label>
@@ -927,6 +928,7 @@ description: ${data.statusText}`);
                     $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2) + ' each');
                     let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
                     $("#orderHeader").html("£ " + orderValue);
+                    $("#orderValue").val(orderValue);
                 } else {
                     pricePerPrint = getQuantityDiscountPrice(PaperModel.CostPerSheet, $("#Quantity").val());
                     if ($("#IsDraftPrint").prop("checked") == true) 
@@ -934,6 +936,7 @@ description: ${data.statusText}`);
                     $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2) + ' each');
                     let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
                     $("#orderHeader").html("£ " + orderValue);
+                    $("#orderValue").val(orderValue);
                 }
             }
             catch(e) {
@@ -962,7 +965,7 @@ description: ${data.statusText}`);
                   case quantity <= 39:
                     discount = 25;
                     break;
-                  case quantity <= 49:
+                  case quantity >= 50:
                     discount = 30;
                     break;
                   default:

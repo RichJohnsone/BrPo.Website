@@ -4,6 +4,7 @@ using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
 using BrPo.Website.Services.Paper.Services;
+using BrPo.Website.Services.ShoppingBasket.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +53,7 @@ namespace BrPo.Website
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IPaperService, PaperService>();
+            services.AddTransient<IShoppingBasketService, ShoppingBasketService>();
             services.AddAntiforgery(option =>
             {
                 option.HeaderName = "XSRF-TOKEN";

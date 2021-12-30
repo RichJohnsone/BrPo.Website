@@ -156,3 +156,10 @@ small {
 label.error {
     font-size: .8em;
 }
+
+#shoppingBasketCount{
+    position:relative;
+    font-size:.6em;
+    top: -27px;
+    right: -12px;
+}
