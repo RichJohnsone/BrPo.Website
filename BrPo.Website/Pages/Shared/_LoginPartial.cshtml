@@ -9,7 +9,7 @@
         <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown"><i class="fas fa-user"></i></a>
         <ul class="dropdown-menu">
             <li>
-                <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" data-toggle="tooltip" title="Manage">Manage</a>
+                <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Manage</a>
             </li>
             <li>
                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" >

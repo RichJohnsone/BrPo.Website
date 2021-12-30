@@ -168,6 +168,7 @@ namespace BrPo.Website.Services.Image.Services
         public async Task<string> GetBase64ThumbnailAsync(int id, int height = 170)
         {
             var imageFile = await context.ImageFiles.FindAsync(id);
+            if (imageFile == null) return null;
             RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
             switch(imageFile.Orientation)
             {

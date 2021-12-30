@@ -95,12 +95,67 @@ namespace BrPo.Website.Areas.Printing.Pages
                 SelectedPicturePixelWidth = Files[0].Width;
                 SelectedPicturePixelHeight = Files[0].Height;
             }
-
             Papers = _paperService.GetPapers();
             SelectedPaperId = Papers[0].Id;
-
             Qualities = new List<string>() { "Premium", "High" };
             SelectedQuality = "Premium";
+        }
+
+        public async Task<IActionResult> OnPostOrderPrints()
+        {
+            try
+            {
+                var fileId = Request.Form["SelectedFileId"].ToString().ToInt();
+                if (fileId == 0) return new BadRequestObjectResult("Print file not specified");
+                var height = Request.Form["height"].ToString().ToInt();
+                var width = Request.Form["width"].ToString().ToInt();
+                if (height == 0 || width == 0) return new BadRequestObjectResult("Print height or width not specified");
+                var paperId = Request.Form["selectedPaperId"].ToString().Split(',')[0].ToInt();
+                if (paperId == 0) return new BadRequestObjectResult("Paper not specified");
+                var border = Request.Form["border"].ToString().ToInt();
+                var quality = Request.Form["selectedQuality"].ToString();
+                var draft = Request.Form["isDraftPrint"].ToString();
+                var quantity = Request.Form["quantity"].ToString().ToInt();
+                if (quantity == 0) return new BadRequestObjectResult("Quantity not specified");
+                var paper = await _paperService.GetPaperAsync(paperId);
+                var file = await _imageService.GetImageAsync(fileId);
+                var orientation = file.Height > file.Width ? "portrait" : "landscape";
+                if (!PrintDimenisonsFitOnPaper(height, width, paper, orientation))
+                    return new BadRequestObjectResult("Print dimensions too large for paper");
+            }
+            catch (System.Exception ex)
+            {
+                return new BadRequestObjectResult("There was an error validating your request information: " + ex.Message);
+            }
+            try
+            {
+
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+            return new OkResult();
+        }
+
+        private bool PrintDimenisonsFitOnPaper(int height, int width, PaperModel paper, string orientation)
+        {
+            var retVal = true;
+            var maxRollPaperPrintLength = _configuration["MaxRollPaperPrintLength"].ToString().ToInt();
+            var paperHeight = paper.RollPaper ? maxRollPaperPrintLength : paper.CutSheetHeight;
+            var paperWidth = paper.RollPaper ? paper.RollWidth : paper.CutSheetWidth;
+            if (orientation == "portrait")
+            {
+                if (height > paperHeight) retVal = false;
+                if (width > paperWidth) retVal = false;
+            }
+            else
+            {
+                if (width > paperHeight) retVal = false;
+                if (height > paperWidth) retVal = false;
+            }
+            return retVal;
         }
 
         public PartialViewResult OnGetOrderDisplayPanelPartial(string id)

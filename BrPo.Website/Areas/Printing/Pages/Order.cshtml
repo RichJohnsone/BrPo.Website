@@ -29,9 +29,6 @@
         padding-left: 50px;
     }
     #displayPanelRoom {
-        /*top: 0*/;
-        /*width: 100%;*/
-        /*left: 20px;*/
         background-color: rgba(0,0,0,.03);
         overflow: hidden;
     }
@@ -66,6 +63,7 @@
 
 <div class="container-fluid">
     <form id="orderForm">
+        @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-sm12 col-md-6 col-lg-7" id="displayPanelContainer">
                 <div class="row">
@@ -145,7 +143,7 @@
                             data-parent="#accordionEx">
                             <div class="card-body" id="fileBody"">
                                 @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
-                                <input type="hidden" id="selectedFileId" value="@Model.SelectedFile.Id"/>                            
+                                <input type="hidden" id="selectedFileId" name="selectedFileId" value="@Model.SelectedFile.Id"/>                            
                             </div>
                         </div>
                     </div><!-- Files card -->
@@ -277,8 +275,8 @@
                                             placeholder="quantity" 
                                             name="Quantity" 
                                             data-val="true"
-                                            data-val-number="The Quantity field must be an integer." 
-                                            min="0" 
+                                            data-val-number="The Quantity field must be an integer between 1 and 500." 
+                                            min="1" 
                                             max="500" 
                                             data-toggle="tooltip" title="Enter the number of prints required"
                                             value="@Model.Quantity" />
@@ -314,11 +312,11 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <h4 class="ml-2">Your file:</h4>
+                    <h4 class="ml-3">Your file:</h4>
                 </div>
-                <div id="confirmFile"></div>
+                <div id="confirmFile" class="mb-2"></div>
                 <div class="row">
-                    <h4 class="ml-2">Your order details:</h4>
+                    <h4 class="ml-3">Your order details:</h4>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -387,7 +385,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="confirmOrderButton" class="btn btn-primary">Order Print</button>
+                <button type="button" id="confirmOrderButton" class="btn btn-primary">Add Print to Basket</button>
             </div>
         </div>
     </div>
@@ -907,6 +905,7 @@ description: ${data.statusText}`);
             getPrice(); 
             let buttonLabel = $("#Quantity").val() > 1 ? "Order Prints" : "Order Print";
             $("#orderButton").html(buttonLabel);
+            buttonLabel = $("#Quantity").val() > 1 ? "Add Prints to Basket" : "Add Print to Basket";
             $("#confirmOrderButton").html(buttonLabel);
         });
 
@@ -1004,8 +1003,29 @@ description: ${data.statusText}`);
         $('#confirmOrderButton').click(function (e) {
             e.preventDefault();
             $('#confirmModal').modal('hide');
-            alert("order print");
+            addToBasket()
         });
+
+        function addToBasket(){
+            let url = 'Order?handler=OrderPrints';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: new FormData(document.getElementById("orderForm")),
+                //dataType: 'json', 
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert(`Success response from server:\n\n${response.responseText}`);
+                },
+                error: function (response, status, error) {
+                    alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);
+                }
+            });
+        }
 
         // initialisation
 
@@ -1074,11 +1094,6 @@ description: ${data.statusText}`);
             $("#height").focus();
             $("#height").blur();
         }, 300)
-        $('[data-toggle="tooltip"]').tooltip({
-            delay: {show: 400, hide: 300}
-        }).click(function () {
-            $('[data-toggle="tooltip"]').tooltip("hide");
-        });
     });
 
     var PaperModel = null;

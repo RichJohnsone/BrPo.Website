@@ -87,22 +87,15 @@
                 $("#uploadButton").attr('disabled', 'disabled');
                 $('#importModal').modal({ backdrop: 'static', keyboard: false });
                 $('#importModal').modal('show');
-                var currentBtn = event.currentTarget;
-                var currentBtnText = $(currentBtn)[0].textContent;
-                var currentFormId = getCurrentFormId(event);
+                let currentBtn = event.currentTarget;
+                let currentBtnText = $(currentBtn)[0].textContent;
+                let currentFormId = getCurrentFormId(event);
                 submitForm(currentFormId, currentBtnText);
             });
     }
 
-    function getCurrentFormId(htmlElement) {
-        var inputElement = htmlElement.currentTarget;
-        var form = $(inputElement).closest('form')[0];
-        var formId = $(form).attr("id");
-        return formId;
-    }
-
     function submitForm(formId, handler) {
-        var url = 'Upload?handler=UploadFile';
+        let url = 'Upload?handler=UploadFile';
         $.ajax({
             url: url,
             type: 'POST',

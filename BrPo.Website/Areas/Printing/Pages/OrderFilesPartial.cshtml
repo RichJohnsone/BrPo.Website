@@ -7,9 +7,9 @@
 {
     <div class="mb-3">
         <div class="row fileRow-js" data-id="@imageFile.Id">
-            <div class="col">
+            <div class="col-4">
                 <a data-toggle="tooltip" title="click the image to select it">
-                    <img class="thumbnail" 
+                    <img class="thumbnail mt-2" 
                             src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(imageFile.Id, 100)"
                             data-id="@imageFile.Id",
                             data-fileName="@imageFile.OriginalFileName"
@@ -17,9 +17,9 @@
                             data-pixel-width="@imageFile.Width">
                 </a>
             </div>
-            <div class="col table-responsive-sm">
+            <div class="col-8 table-responsive-sm">
                 <table class="table-sm">
-                    <tr><th>File Name</th><td>@imageFile.OriginalFileName</td></tr>
+                    <tr><th class="w-30">File Name</th><td class="w-30">@imageFile.OriginalFileName</td></tr>
                     <tr><th>Dimensions</th><td><span data-toggle="tooltip" title="Height in pixels"> @imageFile.Height</span> * <span data-toggle="tooltip" title="Width in pixels"> @imageFile.Width</span></td></tr>
                     @if (!string.IsNullOrEmpty(imageFile.ColourSpace)) {
                         <tr><th>Colour Space</th><td>@imageFile.ColourSpace</td></tr>

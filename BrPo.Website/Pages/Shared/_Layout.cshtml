@@ -79,6 +79,11 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Printing" asp-page="/ShoppingBasket">
+                                <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket"></i>
+                            </a>
+                        </li>
                         }
                         @if (User.IsInRole(RolesConfig.Administrator))
                         {
@@ -136,7 +141,22 @@
                     $("#textLogo").show();
                 }
             }
+
+            $('[data-toggle="tooltip"]').tooltip({
+                delay: {show: 400, hide: 300}
+            }).click(function () {
+                $('[data-toggle="tooltip"]').tooltip("hide");
+            });
+
         });
+
+        function getCurrentFormId(htmlElement) {
+            var inputElement = htmlElement.currentTarget;
+            var form = $(inputElement).closest('form')[0];
+            var formId = $(form).attr("id");
+            return formId;
+        }
+
     </script>
 </body>
 </html>

@@ -45,7 +45,6 @@ namespace BrPo.Website.Pages
                 options.HttpOnly = true;
                 Response.Cookies.Append("BrPoSession", _httpContextAccessor.HttpContext.Session.Id, options);
             }
-            //return Redirect("/prints/order");
             return Page();
         }
 
