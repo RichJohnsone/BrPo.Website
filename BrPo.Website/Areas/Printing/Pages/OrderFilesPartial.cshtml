@@ -6,7 +6,7 @@
 @foreach( var imageFile in Model)
 {
     <div class="mb-3">
-        <div class="row">
+        <div class="row fileRow-js" data-id="@imageFile.Id">
             <div class="col">
                 <a data-toggle="tooltip" title="click the image to select it">
                     <img class="thumbnail" 

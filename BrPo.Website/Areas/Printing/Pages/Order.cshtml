@@ -145,6 +145,7 @@
                             data-parent="#accordionEx">
                             <div class="card-body" id="fileBody"">
                                 @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
+                                <input type="hidden" id="selectedFileId" value="@Model.SelectedFile.Id"/>                            
                             </div>
                         </div>
                     </div><!-- Files card -->
@@ -268,8 +269,8 @@
                             @*data-parent="#accordionEx"*@>
                             <div class="card-body" id="sizeBody">
                                 <div class="form-group row mb-3">
-                                    <label for="height" class="w-25 ml-3 col-form-label">Quantity</label>
-                                    <div class="w-25">
+                                    <label for="height" class="w-33 ml-3 col-form-label">Quantity</label>
+                                    <div class="w-33">
                                         <input type="number" step="1"
                                             class="form-control integer-control-js" 
                                             id="Quantity" 
@@ -282,15 +283,15 @@
                                             data-toggle="tooltip" title="Enter the number of prints required"
                                             value="@Model.Quantity" />
                                     </div>
-                                    <div class="w-25">
-                                        <div class="text mt-2 float-right mr-2" id="pricePerPrint"></div>
-                                    </div>
-                                    <div class="w-20">
-                                        <div class="text mt-2">per print</div>
+                                    <div class="w-30">
+                                        <div class="text mt-2 ml-2" id="pricePerPrint"></div>
                                     </div>
                                 </div>
                                 <div class="field-validation-valid row ml-1" data-valmsg-for="Quantity" data-valmsg-replace="true"></div>
-                                <button class="btn btn-primary btn-lg btn-block" id="orderButton"> Order Print </button>
+                                <button class="btn btn-primary btn-lg btn-block" id="orderButton"
+                                        id="orderPrint"
+                                        @*data-toggle="modal" 
+                                        data-target="#confirmModal"*@> Order Print </button>
                             </div>
                         </div>
                     </div><!-- Order card -->
@@ -299,6 +300,97 @@
             </div>
         </div>
     </form>
+</div>
+
+<!-- Confirm order Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm your Print Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <h4 class="ml-2">Your file:</h4>
+                </div>
+                <div id="confirmFile"></div>
+                <div class="row">
+                    <h4 class="ml-2">Your order details:</h4>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h6>Height</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmHeight"></span>
+                    </div>
+                </div>            
+                <div class="row">
+                    <div class="col">
+                        <h6>Width</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmWidth"></span>
+                    </div>
+                </div>   
+                <div class="row">
+                    <div class="col">
+                        <h6>Paper</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmPaper"></span>
+                    </div>
+                </div>            
+                <div class="row">
+                    <div class="col">
+                        <h6>Border</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmBorder"></span>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col">
+                        <h6>Quality</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmQuality"></span>
+                    </div>
+                </div>            
+                <div class="row">
+                    <div class="col">
+                        <h6>Price per print</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmPricePerPrint"></span>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col">
+                        <h6>Quantity</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmQuantity"></span>
+                    </div>
+                </div>            
+                <div class="row">
+                    <div class="col">
+                        <h6>Order value</h6>
+                    </div>
+                    <div class="col">
+                        <span id="confirmOrderValue"></span>
+                    </div>
+                </div>            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="confirmOrderButton" class="btn btn-primary">Order Print</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -322,11 +414,12 @@
                     $("#fileHeader").html(fileName);
                     $("input[name=SelectedPicturePixelHeight]").val(pixelHeight);
                     $("input[name=SelectedPicturePixelWidth]").val(pixelWidth);
+                    $("#selectedFileId").val(id);
                     setTimeout(processPanelLoad(), 1000);
                 });
             }
             catch(e) {
-                console.log(`Error from loadDisplayPanel: ${e.name} : ${e.description}` );
+                console.log(`Error from loadDisplayPanel: ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -336,7 +429,7 @@
                 return aspect;
             }
             catch(e) {
-                console.log(`Error from getLoadedPictureAspectRatio : ${e.name} : ${e.description}` );
+                console.log(`Error from getLoadedPictureAspectRatio : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -355,7 +448,7 @@
                 setupDisplayPanel()
             }
             catch(e) {
-                console.log(`Error from processPanelLoad : ${e.name} : ${e.description}` );
+                console.log(`Error from processPanelLoad : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -379,10 +472,9 @@
                 setBackgroundImage();
                 setPicturePosition();
                 setTimeout(setPicturePosition, 100);
-                setBgControlsPosition();
             }
             catch(e) {
-                console.log(`Error from setupDisplayPanel : ${e.name} : ${e.description}` );
+                console.log(`Error from setupDisplayPanel : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -408,7 +500,7 @@
                 $("#personImage").css("height", "90%");
             }
             catch(e) {
-                console.log(`Error from setBackgroundImage : ${e.name} : ${e.description}` );
+                console.log(`Error from setBackgroundImage : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -437,7 +529,7 @@
                 getPrice();
             }
             catch(e) {
-                console.log(`Error from setPicturePosition : ${e.name} : ${e.description}` );
+                console.log(`Error from setPicturePosition : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -457,7 +549,7 @@
                 setBorderDisplay();
             }
             catch(e) {
-                console.log(`Error from setPictureHeight : ${e.name} : ${e.description}` );
+                console.log(`Error from setPictureHeight : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -534,12 +626,12 @@
                     error: function(data){
                         alert(`status = ${data.status}
 
-    description: ${data.statusText}`);
+description: ${data.statusText}`);
                     }
                 });    
             }
             catch(e) {
-                console.log(`Error from getSelectedPaper : ${e.name} : ${e.description}` );
+                console.log(`Error from getSelectedPaper : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -613,7 +705,7 @@
                 $.validator.unobtrusive.parse('form');
             }
             catch(e) {
-                console.log(`Error from  : ${e.name} : ${e.description}` );
+                console.log(`Error from setPaperSizeLimits : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -633,7 +725,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from fitToA4 : ${e.name} : ${e.description}` );
+                console.log(`Error from fitToA4 : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -651,7 +743,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from fitToA3 : ${e.name} : ${e.description}` );
+                console.log(`Error from fitToA3 : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -669,7 +761,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from fitToA2 : ${e.name} : ${e.description}` );
+                console.log(`Error from fitToA2 : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -692,7 +784,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from heightChange : ${e.name} : ${e.description}` );
+                console.log(`Error from heightChange : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -707,7 +799,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from widthChange : ${e.name} : ${e.description}` );
+                console.log(`Error from widthChange : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -725,7 +817,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from swapHeightAndWidth : ${e.name} : ${e.description}` );
+                console.log(`Error from swapHeightAndWidth : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -755,7 +847,7 @@
                 setSizeHeader();
             }
             catch(e) {
-                console.log(`Error from fitPictureToPaperSize : ${e.name} : ${e.description}` );
+                console.log(`Error from fitPictureToPaperSize : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -780,7 +872,7 @@
                 }
             }
             catch(e) {
-                console.log(`Error from setBorderDisplay : ${e.name} : ${e.description}` );
+                console.log(`Error from setBorderDisplay : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -815,6 +907,7 @@
             getPrice(); 
             let buttonLabel = $("#Quantity").val() > 1 ? "Order Prints" : "Order Print";
             $("#orderButton").html(buttonLabel);
+            $("#confirmOrderButton").html(buttonLabel);
         });
 
         function roundToInteger(input){
@@ -832,20 +925,20 @@
                     pricePerPrint = getQuantityDiscountPrice(pricePerPrint, $("#Quantity").val());
                     if ($("#IsDraftPrint").prop("checked") == true) 
                         pricePerPrint = pricePerPrint / 2;
-                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2) + ' each');
                     let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
                     $("#orderHeader").html("£ " + orderValue);
                 } else {
                     pricePerPrint = getQuantityDiscountPrice(PaperModel.CostPerSheet, $("#Quantity").val());
                     if ($("#IsDraftPrint").prop("checked") == true) 
                         pricePerPrint = pricePerPrint / 2;
-                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2));
+                    $("#pricePerPrint").html("£ " + (Math.round(pricePerPrint * 100) / 100).toFixed(2) + ' each');
                     let orderValue = (Math.round((pricePerPrint * $("#Quantity").val()) * 100) / 100).toFixed(2);
                     $("#orderHeader").html("£ " + orderValue);
                 }
             }
             catch(e) {
-                console.log(`Error from getPrice : ${e.name} : ${e.description}` );
+                console.log(`Error from getPrice : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
@@ -879,12 +972,50 @@
                 return (((100 - discount) / 100) * pricePerPrint);
             }
             catch(e) {
-                console.log(`Error from getQuantityDiscountPrice : ${e.name} : ${e.description}` );
+                console.log(`Error from getQuantityDiscountPrice : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 
+        // order functions
+
+        $('#orderButton').click(function (e) {
+            e.preventDefault();
+            if ($("#height").valid() && $("#width").valid()){
+                loadConfirmModal()
+            } else {
+                $('#collapseTwo2').collapse('show');  
+            }
+        });
+
+        function loadConfirmModal(){
+            $("#confirmFile").html("");
+            $("div.fileRow-js[data-id=" + $("#selectedFileId").val() + "]").clone().appendTo("#confirmFile");
+            $("#confirmHeight").html($("#height").val() + " mm");
+            $("#confirmWidth").html($("#width").val() + " mm");
+            $("#confirmPaper").html(PaperModel["Name"]);
+            $("#confirmBorder").html($("#border").val() + " mm");
+            $("#confirmQuality").html($("#qualityHeader").html());
+            $("#confirmPricePerPrint").html($("#pricePerPrint").html());
+            $("#confirmQuantity").html($("#Quantity").val());
+            $("#confirmOrderValue").html($("#orderHeader").html());
+            $('#confirmModal').modal('show');
+        }
+
+        $('#confirmOrderButton').click(function (e) {
+            e.preventDefault();
+            $('#confirmModal').modal('hide');
+            alert("order print");
+        });
+
         // initialisation
 
+        $("#orderForm").validate({
+            ignore: "",
+            errorPlacement: function(error, element) {
+                error.appendTo( element.parent("div").parent("div").next("div.field-validation-valid") );
+            },
+            errorClass: "error"
+        });
         $("#sizeA4").on('click', fitToA4);
         $("#sizeA3").on('click', fitToA3);
         $("#sizeA2").on('click', fitToA2);  
@@ -902,7 +1033,6 @@
         setupDisplayPanel();
         getSelectedPaper();
         setBorderHeader();
-        //addHeigthChangeEventHandler();
         addWidthChangeEventHandler();
         heightChange();
         setSizeHeader();
@@ -918,18 +1048,24 @@
             setTimeout(function(){
                 $("#height").valid();
                 $("#width").valid();
-            }, 250)
+                $("#Quantity").valid();
+                $("#border").valid();
+           }, 250)
         })
         $("body").on('mouseup', 'select, a', function(){
             setTimeout(function(){
                 $("#height").valid();
                 $("#width").valid();
-            }, 250)
+                $("#Quantity").valid();
+                $("#border").valid();
+           }, 250)
         })
         $("body").on('mouseup', 'button', function(){
             setTimeout(function(){
                 $("#height").valid();
                 $("#width").valid();
+                $("#Quantity").valid();
+                $("#border").valid();
             }, 250)
         })  
         setTimeout(function(){
@@ -960,7 +1096,7 @@
             return { top: _y, left: _x };
         }
         catch(e) {
-            console.log(`Error from getOffset : ${e.name} : ${e.description}` );
+            console.log(`Error from getOffset : ${e.name} :  : ${e.description} : ${e.message}` );
         }
     }
 
@@ -969,7 +1105,7 @@
 
             }
             catch(e) {
-                console.log(`Error from  : ${e.name} : ${e.description}` );
+                console.log(`Error from  : ${e.name} :  : ${e.description} : ${e.message}` );
             }
         }
 </script>

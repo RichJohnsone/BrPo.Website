@@ -149,3 +149,10 @@ small {
     background: #333;
 }
 
+.error {
+    color: red;
+}
+
+label.error {
+    font-size: .8em;
+}
