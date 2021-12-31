@@ -80,7 +80,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Printing" asp-page="/ShoppingBasket">
+                            <a class="nav-link" asp-area="ShoppingBasket" asp-page="/Basket">
                                 <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket">
                                     <span class="badge badge-pill badge-danger" id="shoppingBasketCount"></span>
                                 </i>                                
@@ -107,7 +107,7 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid" id="main_layout_container">
+    <div class="container" id="main_layout_container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
@@ -144,19 +144,44 @@
                 }
             }
 
-            $('[data-toggle="tooltip"]').tooltip({
-                delay: {show: 400, hide: 300}
-            }).click(function () {
-                $('[data-toggle="tooltip"]').tooltip("hide");
-            });
 
+            bindTooltips();
         });
+
+            function bindTooltips(){
+                $('[data-toggle="tooltip"]').tooltip({
+                    delay: {show: 400, hide: 300}
+                }).click(function () {
+                    $('[data-toggle="tooltip"]').tooltip("hide");
+                });
+            }
+
 
         function getCurrentFormId(htmlElement) {
             var inputElement = htmlElement.currentTarget;
             var form = $(inputElement).closest('form')[0];
             var formId = $(form).attr("id");
             return formId;
+        }
+
+        function updateBasketCount(){
+            try {
+                $.ajax({
+                    url: 'Order?handler=BasketCount',
+                    success: function(response){   
+                        let count = response == 0 ? '' : response;
+                        $("#shoppingBasketCount").html(count);
+                    },
+                    error: function(data){
+                        alert(`From getBasketCount: status = ${data.status}
+
+description: ${data.statusText}`);
+                    }
+                });    
+            }
+            catch(e) {
+                console.log(`Error from updateBasketCount : ${e.name} :  : ${e.description} : ${e.message}` );
+            }        
         }
 
     </script>

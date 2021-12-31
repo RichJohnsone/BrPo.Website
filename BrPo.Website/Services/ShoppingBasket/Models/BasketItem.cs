@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BrPo.Website.Services.ShoppingBasket.Models
 {
@@ -11,5 +12,7 @@ namespace BrPo.Website.Services.ShoppingBasket.Models
         public Guid UserId { get; set;  }
         [Required]
         public int PrintOrderId { get; set; }
+        [ForeignKey(nameof(PrintOrderId))]
+        public PrintOrder PrintOrder { get; set; }
     }
 }

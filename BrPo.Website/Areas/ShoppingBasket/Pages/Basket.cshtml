@@ -1,0 +1,89 @@
+﻿@page
+@model BrPo.Website.Areas.ShoppingBasket.Pages.BasketModel
+
+<div class="row">
+    <h2>Shopping Basket</h2>
+</div>
+<div class="row">
+    <div id="basketItemsContainer"></div>
+</div>
+<div class="row">
+    <div class="w-100">
+        <button class="btn btn-primary btn-lg btn-block" 
+                id="checkoutButton">
+            Go to Checkout
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function loadBasketItems(){
+            try {
+                $("#basketItemsContainer").load(`Basket?handler=BasketItemsPartial`, function(){
+                    getBasketTotals();
+                });
+            }
+            catch(e) {
+                console.log(`Error from loadBasketItems: ${e.name} : ${e.description} : ${e.message}` );
+            }
+        }
+
+        function getBasketTotals(){
+            try {
+                $("#basketSubTotal").load(`Basket?handler=BasketTotal`, function(){
+                setTimeout(setIntegerControls, 200);
+                bindTooltips();
+                doVoucherDiscount();
+                getDeliveryCost();
+                getTotal();
+                });
+            }
+            catch(e) {
+                console.log(`Error from getBasketTotal: ${e.name} : ${e.description} : ${e.message}` );
+            }
+        }
+
+        function doVoucherDiscount(){
+            try {
+                $("#voucherDiscount").html("0.00");
+            }
+            catch(e) {
+                console.log(`Error from doVoucherDiscount: ${e.name} : ${e.description} : ${e.message}` );
+            }
+        }
+
+        function getDeliveryCost(){
+            try {
+                $("#deliveryTotal").html("5.00");
+            }
+            catch(e) {
+                console.log(`Error from getDeliveryCost: ${e.name} : ${e.description} : ${e.message}` );
+            }
+        }
+
+        function getTotal(){
+            try {
+                let total = (parseFloat($("#basketSubTotal").html()) - parseFloat($("#voucherDiscount").html()) + parseFloat($("#deliveryTotal").html())).toFixed(2);
+                $("#basketTotal").html(total);
+            }
+            catch(e) {
+                console.log(`Error from getTotal: ${e.name} : ${e.description} : ${e.message}` );
+            }
+        }
+
+        function roundToInteger(input){
+            return Math.round(input); 
+        }
+        
+        function setIntegerControls(){
+            $(".integer-control-js").on('mouseup blur change input', function(){
+                $(this).val(roundToInteger($(this).val()));
+            });      
+        }
+
+        // initialisation
+
+        loadBasketItems();
+    });
+</script>

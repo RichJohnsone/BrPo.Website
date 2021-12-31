@@ -13,6 +13,7 @@ namespace BrPo.Website.Services.Paper.Services
         Task<PaperModel> CreatePaperRecord(PaperModel model);
         Task<PaperModel> GetPaperAsync(int id);
         List<PaperModel> GetPapers();
+        string GetPaperName(int id);
     }
 
     public class PaperService : IPaperService
@@ -62,6 +63,11 @@ namespace BrPo.Website.Services.Paper.Services
                 _logger.LogError("from PaperService.GetPaperAsync", ex);
                 throw;
             }
+        }
+
+        public string GetPaperName(int id)
+        {
+            return context.Papers.FirstOrDefault(p => p.Id == id).Name;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace BrPo.Website.Services.Image.Services
         Task<ImageFileModel> GetImageAsync(int id);
         List<string> GetIds(string userId);
         List<ImageFileModel> GetImages(string userId);
+        string GetFileName(int id);
     }
 
     public class ImageService : IImageService
@@ -248,6 +249,11 @@ namespace BrPo.Website.Services.Image.Services
                 _logger.LogError("from ImageService.GetIds", ex);
                 throw;
             }
+        }
+
+        public string GetFileName(int id)
+        {
+            return context.ImageFiles.FirstOrDefault(i => i.Id == id).OriginalFileName;
         }
     }
 }

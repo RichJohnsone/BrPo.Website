@@ -1,8 +1,11 @@
 ﻿using BrPo.Website.Data;
 using BrPo.Website.Services.Paper.Models;
 using BrPo.Website.Services.ShoppingBasket.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BrPo.Website.Services.ShoppingBasket.Services
@@ -12,6 +15,9 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
         Task CreatePrintOrderAsync(PrintOrder printOrder);
         Task AddPrintOrderToBasketAsync(PrintOrder printOrder);
         bool PriceIsCorrect(PrintOrder printOrder, PaperModel paper);
+        int GetBasketCount(string userId);
+        List<BasketItem> GetBasketItems(string userId);
+        decimal GetBasketTotal(string userId);
     }
 
     public class ShoppingBasketService : IShoppingBasketService
@@ -64,6 +70,32 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
             if (paper == null) return false;
             var price = GetPrice(printOrder, paper);
             return printOrder.Value == price;
+        }
+
+        public int GetBasketCount(string userId)
+        {
+            Guid.TryParse(userId, out var guid);
+            var count = context.basketItems.Where(b => b.UserId == guid).Count();
+            return count;
+        }
+
+        public List<BasketItem> GetBasketItems(string userId)
+        {
+            Guid.TryParse(userId, out var guid);
+            return context.basketItems
+                .Include(b => b.PrintOrder)
+                .Where(b => b.UserId == guid)
+                .ToList();
+        }
+
+        public decimal GetBasketTotal(string userId)
+        {
+            Guid.TryParse(userId, out var guid);
+            var value = context.basketItems
+                .Include(b => b.PrintOrder)
+                .Where(b => b.UserId == guid)
+                .Sum(b => b.PrintOrder.Value);
+            return Math.Round(value, 2);
         }
 
         private decimal GetPrice(PrintOrder printOrder, PaperModel paper)

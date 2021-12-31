@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -124,6 +125,7 @@ namespace BrPo.Website.Areas.Printing.Pages
                 printOrder.Quantity = Request.Form["quantity"].ToString().ToInt();
                 if (printOrder.Quantity == 0) return new BadRequestObjectResult("Quantity not specified");
                 printOrder.Value = Request.Form["orderValue"].ToString().ToCurrency();
+                printOrder.UserId = new Guid(GetUserOrSessionId());
                 var paper = await _paperService.GetPaperAsync(printOrder.PaperId);
                 if (!_shoppingBasketService.PriceIsCorrect(printOrder, paper))
                     return new BadRequestObjectResult("Price discrepancy");
@@ -181,6 +183,31 @@ namespace BrPo.Website.Areas.Printing.Pages
             var paper = await _paperService.GetPaperAsync(id);
             if (paper == null) return NotFound();
             return new JsonResult(paper);
+        }
+
+        public IActionResult OnGetBasketCount()
+        {
+            var userId = GetUserOrSessionId();
+            var count = _shoppingBasketService.GetBasketCount(userId);
+            return new JsonResult(count);
+        }
+
+        private string GetUserOrSessionId()
+        {
+            var principle = this.User;
+            if (principle.Identity.IsAuthenticated)
+            {
+                return _userManager.GetUserId(principle);
+            }
+            else
+            {
+                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("BrPoSession", out var sessionId))
+                    return sessionId.ToString();
+                else
+                {
+                    throw new ApplicationException("Your session has expired");
+                }
+            }
         }
     }
 }

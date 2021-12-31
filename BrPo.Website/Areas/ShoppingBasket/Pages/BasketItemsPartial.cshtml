@@ -1,0 +1,85 @@
+﻿@using BrPo.Website.Services.ShoppingBasket.Models
+@using BrPo.Website.Services.Image.Services
+@using BrPo.Website.Services.Paper.Services
+@model List<BasketItem>
+@inject IImageService ImageService
+@inject IPaperService PaperService
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Filename</th>
+            <th>Dimensions</th>
+            <th>Border</th>
+            <th>Quality</th>
+            <th>Paper</th>
+            <th>Quanity</th>
+            <th>Price</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var basketItem in Model){
+        <tr>
+            <td class="pt-4"><img src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(basketItem.PrintOrder.FileId, 100)"></td>
+            <td class="pt-4">@ImageService.GetFileName(basketItem.PrintOrder.FileId)</td>
+            <td class="pt-4">@basketItem.PrintOrder.Height * @basketItem.PrintOrder.Width</td>
+            <td class="pt-4">@basketItem.PrintOrder.Border</td>
+            <td class="pt-4">@basketItem.PrintOrder.Quality</td>
+            <td class="pt-4">@PaperService.GetPaperName(basketItem.PrintOrder.PaperId)</td>
+            <td><input type="number"
+                       step="1"
+                       class="quantityInputs-js form-control integer-control-js"
+                       data-id="@basketItem.Id"
+                       data-val="true"
+                       data-val-number="The Quantity field must be an integer between 1 and 500" 
+                       min="1" 
+                       max="500" 
+                       data-toggle="tooltip" 
+                       title="Set the quantity of prints required"
+                       value="@basketItem.PrintOrder.Quantity" />
+            </td>
+            <td class="text-right pt-4">@basketItem.PrintOrder.Value</td>
+            <td class="mt-1"><i class="fas fa-times trash-js btn btn-danger" 
+                                data-id="@basketItem.Id"
+                                data-toggle="tooltip" 
+                                title="Delete this item from your shopping basket">
+            </td>
+        </tr>
+    }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan=6>&nbsp;</th>
+            <th>Sub Total<span class="float-right">£</span></th>
+            <th><div id="basketSubTotal" class="text-right"></div></th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <th colspan=5><div class="float-right mt-2">Voucher</div></th>
+            <th><input type="text"
+                       class="quantityInputs-js form-control"
+                       min="1" 
+                       max="500" 
+                       data-toggle="tooltip" 
+                       title="Enter a voucher code"/>
+            </th>
+            <th><div class="mt-2">Discount<span class="float-right">£</span></div></th>
+            <th><div id="voucherDiscount" class="text-right mt-2">0.00</div></th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <th colspan=6>&nbsp;</th>
+            <th>Delivery<span class="float-right">£</span></th>
+            <th><div id="deliveryTotal" class="text-right">0.00</div></th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <th colspan=6>&nbsp;</th>
+            <th>Total<span class="float-right">£</span></th>
+            <th><div id="basketTotal" class="text-right">0.00</div></th>
+            <th>&nbsp;</th>
+        </tr>
+    </tfoot>
+</table>
