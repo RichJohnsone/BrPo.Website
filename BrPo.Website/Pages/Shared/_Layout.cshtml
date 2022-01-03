@@ -144,17 +144,17 @@
                 }
             }
 
-
             bindTooltips();
+            updateBasketCount();
         });
 
-            function bindTooltips(){
-                $('[data-toggle="tooltip"]').tooltip({
-                    delay: {show: 400, hide: 300}
-                }).click(function () {
-                    $('[data-toggle="tooltip"]').tooltip("hide");
-                });
-            }
+        function bindTooltips(){
+            $('[data-toggle="tooltip"]').tooltip({
+                delay: {show: 400, hide: 300}
+            }).click(function () {
+                $('[data-toggle="tooltip"]').tooltip("hide");
+            });
+        }
 
 
         function getCurrentFormId(htmlElement) {
@@ -167,15 +167,13 @@
         function updateBasketCount(){
             try {
                 $.ajax({
-                    url: 'Order?handler=BasketCount',
+                    url: '/Printing/Order?handler=BasketCount',
                     success: function(response){   
                         let count = response == 0 ? '' : response;
                         $("#shoppingBasketCount").html(count);
                     },
                     error: function(data){
-                        alert(`From getBasketCount: status = ${data.status}
-
-description: ${data.statusText}`);
+                        console.log(`Ajax error from getBasketCount: status = ${data.status} : description: ${data.statusText}`);
                     }
                 });    
             }

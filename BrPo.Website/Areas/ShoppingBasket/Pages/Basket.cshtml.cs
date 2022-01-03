@@ -1,3 +1,4 @@
+using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
 using BrPo.Website.Services.ShoppingBasket.Models;
 using BrPo.Website.Services.ShoppingBasket.Services;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BrPo.Website.Areas.ShoppingBasket.Pages
 {
@@ -83,5 +85,19 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             var total = _shoppingBasketService.GetBasketTotal(userId);
             return new JsonResult(total);
         }
+
+        public async Task<IActionResult> OnPostQuantityChange(string basketItemId, string newQuantity)
+        {
+            var userId = GetUserOrSessionId();
+            await _shoppingBasketService.ChangeQuantity(userId, basketItemId.ToInt(), newQuantity.ToInt());
+            return new OkResult();
+        }
+
+        public async Task<IActionResult> OnPostDeleteItem(string basketItemId)
+        {
+            var userId = GetUserOrSessionId();
+            await _shoppingBasketService.DeleteItem(userId, basketItemId.ToInt());
+            return new OkResult();
+        }
     }
-}
+} 

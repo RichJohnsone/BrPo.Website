@@ -6,6 +6,7 @@
 </div>
 <div class="row">
     <div id="basketItemsContainer"></div>
+    @Html.AntiForgeryToken()
 </div>
 <div class="row">
     <div class="w-100">
@@ -21,6 +22,10 @@
         function loadBasketItems(){
             try {
                 $("#basketItemsContainer").load(`Basket?handler=BasketItemsPartial`, function(){
+                    bindTooltips();
+                    setIntegerControls();
+                    setQuantityControls();
+                    setDeleteButtons();
                     getBasketTotals();
                 });
             }
@@ -32,11 +37,9 @@
         function getBasketTotals(){
             try {
                 $("#basketSubTotal").load(`Basket?handler=BasketTotal`, function(){
-                setTimeout(setIntegerControls, 200);
-                bindTooltips();
-                doVoucherDiscount();
-                getDeliveryCost();
-                getTotal();
+                    doVoucherDiscount();
+                    getDeliveryCost();
+                    getTotal();
                 });
             }
             catch(e) {
@@ -80,6 +83,57 @@
             $(".integer-control-js").on('mouseup blur change input', function(){
                 $(this).val(roundToInteger($(this).val()));
             });      
+        }
+
+        function setQuantityControls(){
+            $(".quantity-controls-js").on('mouseup', function(){
+                let id = $(this).attr("data-id");
+                let value = $(this).val();
+                doQuantityChange(id, value);
+            });      
+        }
+
+        function doQuantityChange(id, value){
+            let url = `Basket?handler=QuantityChange&basketItemId=${id}&newQuantity=${value}`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                processData: false,
+                success: function (response) {
+                    loadBasketItems();
+                },
+                error: function (response, status, error) {
+                    alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);
+                }
+            });
+        }
+
+        function setDeleteButtons(){
+            $(".delete-from-basket-js").on('mouseup', function() {
+                let id = $(this).attr("data-id");
+                doDeleteBasketItem(id);
+            });
+        }
+
+        function doDeleteBasketItem(id){
+            let url = `Basket?handler=DeleteItem&basketItemId=${id}`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                processData: false,
+                success: function (response) {
+                    loadBasketItems();
+                },
+                error: function (response, status, error) {
+                    alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);
+                }
+            });
         }
 
         // initialisation

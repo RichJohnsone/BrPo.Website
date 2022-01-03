@@ -18,6 +18,8 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
         int GetBasketCount(string userId);
         List<BasketItem> GetBasketItems(string userId);
         decimal GetBasketTotal(string userId);
+        Task ChangeQuantity(string userId, int basketItemId, int newQuantity);
+        Task DeleteItem(string userId, int basketItemId);
     }
 
     public class ShoppingBasketService : IShoppingBasketService
@@ -98,6 +100,31 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
             return Math.Round(value, 2);
         }
 
+        public async Task ChangeQuantity(string userId, int basketItemId, int newQuantity)
+        {
+            Guid.TryParse(userId, out var guid);
+            var basketItem = await context.basketItems
+                .Include(b => b.PrintOrder)
+                .Where(b => b.UserId == guid && b.Id == basketItemId)
+                .FirstOrDefaultAsync();
+            if (basketItem == null) return;
+            if (basketItem.PrintOrder.Quantity == newQuantity) return;
+            basketItem.PrintOrder.Quantity = newQuantity;
+            var paper = await context.Papers.FindAsync(basketItem.PrintOrder.PaperId);
+            basketItem.PrintOrder.Value = GetPrice(basketItem.PrintOrder, paper);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteItem(string userId, int basketItemId)
+        {
+            await Task.Delay(5);
+            Guid.TryParse(userId, out var guid);
+            var basketItem = await context.basketItems.FindAsync(basketItemId);
+            if (basketItem == null) return;
+            context.basketItems.Remove(basketItem);
+            await context.SaveChangesAsync();
+        }
+
         private decimal GetPrice(PrintOrder printOrder, PaperModel paper)
         {
             try
@@ -107,7 +134,7 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
                     var paperLength = printOrder.Height > printOrder.Width ? printOrder.Height + 100 : printOrder.Width + 100;
                     var pricePerPrint = (paperLength / 1000) * paper.CostPerMeter;
                     pricePerPrint = GetQuantityDiscountPrice(pricePerPrint, printOrder.Quantity);
-                    if (printOrder.IsDraft) 
+                    if (printOrder.IsDraft)
                         pricePerPrint = pricePerPrint / 2;
                     var orderValue = Math.Round((pricePerPrint * printOrder.Quantity), 2);
                     return orderValue;
@@ -157,7 +184,7 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
                         break;
                 }
                 if (discount == 0) return pricePerPrint;
-                return (((100 - discount) / 100) * pricePerPrint);
+                return (((decimal)(100 - discount) / 100) * pricePerPrint);
             }
             catch (Exception ex)
             {

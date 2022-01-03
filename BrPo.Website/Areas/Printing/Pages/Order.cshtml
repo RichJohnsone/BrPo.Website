@@ -1018,7 +1018,6 @@ description: ${data.statusText}`);
                     "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
                 },
                 data: new FormData(document.getElementById("orderForm")),
-                //dataType: 'json', 
                 contentType: false,
                 processData: false,
                 success: function (response) {
@@ -1098,7 +1097,6 @@ description: ${data.statusText}`);
             $("#height").focus();
             $("#height").blur();
         }, 300)
-        updateBasketCount();
     });
 
     var PaperModel = null;
