@@ -399,6 +399,7 @@
         // Load picture functions
 
         $("body").on('mousedown', '.thumbnail', function () {
+            // show loading modal over display room
             loadDisplayPanel(
                 $(this).attr("data-id"), 
                 $(this).attr("data-fileName"),
@@ -1022,7 +1023,7 @@ description: ${data.statusText}`);
                 processData: false,
                 success: function (response) {
                     updateBasketCount();
-                    alert(`Success response from server:\n\n${response.responseText}`);
+                    //alert(`Success response from server:\n\n${response.responseText}`);
                 },
                 error: function (response, status, error) {
                     alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);

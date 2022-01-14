@@ -109,7 +109,7 @@ namespace BrPo.Website.Areas.Printing.Pages
 
         public async Task<IActionResult> OnPostOrderPrints()
         {
-            var printOrder = new PrintOrder();
+            var printOrder = new PrintOrderItem();
             try
             {
                 printOrder.FileId = Request.Form["SelectedFileId"].ToString().ToInt();
@@ -141,8 +141,8 @@ namespace BrPo.Website.Areas.Printing.Pages
             }
             try
             {
-                await _shoppingBasketService.CreatePrintOrderAsync(printOrder);
-                await _shoppingBasketService.AddPrintOrderToBasketAsync(printOrder);
+                await _shoppingBasketService.CreatePrintOrderItemAsync(printOrder);
+                await _shoppingBasketService.AddPrintOrderItemToBasketAsync(printOrder);
             }
             catch (System.Exception ex)
             {

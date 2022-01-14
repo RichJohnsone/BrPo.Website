@@ -32,6 +32,8 @@ namespace BrPo.Website.Data
         public DbSet<ImageFileModel> ImageFiles { get; set; }
         public DbSet<PaperModel> Papers { get; set; }
         public DbSet<BasketItem> basketItems { get; set; }
-        public DbSet<PrintOrder> PrintOrders { get; set; }
+        public DbSet<PrintOrderItem> PrintOrderItems { get; set; }
+        public DbSet<PrintInvoiceItem> PrintInvoiceItems { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
     }
 }

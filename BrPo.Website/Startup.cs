@@ -1,4 +1,6 @@
+using AutoMapper;
 using BrPo.Website.Areas.Identity.Services;
+using BrPo.Website.Config;
 using BrPo.Website.Data;
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
@@ -13,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Stripe;
 using System;
 
 namespace BrPo.Website
@@ -20,12 +24,15 @@ namespace BrPo.Website
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // Enables the SessionId cookie without non-essential cookie consent.
         public static bool SessionIdCookieIsEssential { get; } = true;
-        public Startup(IConfiguration configuration)
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -62,7 +69,7 @@ namespace BrPo.Website
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(2);
+                options.IdleTimeout = TimeSpan.FromHours(24);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -72,7 +79,7 @@ namespace BrPo.Website
                 options.AccessDeniedPath = "/AccessDenied";
                 options.SlidingExpiration = true;
                 options.ReturnUrlParameter = "/Account/Login";
-                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                options.ExpireTimeSpan = TimeSpan.FromHours(4);
                 //options.Cookie.Expiration = TimeSpan.FromHours(2);
             });
             services.Configure<CookiePolicyOptions>(options =>
@@ -82,8 +89,31 @@ namespace BrPo.Website
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
-
             services.AddSession();
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("MyAllowPolicy",
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("https://localhost:44397", "https://checkout.stripe.com")
+            //                .AllowAnyMethod()
+            //                .AllowAnyHeader();
+            //        });
+            //});
+            services.AddMvc();
+            if (Environment.IsDevelopment())
+            {
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                });
+            }
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +121,7 @@ namespace BrPo.Website
         {
             if (env.IsDevelopment())
             {
+                StripeConfiguration.ApiKey = Configuration["Stripe:ApiKey"];
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
@@ -106,13 +137,22 @@ namespace BrPo.Website
             app.UseCookiePolicy();
 
             app.UseRouting();
-
+            //app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
+            }
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }

@@ -22,12 +22,12 @@
     <tbody>
     @foreach(var basketItem in Model){
         <tr>
-            <td class="pt-4"><img src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(basketItem.PrintOrder.FileId, 100)"></td>
-            <td class="pt-4">@ImageService.GetFileName(basketItem.PrintOrder.FileId)</td>
-            <td class="pt-4">@basketItem.PrintOrder.Height * @basketItem.PrintOrder.Width</td>
-            <td class="pt-4">@basketItem.PrintOrder.Border</td>
-            <td class="pt-4">@basketItem.PrintOrder.Quality</td>
-            <td class="pt-4">@PaperService.GetPaperName(basketItem.PrintOrder.PaperId)</td>
+            <td class="pt-4"><img src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(basketItem.PrintOrderItem.FileId, 100)"></td>
+            <td class="pt-4">@ImageService.GetFileName(basketItem.PrintOrderItem.FileId)</td>
+            <td class="pt-4">@basketItem.PrintOrderItem.Height * @basketItem.PrintOrderItem.Width</td>
+            <td class="pt-4">@basketItem.PrintOrderItem.Border</td>
+            <td class="pt-4">@basketItem.PrintOrderItem.Quality</td>
+            <td class="pt-4">@PaperService.GetPaperName(basketItem.PrintOrderItem.PaperId)</td>
             <td><input type="number"
                        step="1"
                        class="quantity-controls-js form-control integer-control-js"
@@ -38,9 +38,9 @@
                        max="500" 
                        data-toggle="tooltip" 
                        title="Set the quantity of prints required"
-                       value="@basketItem.PrintOrder.Quantity" />
+                       value="@basketItem.PrintOrderItem.Quantity" />
             </td>
-            <td class="text-right pt-4">@basketItem.PrintOrder.Value</td>
+            <td class="text-right pt-4">@basketItem.PrintOrderItem.Value</td>
             <td class="mt-1"><i class="fas fa-times delete-from-basket-js btn btn-danger" 
                                 data-id="@basketItem.Id"
                                 data-toggle="tooltip" 
@@ -59,7 +59,7 @@
         <tr>
             <th colspan=5><div class="float-right mt-2">Voucher</div></th>
             <th><input type="text"
-                       class="quantityInputs-js form-control"
+                       class="form-control"
                        min="1" 
                        max="500" 
                        data-toggle="tooltip" 

@@ -1,24 +1,62 @@
 ﻿@page
 @model BrPo.Website.Areas.ShoppingBasket.Pages.BasketModel
 
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
 <div class="row">
     <h2>Shopping Basket</h2>
 </div>
+
 <div class="row">
     <div id="basketItemsContainer"></div>
     @Html.AntiForgeryToken()
 </div>
+
 <div class="row">
     <div class="w-100">
         <button class="btn btn-primary btn-lg btn-block" 
                 id="checkoutButton">
-            Go to Checkout
+            Complete Order
         </button>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Proceed to Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <h4 class="ml-3">Your order total is : £ <span id="orderTotal"></span></h4>
+                </div>       
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="proceedToPaymentButton" class="btn btn-primary">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="spinnerModal">
+    <div class="modal-dialog modal-dialog-centered text-center" role="document">
+        <span class="fa fa-spinner fa-spin fa-3x w-100"></span>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        // load basket table functions
         function loadBasketItems(){
             try {
                 $("#basketItemsContainer").load(`Basket?handler=BasketItemsPartial`, function(){
@@ -85,6 +123,8 @@
             });      
         }
 
+        // quantity functions
+
         function setQuantityControls(){
             $(".quantity-controls-js").on('mouseup', function(){
                 let id = $(this).attr("data-id");
@@ -111,6 +151,8 @@
             });
         }
 
+        // delete functions
+
         function setDeleteButtons(){
             $(".delete-from-basket-js").on('mouseup', function() {
                 let id = $(this).attr("data-id");
@@ -134,6 +176,43 @@
                     alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);
                 }
             });
+        }
+
+        // confirmation functions
+
+        $('#checkoutButton').click(function (e) {
+            loadConfirmModal()
+        });
+
+        function loadConfirmModal(){
+            $("#orderTotal").html($("#basketTotal").html());
+            $('#confirmModal').modal('show');
+        }
+
+        $('#proceedToPaymentButton').click(async function (e) {
+            e.preventDefault();
+            $("#checkoutButton").hide();
+            $('#confirmModal').modal('hide');
+            proceedToPayment();
+        });
+
+        function proceedToPayment(){
+            let url = `Basket?handler=GoToPayment`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                processData: false,
+                success: function (response) {
+                    $('#spinnerModal').modal('show');
+                    window.location.href = response;
+                },
+                error: function (response, status, error) {
+                    alert(`Error response from server:\n\n${response.responseText}\n\n${status}\n\n${error}`);
+                }
+            });        
         }
 
         // initialisation

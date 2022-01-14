@@ -1,3 +1,4 @@
+using BrPo.Website.Areas.ShoppingBasket.Models;
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
 using BrPo.Website.Services.ShoppingBasket.Models;
@@ -51,7 +52,7 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
         {
             var userId = GetUserOrSessionId();
             Items = _shoppingBasketService.GetBasketItems(userId);
-            BasketTotalValue = Math.Round(Items.Sum(i => i.PrintOrder.Value), 2);
+            BasketTotalValue = Math.Round(Items.Sum(i => i.PrintOrderItem.Value), 2);
         }
 
         private string GetUserOrSessionId()
@@ -89,15 +90,75 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
         public async Task<IActionResult> OnPostQuantityChange(string basketItemId, string newQuantity)
         {
             var userId = GetUserOrSessionId();
-            await _shoppingBasketService.ChangeQuantity(userId, basketItemId.ToInt(), newQuantity.ToInt());
+            await _shoppingBasketService.ChangeQuantityAsync(userId, basketItemId.ToInt(), newQuantity.ToInt());
             return new OkResult();
         }
 
         public async Task<IActionResult> OnPostDeleteItem(string basketItemId)
         {
             var userId = GetUserOrSessionId();
-            await _shoppingBasketService.DeleteItem(userId, basketItemId.ToInt());
+            await _shoppingBasketService.DeleteItemAsync(userId, basketItemId.ToInt());
             return new OkResult();
         }
+
+        public async Task<IActionResult> OnPostGoToPayment(CreateInvoiceModel createInvoiceModel)
+        {
+            try
+            {
+                var userId = GetUserOrSessionId();
+                //var total = _shoppingBasketService.GetBasketTotal(userId);
+                //var domain = "https://" + Request.Host.Value;
+                //var options = new SessionCreateOptions
+                //{
+                //    LineItems = new List<SessionLineItemOptions>
+                //    {
+                //      new SessionLineItemOptions
+                //      {
+                //        PriceData = new SessionLineItemPriceDataOptions
+                //        {
+                //            Currency = "gbp",
+                //            ProductData = new SessionLineItemPriceDataProductDataOptions
+                //            {
+                //                Name = "Printing Services",
+                //                Description = "For customer invoice XXX"
+                //            },
+                //            UnitAmount = (int)(total * 100)
+                //        },
+                //        Quantity = 1
+                //      }
+                //    },
+                //    Mode = "payment",
+                //    SuccessUrl = domain + "/ShoppingBasket/Success?session_id={CHECKOUT_SESSION_ID}",
+                //    CancelUrl = domain + "/ShoppingBasket/Cancel?session_id={CHECKOUT_SESSION_ID}",
+                //    ClientReferenceId = userId,
+                //};
+                //var service = new SessionService();
+                //Session session = service.Create(options);
+                //return new StatusCodeResult(303);
+                //return new OkObjectResult(session.Url);
+
+                try
+                {
+                    var invoice = await _shoppingBasketService.CreateInvoiceAsync(userId, createInvoiceModel);
+                    return new OkObjectResult($"Checkout?invoiceId={invoice.Id}");
+                }
+                catch (Exception ex)
+                {
+                    return new BadRequestObjectResult(ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from ShoppingBasket.OnPostGoToPayment", ex);
+                throw;
+            }
+        }
+
+        public async Task<IActionResult> OnPostUserId()
+        {
+            await Task.Delay(5);
+            var userId = GetUserOrSessionId();
+            return new OkObjectResult(userId);
+        }
     }
-} 
+}

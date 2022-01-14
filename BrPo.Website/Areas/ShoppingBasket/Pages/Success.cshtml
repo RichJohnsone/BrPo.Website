@@ -1,0 +1,64 @@
+﻿@page
+@model BrPo.Website.Areas.ShoppingBasket.Pages.SuccessModel
+@{
+}
+
+<h3>Success</h3>
+            <div id="payment-message" class=""></div>
+
+            <script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+ 
+        const stripe = Stripe("pk_test_51IeKs3EaMfIKPinexA919ZVkyv3VPJkkg7CVT1s7WcB33jbJzwkD3SF3t1YKndTKNep4MS6h6epMEZSCrNC8UkNU00VsZQXPsz");
+
+        // Fetches the payment intent status after payment submission
+        async function checkStatus() {
+          const clientSecret = new URLSearchParams(window.location.search).get(
+            "payment_intent_client_secret"
+          );
+
+          if (!clientSecret) {
+            return;
+          }
+
+          const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+          switch (paymentIntent.status) {
+            case "succeeded":
+              showMessage("Payment succeeded!");
+
+              break;
+            case "processing":
+              showMessage("Your payment is processing.");
+              break;
+            case "requires_payment_method":
+              showMessage("Your payment was not successful, please try again.");
+              break;
+            default:
+              showMessage("Something went wrong.");
+              break;
+          }
+        }
+
+        // ------- UI helpers -------
+
+        function showMessage(messageText) {
+          const messageContainer = document.querySelector("#payment-message");
+
+          messageContainer.classList.remove("hidden");
+          messageContainer.textContent = messageText;
+
+          //setTimeout(function () {
+          //  messageContainer.classList.add("hidden");
+          //  messageText.textContent = "";
+          //}, 4000);
+        }
+
+        // initialisation
+
+        checkStatus();
+        setTimeout(updateBasketCount, 500);
+    });
+</script>

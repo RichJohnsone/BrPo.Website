@@ -59,6 +59,28 @@
                 <input asp-for="PaperModel.CutSheetWidth" class="form-control" />
                 <span asp-validation-for="PaperModel.CutSheetWidth" class="text-danger"></span>
             </div>
+            
+            <div class="form-group">
+                <label asp-for="PaperModel.IsActive" class="control-label"></label>
+                <input asp-for="PaperModel.IsActive" class="form-control" />
+                <span asp-validation-for="PaperModel.IsActive" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.ProductCode" class="control-label"></label>
+                <input asp-for="PaperModel.ProductCode" class="form-control" />
+                <span asp-validation-for="PaperModel.ProductCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.CostPerMeter" class="control-label"></label>
+                <input asp-for="PaperModel.CostPerMeter" class="form-control" />
+                <span asp-validation-for="PaperModel.CostPerMeter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaperModel.CostPerSheet" class="control-label"></label>
+                <input asp-for="PaperModel.CostPerSheet" class="form-control" />
+                <span asp-validation-for="PaperModel.CostPerSheet" class="text-danger"></span>
+            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
