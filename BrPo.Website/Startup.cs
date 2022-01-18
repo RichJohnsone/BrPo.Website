@@ -2,6 +2,7 @@ using AutoMapper;
 using BrPo.Website.Areas.Identity.Services;
 using BrPo.Website.Config;
 using BrPo.Website.Data;
+using BrPo.Website.Services.ApplicationUser.Services;
 using BrPo.Website.Services.ContactForm.Services;
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
@@ -61,6 +62,7 @@ namespace BrPo.Website
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IPaperService, PaperService>();
             services.AddTransient<IShoppingBasketService, ShoppingBasketService>();
+            services.AddTransient<IApplicationUserService, ApplicationUserService>();
             services.AddAntiforgery(option =>
             {
                 option.HeaderName = "XSRF-TOKEN";

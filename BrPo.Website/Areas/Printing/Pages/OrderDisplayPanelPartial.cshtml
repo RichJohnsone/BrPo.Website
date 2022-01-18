@@ -6,9 +6,12 @@
 <div id="displayPanelRoom" class="container border rounded mr-3 ml-3">
     <div class="row" id="displayPanelImageRow">
         <div class="col-sm-12" id="personImageContainer">
+            @if (Model != null)
+            {
             <img id="personImage" src="/resources/images/Person1.png">
             <img id="sofaImage" src="/resources/images/Sofa.png">
             <img id="displayPanelImage" style="" src="data:image/png;base64,@await ImageService.GetBase64ThumbnailAsync(Model.Id, 500)">
+            }
         </div>
     </div>
 </div>

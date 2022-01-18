@@ -1,4 +1,5 @@
-﻿using BrPo.Website.Services.ContactForm.Models;
+﻿using BrPo.Website.Services.ApplicationUser.Models;
+using BrPo.Website.Services.ContactForm.Models;
 using BrPo.Website.Services.Image.Models;
 using BrPo.Website.Services.Paper.Models;
 using BrPo.Website.Services.ShoppingBasket.Models;
@@ -35,5 +36,7 @@ namespace BrPo.Website.Data
         public DbSet<PrintOrderItem> PrintOrderItems { get; set; }
         public DbSet<PrintInvoiceItem> PrintInvoiceItems { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<GuestUserModel> GuestUsers { get; set; }
+        public DbSet<UserDetailsModel> UserDetails { get; set; }
     }
 }

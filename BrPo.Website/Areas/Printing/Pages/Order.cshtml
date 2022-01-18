@@ -62,243 +62,248 @@
 </style>
 
 <div class="container-fluid">
-    <form id="orderForm">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="col-sm12 col-md-6 col-lg-7" id="displayPanelContainer">
-                <div class="row">
-                    <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
-                    @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
-                    @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
-                </div>
-                <div class="row">
-                    <div id="bg-controls" class="border rounded white-bg p-0 mt-2">
-                        <div class="form-check form-check-inline ml-2">
-                            <h5>Background:</h5>
-                        </div>
-                        <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a sofa - the man is 1.8m wide">
-                           <input class="form-check-input bg-type-js" 
-                                  type="radio" 
-                                  name="bgRadio" 
-                                  id="bgRadio-sofa"                           
-                                  value="sofa"                           
-                                  checked>
-                           <label class="form-check-label" for="bgRadio-sofa">
-                           Sofa
-                           </label>
-                        </div>
-                        <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a man - the man is 1.8m tall">
-                           <input class="form-check-input bg-type-js" 
-                                  type="radio" 
-                                  name="bgRadio" 
-                                  id="bgRadio-man" 
-                                  value="man">
-                           <label class="form-check-label" for="bgRadio-man">
-                           Man
-                           </label>
-                        </div>
-                        <div class="form-check form-check-inline" data-toggle="tooltip" title="fit picture to display window">
-                           <input class="form-check-input bg-type-js" 
-                                  type="radio" 
-                                  name="bgRadio" 
-                                  id="bgRadio-plain"                          
-                                  value="plain">
-                           <label class="form-check-label" for="bgRadio-plain">
-                           Plain
-                           </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <div id="bg-colour" class="input-group">
-                                <input type="hidden" class="form-control input-lg" value="#F0F0F0"/>
-                                <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;">
-                                    <i class="border rounded" 
-                                       data-toggle="tooltip" 
-                                       title="Set the background colour of the display window">
-                                   </i>
-                                </h5>
+    @if (Model.Files.Count > 0) { 
+        <form id="orderForm">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-sm12 col-md-6 col-lg-7" id="displayPanelContainer">
+                    <div class="row">
+                        <div id="displayPanel">@await Html.PartialAsync("OrderDisplayPanelPartial", @Model.SelectedFile)</div>
+                        @Html.HiddenFor(m => Model.SelectedPicturePixelHeight, new { id = "Model.SelectedPicturePixelHeight"})
+                        @Html.HiddenFor(m => Model.SelectedPicturePixelWidth, new { id = "Model.SelectedPicturePixelWidth"})
+                    </div>
+                    <div class="row">
+                        <div id="bg-controls" class="border rounded white-bg p-0 mt-2">
+                            <div class="form-check form-check-inline ml-2">
+                                <h5>Background:</h5>
+                            </div>
+                            <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a sofa - the man is 1.8m wide">
+                               <input class="form-check-input bg-type-js" 
+                                      type="radio" 
+                                      name="bgRadio" 
+                                      id="bgRadio-sofa"                           
+                                      value="sofa"                           
+                                      checked>
+                               <label class="form-check-label" for="bgRadio-sofa">
+                               Sofa
+                               </label>
+                            </div>
+                            <div class="form-check form-check-inline" data-toggle="tooltip" title="Scale display to an image of a man - the man is 1.8m tall">
+                               <input class="form-check-input bg-type-js" 
+                                      type="radio" 
+                                      name="bgRadio" 
+                                      id="bgRadio-man" 
+                                      value="man">
+                               <label class="form-check-label" for="bgRadio-man">
+                               Man
+                               </label>
+                            </div>
+                            <div class="form-check form-check-inline" data-toggle="tooltip" title="fit picture to display window">
+                               <input class="form-check-input bg-type-js" 
+                                      type="radio" 
+                                      name="bgRadio" 
+                                      id="bgRadio-plain"                          
+                                      value="plain">
+                               <label class="form-check-label" for="bgRadio-plain">
+                               Plain
+                               </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <div id="bg-colour" class="input-group">
+                                    <input type="hidden" class="form-control input-lg" value="#F0F0F0"/>
+                                    <h5 class="mt-2 colorpicker-input-addon" style="top: 7px;">
+                                        <i class="border rounded" 
+                                           data-toggle="tooltip" 
+                                           title="Set the background colour of the display window">
+                                       </i>
+                                    </h5>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-sm-12 col-md-6 col-lg-5">
-                @Html.ValidationSummary(true)
-                <!--Accordion wrapper-->
-                <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+                <div class="col-sm-12 col-md-6 col-lg-5">
+                    @Html.ValidationSummary(true)
+                    <!--Accordion wrapper-->
+                    <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
-                    <!-- Files card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingOne1">
-                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false" class="collapsed"
-                            aria-controls="collapseOne1">
-                                <h5 class="mb-0">
-                                    File: <span id="fileHeader" class="headerLabel">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
-                            data-parent="#accordionEx">
-                            <div class="card-body" id="fileBody"">
-                                @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
-                                <input type="hidden" id="selectedFileId" name="selectedFileId" value="@Model.SelectedFile.Id"/>                            
+                        <!-- Files card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingOne1">
+                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false" class="collapsed"
+                                aria-controls="collapseOne1">
+                                    <h5 class="mb-0">
+                                        File: <span id="fileHeader" class="headerLabel">@Model.SelectedFile.OriginalFileName</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                    </h5>
+                                </a>
                             </div>
-                        </div>
-                    </div><!-- Files card -->
-
-                    <!-- Size card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingTwo2">
-                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
-                            aria-controls="collapseTwo2">
-                                <h5 class="mb-0">
-                                    Size: <span class="headerLabel" data-toggle="tooltip" title="Print size in mm : height * width">
-                                              <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
-                                          </span>
-                                          <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseTwo2" class="collapse show" role="tabpanel" aria-labelledby="headingTwo2"
-                            data-parent="#accordionEx">
-                            <div class="card-body" id="sizeBody">
-                                @await Html.PartialAsync("OrderSizePartial")
-                            </div>
-                        </div>
-                    </div><!-- Size card -->
-
-                    <!-- Paper card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingThree3">
-                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3" aria-expanded="false" class="collapsed"
-                            aria-controls="collapseThree3">
-                                <h5 class="mb-0">
-                                    Paper: <span id="paperHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
-                            data-parent="#accordionEx">
-                            <div class="card-body" id="sizeBody">
-                                @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper"})
-                                @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "SelectedPaperId", id = "Model.SelectedPaperId"})
-                            </div>
-                        </div>
-                    </div><!-- Paper card -->
-
-                    <!-- Border card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingFour4">
-                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFour4" aria-expanded="false" class="collapsed"
-                            aria-controls="collapseFour4">
-                                <h5 class="mb-0">
-                                    Border: <span class="headerLabel"><span id="borderHeader" class="headerLabel"></span> mm</span>
-                                    <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4"
-                            data-parent="#accordionEx">
-                            <div class="card-body" id="sizeBody">
-                                @await Html.PartialAsync("OrderBorderPartial")
-                            </div>
-                        </div>
-                    </div><!-- Border card -->
-
-                    <!-- Quality card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingFive5">
-                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFive5" aria-expanded="false" class="collapsed"
-                            aria-controls="collapseFive5">
-                                <h5 class="mb-0">
-                                    Quality: <span id="qualityHeader" class="headerLabel">@Model.SelectedQuality</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
-                            data-parent="#accordionEx">
-                            <div class="card-body" id="qualityBody">
-                                @foreach (var quality in Model.Qualities)
-                                {
-                                    var selected = quality.Equals(Model.SelectedQuality) ? "checked=\"checked\"" : string.Empty;
-                                    var label = quality == "Premium" 
-                                        ? " - 11 inks - available on paper sizes A4 and larger"
-                                        : " - 6 inks - available on paper sizes up to A4";
-                                    <div class="form-check">
-                                        <input  class="form-check-input quality-js"
-                                                type="radio" 
-                                                asp-for="SelectedQuality" 
-                                                name="SelectedQuality" 
-                                                value="@quality" @selected/><span class="font-weight-bold">@quality</span> @label<br />
-                                    </div>
-                                }
-                                <div class="form-group checkbox mb-0">
-                                    @Html.CheckBoxFor(model => model.IsDraftPrint) 
-                                    <label class="" for="IsDraftPrint"><span class="font-weight-bold ml-1">Draft</span> - a reduced price, water-marked draft print</label>
+                            <!-- Card body -->
+                            <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
+                                data-parent="#accordionEx">
+                                <div class="card-body" id="fileBody">
+                                    @await Html.PartialAsync("OrderFilesPartial", @Model.Files)
+                                    <input type="hidden" id="selectedFileId" name="selectedFileId" value="@Model.SelectedFile.Id"/>                            
                                 </div>
                             </div>
-                        </div>
-                    </div><!-- Quality card -->
+                        </div><!-- Files card -->
 
-                    <!-- Order card -->
-                    <div class="card">
-                        <!-- Card header -->
-                        <div class="card-header" role="tab" id="headingSix6">
-                            <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="" aria-expanded="true" 
-                            aria-controls="collapseSix6">
-                                <h5 class="mb-0">
-                                    Order: <span id="orderHeader" class="headerLabel"></span> 
-                                    @*<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>*@
-                                </h5>
-                            </a>
-                        </div>
-                        <!-- Card body -->
-                        <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
-                            @*data-parent="#accordionEx"*@>
-                            <input type="hidden" name="orderValue" id="orderValue" />
-                            <div class="card-body" id="sizeBody">
-                                <div class="form-group row mb-3">
-                                    <label for="height" class="w-33 ml-3 col-form-label">Quantity</label>
-                                    <div class="w-33">
-                                        <input type="number" step="1"
-                                            class="form-control integer-control-js" 
-                                            id="Quantity" 
-                                            placeholder="quantity" 
-                                            name="Quantity" 
-                                            data-val="true"
-                                            data-val-number="The Quantity field must be an integer between 1 and 500." 
-                                            min="1" 
-                                            max="500" 
-                                            data-toggle="tooltip" title="Enter the number of prints required"
-                                            value="@Model.Quantity" />
-                                    </div>
-                                    <div class="w-30">
-                                        <div class="text mt-2 ml-2" id="pricePerPrint"></div>
+                        <!-- Size card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingTwo2">
+                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo2" aria-expanded="true"
+                                aria-controls="collapseTwo2">
+                                    <h5 class="mb-0">
+                                        Size: <span class="headerLabel" data-toggle="tooltip" title="Print size in mm : height * width">
+                                                  <span id="sizeHeaderHeight"></span> (h) * <span id="sizeHeaderWidth"> </span> (w) mm
+                                              </span>
+                                              <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                    </h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div id="collapseTwo2" class="collapse show" role="tabpanel" aria-labelledby="headingTwo2"
+                                data-parent="#accordionEx">
+                                <div class="card-body" id="sizeBody">
+                                    @await Html.PartialAsync("OrderSizePartial")
+                                </div>
+                            </div>
+                        </div><!-- Size card -->
+
+                        <!-- Paper card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingThree3">
+                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseThree3" aria-expanded="false" class="collapsed"
+                                aria-controls="collapseThree3">
+                                    <h5 class="mb-0">
+                                        Paper: <span id="paperHeader" class="headerLabel"></span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                    </h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
+                                data-parent="#accordionEx">
+                                <div class="card-body" id="sizeBody">
+                                    @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper"})
+                                    @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "SelectedPaperId", id = "Model.SelectedPaperId"})
+                                </div>
+                            </div>
+                        </div><!-- Paper card -->
+
+                        <!-- Border card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingFour4">
+                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFour4" aria-expanded="false" class="collapsed"
+                                aria-controls="collapseFour4">
+                                    <h5 class="mb-0">
+                                        Border: <span class="headerLabel"><span id="borderHeader" class="headerLabel"></span> mm</span>
+                                        <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                    </h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4"
+                                data-parent="#accordionEx">
+                                <div class="card-body" id="sizeBody">
+                                    @await Html.PartialAsync("OrderBorderPartial")
+                                </div>
+                            </div>
+                        </div><!-- Border card -->
+
+                        <!-- Quality card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingFive5">
+                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseFive5" aria-expanded="false" class="collapsed"
+                                aria-controls="collapseFive5">
+                                    <h5 class="mb-0">
+                                        Quality: <span id="qualityHeader" class="headerLabel">@Model.SelectedQuality</span> <span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>
+                                    </h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5"
+                                data-parent="#accordionEx">
+                                <div class="card-body" id="qualityBody">
+                                    @foreach (var quality in Model.Qualities)
+                                    {
+                                        var selected = quality.Equals(Model.SelectedQuality) ? "checked=\"checked\"" : string.Empty;
+                                        var label = quality == "Premium" 
+                                            ? " - 11 inks - available on paper sizes A4 and larger"
+                                            : " - 6 inks - available on paper sizes up to A4";
+                                        <div class="form-check">
+                                            <input  class="form-check-input quality-js"
+                                                    type="radio" 
+                                                    asp-for="SelectedQuality" 
+                                                    name="SelectedQuality" 
+                                                    value="@quality" @selected/><span class="font-weight-bold">@quality</span> @label<br />
+                                        </div>
+                                    }
+                                    <div class="form-group checkbox mb-0">
+                                        @Html.CheckBoxFor(model => model.IsDraftPrint) 
+                                        <label class="" for="IsDraftPrint"><span class="font-weight-bold ml-1">Draft</span> - a reduced price, water-marked draft print</label>
                                     </div>
                                 </div>
-                                <div class="field-validation-valid row ml-1" data-valmsg-for="Quantity" data-valmsg-replace="true"></div>
-                                <button class="btn btn-primary btn-lg btn-block" 
-                                        id="orderButton"
-                                        @*data-toggle="modal" 
-                                        data-target="#confirmModal"*@> Order Print </button>
                             </div>
-                        </div>
-                    </div><!-- Order card -->
+                        </div><!-- Quality card -->
 
-                </div><!-- Accordion wrapper -->
+                        <!-- Order card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div class="card-header" role="tab" id="headingSix6">
+                                <a data-toggle="collapse" @*data-parent="#accordionEx"*@ href="" aria-expanded="true" 
+                                aria-controls="collapseSix6">
+                                    <h5 class="mb-0">
+                                        Order: <span id="orderHeader" class="headerLabel"></span> 
+                                        @*<span class="headerIcon"><i class="fas fa-angle-down rotate-icon float-right"></i></span>*@
+                                    </h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div id="collapseSix6" class="show" role="tabpanel" aria-labelledby="headingSix6"
+                                @*data-parent="#accordionEx"*@>
+                                <input type="hidden" name="orderValue" id="orderValue" />
+                                <div class="card-body" id="sizeBody">
+                                    <div class="form-group row mb-3">
+                                        <label for="height" class="w-33 ml-3 col-form-label">Quantity</label>
+                                        <div class="w-33">
+                                            <input type="number" step="1"
+                                                class="form-control integer-control-js" 
+                                                id="Quantity" 
+                                                placeholder="quantity" 
+                                                name="Quantity" 
+                                                data-val="true"
+                                                data-val-number="The Quantity field must be an integer between 1 and 500." 
+                                                min="1" 
+                                                max="500" 
+                                                data-toggle="tooltip" title="Enter the number of prints required"
+                                                value="@Model.Quantity" />
+                                        </div>
+                                        <div class="w-30">
+                                            <div class="text mt-2 ml-2" id="pricePerPrint"></div>
+                                        </div>
+                                    </div>
+                                    <div class="field-validation-valid row ml-1" data-valmsg-for="Quantity" data-valmsg-replace="true"></div>
+                                    <button class="btn btn-primary btn-lg btn-block" 
+                                            id="orderButton"
+                                            @*data-toggle="modal" 
+                                            data-target="#confirmModal"*@> Order Print </button>
+                                </div>
+                            </div>
+                        </div><!-- Order card -->
+
+                    </div><!-- Accordion wrapper -->
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    }
+    else {
+        <h3 style="margin:auto;">You need to <a href="/Printing/Upload">Upload</a> some files before you can order prints</h3>
+    }
 </div>
 
 <!-- Confirm order Modal -->
@@ -624,9 +629,7 @@
                         getPrice();
                     },
                     error: function(data){
-                        alert(`status = ${data.status}
-
-description: ${data.statusText}`);
+                        console.log(`getSelectedPaper: paperId: ${$("input[name=SelectedPaperId]").val()}, status: ${data.status}, description: ${data.statusText}`);
                     }
                 });    
             }

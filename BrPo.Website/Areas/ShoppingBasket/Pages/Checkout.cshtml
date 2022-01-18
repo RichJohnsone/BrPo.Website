@@ -27,7 +27,7 @@
                 var invoiceId = Model.Invoice?.Id ?? 0;
                 <input type="hidden" id="invoiceId" value="@invoiceId" />
             }
-            <input type="hidden" id="userId" value="@Model.UserId" />
+            <input type="hidden" id="userId" value="@Model.ApplicationUser.Id.ToString()" />
             <input type="hidden" id="amount" value="@Model.Invoice?.Total" />
             <div id="payment-element">
                 <!--Stripe.js injects the Payment Element-->
@@ -141,14 +141,6 @@
         }
 
         // UI helpers
-
-        function addInputListeners(){
-            $("input").on('keyup change blur', function(){
-                if ($("input[aria-invalid=true]") == null) {
-                    $('#spinnerModal').modal('hide');
-                }
-            });
-        }
 
         function setMessage(messageText) {
             const messageContainer = document.querySelector("#payment-message");

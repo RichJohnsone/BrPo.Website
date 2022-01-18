@@ -1,4 +1,6 @@
 using BrPo.Website.Areas.ShoppingBasket.Models;
+using BrPo.Website.Services.ApplicationUser.Models;
+using BrPo.Website.Services.ApplicationUser.Services;
 using BrPo.Website.Services.Email;
 using BrPo.Website.Services.Image.Services;
 using BrPo.Website.Services.ShoppingBasket.Models;
@@ -20,13 +22,12 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
     public class BasketModel : PageModel
     {
         private readonly ILogger<BasketModel> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IImageService _imageService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IShoppingBasketService _shoppingBasketService;
+        private readonly IApplicationUserService _applicationUserService;
 
+        public ApplicationUser ApplicationUser { get; set; }
         public List<BasketItem> Items { get; set; }
         public decimal BasketTotalValue { get; set; }
 
@@ -37,22 +38,22 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             IHttpContextAccessor httpContextAccessor,
             IImageService imageService,
             UserManager<IdentityUser> userManager,
-            IShoppingBasketService shoppingBasketService)
+            IShoppingBasketService shoppingBasketService,
+            IApplicationUserService applicationUserService)
         {
             _logger = logger;
-            _configuration = configuration;
-            _environment = environment;
             _httpContextAccessor = httpContextAccessor;
-            _imageService = imageService;
             _userManager = userManager;
             _shoppingBasketService = shoppingBasketService;
+            _applicationUserService = applicationUserService;
         }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            var userId = GetUserOrSessionId();
-            Items = _shoppingBasketService.GetBasketItems(userId);
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
+            Items = _shoppingBasketService.GetBasketItems(ApplicationUser.Id.ToString());
             BasketTotalValue = Math.Round(Items.Sum(i => i.PrintOrderItem.Value), 2);
+            return Page();
         }
 
         private string GetUserOrSessionId()
@@ -106,37 +107,6 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             try
             {
                 var userId = GetUserOrSessionId();
-                //var total = _shoppingBasketService.GetBasketTotal(userId);
-                //var domain = "https://" + Request.Host.Value;
-                //var options = new SessionCreateOptions
-                //{
-                //    LineItems = new List<SessionLineItemOptions>
-                //    {
-                //      new SessionLineItemOptions
-                //      {
-                //        PriceData = new SessionLineItemPriceDataOptions
-                //        {
-                //            Currency = "gbp",
-                //            ProductData = new SessionLineItemPriceDataProductDataOptions
-                //            {
-                //                Name = "Printing Services",
-                //                Description = "For customer invoice XXX"
-                //            },
-                //            UnitAmount = (int)(total * 100)
-                //        },
-                //        Quantity = 1
-                //      }
-                //    },
-                //    Mode = "payment",
-                //    SuccessUrl = domain + "/ShoppingBasket/Success?session_id={CHECKOUT_SESSION_ID}",
-                //    CancelUrl = domain + "/ShoppingBasket/Cancel?session_id={CHECKOUT_SESSION_ID}",
-                //    ClientReferenceId = userId,
-                //};
-                //var service = new SessionService();
-                //Session session = service.Create(options);
-                //return new StatusCodeResult(303);
-                //return new OkObjectResult(session.Url);
-
                 try
                 {
                     var invoice = await _shoppingBasketService.CreateInvoiceAsync(userId, createInvoiceModel);

@@ -11,7 +11,9 @@ namespace BrPo.Website.Services.ContactForm.Services
     public interface IContactService
     {
         Task Save(ContactModel contactModel);
+
         Task<ContactModel> Find(ContactModel contactModel);
+
         Task Email(ContactModel contactModel);
     }
 
@@ -22,7 +24,7 @@ namespace BrPo.Website.Services.ContactForm.Services
         private readonly ILogger<ContactService> _logger;
 
         public ContactService(
-            ApplicationDbContext applicationDbContext, 
+            ApplicationDbContext applicationDbContext,
             IEmailSender emailSender,
             ILogger<ContactService> logger)
         {
@@ -41,10 +43,11 @@ namespace BrPo.Website.Services.ContactForm.Services
         public Task<ContactModel> Find(ContactModel contactModel)
         {
             var contacts = context.Contacts.Where(
-                c => c.Email == contactModel.Email    
+                c => c.Email == contactModel.Email
                 && c.Name == contactModel.Name
                 && c.Message == contactModel.Message);
-            if (contacts.Any()) {
+            if (contacts.Any())
+            {
                 return Task.FromResult(contacts.OrderBy(c => c.Id).Last());
             }
             return null;

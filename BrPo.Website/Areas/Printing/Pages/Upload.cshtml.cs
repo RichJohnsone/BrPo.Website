@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using BrPo.Website.Services.Image.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using BrPo.Website.Services.ApplicationUser.Services;
+using BrPo.Website.Services.ApplicationUser.Models;
 
 namespace BrPo.Website.Areas.Printing.Pages
 {
@@ -21,7 +23,9 @@ namespace BrPo.Website.Areas.Printing.Pages
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IImageService _imageService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IApplicationUserService _applicationUserService;
 
+        public ApplicationUser ApplicationUser { get; set; }
         public IFormFile UploadFile { get; set; }
         public string AllowedExtensions;
         public string AllowedSize;
@@ -46,8 +50,9 @@ namespace BrPo.Website.Areas.Printing.Pages
             IConfiguration configuration,
             IWebHostEnvironment environment,
             IHttpContextAccessor httpContextAccessor,
-            IImageService imageService, 
-            UserManager<IdentityUser> userManager)
+            IImageService imageService,
+            UserManager<IdentityUser> userManager,
+            IApplicationUserService applicationUserService)
         {
             _logger = logger;
             _configuration = configuration;
@@ -55,20 +60,23 @@ namespace BrPo.Website.Areas.Printing.Pages
             _httpContextAccessor = httpContextAccessor;
             _imageService = imageService;
             _userManager = userManager;
+            _applicationUserService = applicationUserService;
             AllowedExtensions = UploadHelpers.GetAllowedExtensions(_configuration);
             AllowedSize = UploadHelpers.GetMaxAllowedSize(_configuration);
         }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            _logger.LogInformation("UploadModel page loaded");
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
+            return Page();
         }
 
         public async Task<IActionResult> OnPostUploadFile()
         {
             try
             {
-                if (UploadFile == null) {
+                if (UploadFile == null)
+                {
                     return new BadRequestObjectResult(UploadHelpers.SelectAFile);
                 }
                 _logger.LogInformation($"FileInfo: name: {UploadFile.FileName} - Size: {UploadFile.Length}");

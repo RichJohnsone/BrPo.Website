@@ -9,15 +9,19 @@ namespace BrPo.Website.Services.ContactForm.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string Email { get; set; }
+
         [Required]
         [MaxLength(1000)]
         public string Message { get; set; }
+
         [Required]
         public DateTime DateCreated { get; set; }
     }

@@ -1,3 +1,5 @@
+using BrPo.Website.Services.ApplicationUser.Models;
+using BrPo.Website.Services.ApplicationUser.Services;
 using BrPo.Website.Services.ShoppingBasket.Models;
 using BrPo.Website.Services.ShoppingBasket.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -21,8 +23,9 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IShoppingBasketService _shoppingBasketService;
+        private readonly IApplicationUserService _applicationUserService;
 
-        public string UserId { get; private set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public Invoice Invoice { get; private set; }
 
         public CheckoutModel(
@@ -31,7 +34,8 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             IWebHostEnvironment environment,
             IHttpContextAccessor httpContextAccessor,
             UserManager<IdentityUser> userManager,
-            IShoppingBasketService shoppingBasketService)
+            IShoppingBasketService shoppingBasketService,
+            IApplicationUserService applicationUserService)
         {
             _logger = logger;
             _configuration = configuration;
@@ -39,14 +43,15 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _shoppingBasketService = shoppingBasketService;
+            _applicationUserService = applicationUserService;
         }
 
         public async Task<IActionResult> OnGetAsync(int invoiceId)
         {
-            UserId = GetUserOrSessionId();
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             try
             {
-                var invoice = await _shoppingBasketService.GetInvoiceAsync(invoiceId, UserId);
+                var invoice = await _shoppingBasketService.GetInvoiceAsync(invoiceId, ApplicationUser.Id.ToString());
                 Invoice = invoice;
                 return Page();
             }
@@ -54,24 +59,6 @@ namespace BrPo.Website.Areas.ShoppingBasket.Pages
             {
                 _logger.LogError("from CheckoutModel.OnGetAsync", ex);
                 throw;
-            }
-        }
-
-        private string GetUserOrSessionId()
-        {
-            var principle = this.User;
-            if (principle != null && principle.Identity.IsAuthenticated)
-            {
-                return _userManager.GetUserId(principle);
-            }
-            else
-            {
-                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("BrPoSession", out var sessionId))
-                    return sessionId.ToString();
-                else
-                {
-                    throw new ApplicationException("Your session has expired");
-                }
             }
         }
     }

@@ -4,9 +4,9 @@
 }
 
 <h3>Success</h3>
-            <div id="payment-message" class=""></div>
+<div id="payment-message" class=""></div>
 
-            <script src="https://js.stripe.com/v3/"></script>
+<script src="https://js.stripe.com/v3/"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -28,7 +28,6 @@
           switch (paymentIntent.status) {
             case "succeeded":
               showMessage("Payment succeeded!");
-
               break;
             case "processing":
               showMessage("Your payment is processing.");
@@ -45,15 +44,9 @@
         // ------- UI helpers -------
 
         function showMessage(messageText) {
-          const messageContainer = document.querySelector("#payment-message");
-
-          messageContainer.classList.remove("hidden");
-          messageContainer.textContent = messageText;
-
-          //setTimeout(function () {
-          //  messageContainer.classList.add("hidden");
-          //  messageText.textContent = "";
-          //}, 4000);
+            const messageContainer = document.querySelector("#payment-message");
+            messageContainer.classList.remove("hidden");
+            messageContainer.textContent = messageText;
         }
 
         // initialisation

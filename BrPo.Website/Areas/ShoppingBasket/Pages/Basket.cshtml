@@ -186,6 +186,10 @@
 
         function loadConfirmModal(){
             $("#orderTotal").html($("#basketTotal").html());
+            if (parseFloat($("#orderTotal").html) == 0){
+                alert("basket is empty!");
+                return;
+            }
             $('#confirmModal').modal('show');
         }
 
