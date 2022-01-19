@@ -101,6 +101,7 @@ namespace BrPo.Website.Areas.Printing.Pages
 
         public async Task<IActionResult> OnPostOrderPrints()
         {
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             var printOrder = new PrintOrderItem();
             try
             {
@@ -176,11 +177,12 @@ namespace BrPo.Website.Areas.Printing.Pages
             return new JsonResult(paper);
         }
 
-        public IActionResult OnGetBasketCount()
+        public async Task<IActionResult> OnGetBasketCountAsync()
         {
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             var count = 0;
             if (ApplicationUser != null)
-                count =_shoppingBasketService.GetBasketCount(ApplicationUser.Id.ToString());
+                count = _shoppingBasketService.GetBasketCount(ApplicationUser.Id.ToString());
             return new JsonResult(count);
         }
     }

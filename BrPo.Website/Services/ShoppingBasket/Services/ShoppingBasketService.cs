@@ -263,7 +263,7 @@ namespace BrPo.Website.Services.ShoppingBasket.Services
                 if (paper.RollPaper == true)
                 {
                     var paperLength = printOrder.Height > printOrder.Width ? printOrder.Height + 100 : printOrder.Width + 100;
-                    var pricePerPrint = (paperLength / 1000) * paper.CostPerMeter;
+                    var pricePerPrint = ((Decimal)paperLength / 1000) * paper.CostPerMeter;
                     pricePerPrint = GetQuantityDiscountPrice(pricePerPrint, printOrder.Quantity);
                     if (printOrder.IsDraft)
                         pricePerPrint = pricePerPrint / 2;

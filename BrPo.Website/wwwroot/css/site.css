@@ -218,25 +218,50 @@ label.error {
     z-index: 10;
 }
 
-#loader-background {
+.loader-background {
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(circle, white 5%, white 5%, #0366d6 90%);
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 5%, rgba(255, 255, 255, 0.5) 5%, #0366d699 90%);
     margin: auto;
     overflow: hidden;
-    opacity: 50%;
 }
 
 #loader-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    left: calc(50% - 100px);
-    top: calc(50% - 100px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 
 #loader-label {
     text-align: center;
+    margin-top:30px;
+    margin-left:20px;
+}
+
+#loader-label:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis alternate 2000ms infinite;
+    animation: ellipsis alternate 2000ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+    color: #0366d6;
+    font-size: 1.5em;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 50px;
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 50px;
+    }
 }
 
 @keyframes load {
@@ -246,3 +271,7 @@ label.error {
 }
 
 /* end Loader */
+
+.modal-backdrop {
+    background-color: #0366d6;
+}

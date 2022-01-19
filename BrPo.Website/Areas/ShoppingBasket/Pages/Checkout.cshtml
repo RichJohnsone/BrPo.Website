@@ -40,17 +40,13 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="spinnerModal">
-    <div class="modal-dialog modal-dialog-centered text-center" role="document">
-        <span class="fa fa-spinner fa-spin fa-5x w-100"></span>
-    </div>
-</div>
+@await Html.PartialAsync("_LoaderModalPartial")
 
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        $('#spinnerModal').modal('show');
+        showLoader();
 
         const stripe = Stripe("pk_test_51IeKs3EaMfIKPinexA919ZVkyv3VPJkkg7CVT1s7WcB33jbJzwkD3SF3t1YKndTKNep4MS6h6epMEZSCrNC8UkNU00VsZQXPsz");
         let elements, cs;
@@ -106,20 +102,20 @@
                 });
                 paymentElement.mount("#payment-element");
                 setTimeout(function(){
-                    $('#spinnerModal').modal('hide');
+                    showLoader(false);
                     $("#submit").show();
                 }, 3000);
             } else {
                 setMessage("Incorrect amount submitted for payment");
                 setTimeout(function(){
-                    $('#spinnerModal').modal('hide');
+                    showLoader(false);
                 }, 500);
             }
         }
 
         async function handleSubmit(e) {
             e.preventDefault();
-            $('#spinnerModal').modal('show');
+            showLoader();
             clearMessage();
             const { error } = await stripe.confirmPayment({
                 elements,
@@ -134,9 +130,9 @@
             } else {
                 setMessage(`An unexpected error occurred: ${error.message}`);
             }
-            $('#spinnerModal').modal('hide');
+            showLoader(false);
             setTimeout(function(){
-                $('#spinnerModal').modal('hide');
+                showLoader(false);
             }, 500);
         }
 

@@ -187,7 +187,7 @@
                             <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
                                 data-parent="#accordionEx">
                                 <div class="card-body" id="sizeBody">
-                                    @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper"})
+                                    @Html.DropDownListFor(m => Model.SelectedPaperId, new SelectList(Model.Papers, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "SelectedPaper", title="Select a paper"})
                                     @Html.HiddenFor(m => Model.SelectedPaperId, new { name = "SelectedPaperId", id = "Model.SelectedPaperId"})
                                 </div>
                             </div>
@@ -618,15 +618,7 @@
                     url: 'Order?handler=Paper&id=' + $("input[name=SelectedPaperId]").val(),
                     success: function(paperModel){   
                         PaperModel = paperModel;
-                        $("#paperHeader").html(paperModel["Name"]);
-                        setPaperSizeLimits();
-                        if (paperModel["Name"].includes("A4")){
-                            $("#qualityBody").find('input.quality-js').eq(1).prop("disabled", false);
-                        }else{
-                            $("#qualityBody").find('input.quality-js').eq(1).prop("disabled", true);
-                            $("#qualityBody").find('input.quality-js').eq(0).prop("checked", true);
-                        }
-                        getPrice();
+                        setSelectedPaper();
                     },
                     error: function(data){
                         console.log(`getSelectedPaper: paperId: ${$("input[name=SelectedPaperId]").val()}, status: ${data.status}, description: ${data.statusText}`);
@@ -636,6 +628,26 @@
             catch(e) {
                 console.log(`Error from getSelectedPaper : ${e.name} :  : ${e.description} : ${e.message}` );
             }
+        }
+
+        function setSelectedPaper(){
+            $("#paperHeader").html(PaperModel["Name"]);
+            setPaperSizeLimits();
+            if (!PaperModel["Name"].toLowerCase().includes("roll")){
+                $("#qualityBody").find('input.quality-js').eq(1).prop("disabled", false);
+            }else{
+                $("#qualityBody").find('input.quality-js').eq(1).prop("disabled", true);
+                $("#qualityBody").find('input.quality-js').eq(0).prop("checked", true);
+            }
+            getPrice();
+        }
+
+        function setPaperTitles(){
+            const papers = @Html.Raw(Json.Serialize(@Model.Papers))
+            $("#SelectedPaper").attr('data-toggle', 'tooltip');
+            $("#SelectedPaper option").each(function(index, object){
+                $(this).attr('title', papers[index].Description);
+            });
         }
 
         function setPaperSizeLimits(){
@@ -1066,6 +1078,7 @@
         getPrice();
         setPaperSizeLimits();
         fitPictureToPaperSize();
+        setPaperTitles();
         setTimeout(function(){
             fitPictureToPaperSize();
             setPaperSizeLimits();

@@ -47,15 +47,11 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="spinnerModal">
-    <div class="modal-dialog modal-dialog-centered text-center" role="document">
-        <span class="fa fa-spinner fa-spin fa-3x w-100"></span>
-    </div>
-</div>
+@await Html.PartialAsync("_LoaderModalPartial")
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-
+        showLoader();
         // load basket table functions
         function loadBasketItems(){
             try {
@@ -78,6 +74,9 @@
                     doVoucherDiscount();
                     getDeliveryCost();
                     getTotal();
+                    setTimeout(function(){
+                        showLoader(false);
+                    }, 500);
                 });
             }
             catch(e) {

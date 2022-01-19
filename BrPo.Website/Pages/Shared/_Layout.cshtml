@@ -144,7 +144,7 @@
                 }
             }
 
-            bindTooltips();
+            setTimeout(bindTooltips, 1000);
             updateBasketCount();
         });
 
@@ -180,6 +180,15 @@
             catch(e) {
                 console.log(`Error from updateBasketCount : ${e.name} :  : ${e.description} : ${e.message}` );
             }        
+        }
+
+        function showLoader(show){
+            if (show || show == undefined){
+                $('#spinnerModal').modal('show');
+                $('body').removeClass('modal-open');
+            } else {
+                $('#spinnerModal').modal('hide');
+            }
         }
 
     </script>

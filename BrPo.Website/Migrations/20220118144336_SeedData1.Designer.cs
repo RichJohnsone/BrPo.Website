@@ -3,14 +3,16 @@ using System;
 using BrPo.Website.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BrPo.Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220118144336_SeedData1")]
+    partial class SeedData1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,96 +241,15 @@ namespace BrPo.Website.Migrations
                         new
                         {
                             Id = 1,
-                            CostPerMeter = 32m,
-                            CostPerSheet = 0m,
-                            CutSheetHeight = 0,
-                            CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(7251),
-                            Description = "natural white smooth gloss surface",
-                            GSMWeight = 310,
-                            IsActive = true,
-                            Name = "Ilford Galerie Prestige Smooth Gloss - 17 roll",
-                            ProductCode = "GPSGP12",
-                            RollPaper = true,
-                            RollWidth = 432
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CostPerMeter = 30m,
-                            CostPerSheet = 0m,
-                            CutSheetHeight = 0,
-                            CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(9393),
-                            Description = "natural white smooth matte surface",
-                            GSMWeight = 190,
-                            IsActive = true,
-                            Name = "Ilford Galerie Graphic Heavyweight Matt - 17 roll",
-                            ProductCode = "IGXHWMP",
-                            RollPaper = true,
-                            RollWidth = 432
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CostPerMeter = 35m,
-                            CostPerSheet = 0m,
-                            CutSheetHeight = 0,
-                            CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(9840),
-                            Description = "natural white lightly pearled surface",
-                            GSMWeight = 290,
-                            IsActive = true,
-                            Name = "Ilford Galerie Smooth Pearl - 17 roll",
-                            ProductCode = "IGSPP11",
-                            RollPaper = true,
-                            RollWidth = 432
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CostPerMeter = 30m,
-                            CostPerSheet = 0m,
-                            CutSheetHeight = 0,
-                            CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(9845),
-                            Description = "ultra white smooth matte surface",
-                            GSMWeight = 230,
-                            IsActive = true,
-                            Name = "Olmec Photo Matt Archival - 17 roll",
-                            ProductCode = "OLM67R17",
-                            RollPaper = true,
-                            RollWidth = 432
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CostPerMeter = 45m,
-                            CostPerSheet = 0m,
-                            CutSheetHeight = 0,
-                            CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(9847),
-                            Description = "natural white smooth matte surface, grey backing for added opacity, easy-peel adhesive",
-                            GSMWeight = 120,
-                            IsActive = true,
-                            Name = "Matt Self-adhesive Poly-vinyl - 17 roll",
-                            ProductCode = "M120V17",
-                            RollPaper = true,
-                            RollWidth = 432
-                        },
-                        new
-                        {
-                            Id = 6,
                             CostPerMeter = 0m,
-                            CostPerSheet = 12m,
+                            CostPerSheet = 10m,
                             CutSheetHeight = 420,
                             CutSheetWidth = 297,
-                            DateCreated = new DateTime(2022, 1, 19, 10, 29, 11, 958, DateTimeKind.Utc).AddTicks(9850),
+                            DateCreated = new DateTime(2022, 1, 18, 14, 43, 35, 502, DateTimeKind.Utc).AddTicks(429),
                             Description = "neutral white smooth lustre mettalic surface",
                             GSMWeight = 260,
-                            IsActive = true,
+                            IsActive = false,
                             Name = "Olmec Photo Metallic Lustre A3",
-                            ProductCode = "OLM72A3",
                             RollPaper = false,
                             RollWidth = 0
                         });
@@ -627,13 +548,13 @@ namespace BrPo.Website.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e30a27f8-a0fc-4216-891b-a5d4c6bb82d6",
+                            ConcurrencyStamp = "ab02daac-7bfc-4fef-a145-180a125550bf",
                             Email = "Info@brixtonPhotographic.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumber = "07986215451",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1dc46160-0547-4d3e-b83b-9db1ce4d4b05",
+                            SecurityStamp = "df8ffe13-1b7c-4399-985d-a793c68118d9",
                             TwoFactorEnabled = false,
                             UserName = "BPAdmin"
                         });

@@ -107,7 +107,6 @@
             contentType: false,
             processData: false,
             success: function (response) {
-                $("#uploadButton").removeAttr('disabled');
                 $('#importModal').modal('hide');
                 $('#imagesDiv').load('Upload?handler=UploadedImagesPartial');
             },
