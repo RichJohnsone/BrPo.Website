@@ -1,0 +1,52 @@
+﻿@page
+@using BrPo.Website.Services.Image.Services
+@model BrPo.Website.Areas.Pictures.Pages.GalleriesModel
+@inject IImageService ImageService;
+
+<div class="container-fluid">
+    <div class="row">
+        <h1>Galleries</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 col-lg-12 pl-0 mt-2 pr-3 grid-column">
+
+            @foreach(var gallery in Model.Galleries)
+            {
+                var href = $"Pictures/Galleries/{@gallery.Name}";
+                <a data-toggle="tooltip" title="View gallery" href="@href">
+                    <img  class="galleryImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(gallery.Content.First().ImageGalleryItem.ImageFile.Id)">
+                </a>
+            }
+        </div>
+        <div class="col-xl-6 col-lg-12 pr-0 mt-2 pl-3">
+            <div id="alert-container" class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-3 mr-3" style="margin-top: 0!important;">
+                <i id="alert-icon" class="fas fa-info-circle"></i>
+                <span id="alert-message"></span>
+                <button type="button" class="close alert-close-js" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="editPanel">
+                <div>
+                    <p>Your images are listed in the grid.</p>
+                    <p>You can add your images to public galleries here.</p>
+                    <p>Images in galleries can be available for sale - you set the available sizes and prices.</p>
+                    <p>To do this we capture some extra data about your image - we call this making it into a gallery item.</p>
+                    <p>Use the action buttons in the grid to:</p>
+                    <ul>
+                        <li>Make a file into a gallery item</li>
+                        <ul>
+                            <li>The gallery item can be added to one or more galleries</li>
+                            <li>You can add tags to the gallery item</li>
+                        </ul>
+                        <li>Edit a file's gallery item data</li>
+                        <li>Remove a file's gallery item data</li>
+                        <ul>
+                            <li>Also removes associated tags and gallery entries</li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

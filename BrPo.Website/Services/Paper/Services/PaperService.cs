@@ -5,15 +5,21 @@ using System.Threading.Tasks;
 using BrPo.Website.Services.Paper.Models;
 using System.Collections.Generic;
 using System.Linq;
+using static BrPo.Website.Services.Paper.Models.Enums;
 
 namespace BrPo.Website.Services.Paper.Services
 {
     public interface IPaperService
     {
         Task<PaperModel> CreatePaperRecord(PaperModel model);
+
         Task<PaperModel> GetPaperAsync(int id);
+
         List<PaperModel> GetPapers();
+
         string GetPaperName(int id);
+
+        List<List<PaperEnumItem>> GetPaperEnums();
     }
 
     public class PaperService : IPaperService
@@ -68,6 +74,42 @@ namespace BrPo.Website.Services.Paper.Services
         public string GetPaperName(int id)
         {
             return context.Papers.FirstOrDefault(p => p.Id == id).Name;
+        }
+
+        public List<List<PaperEnumItem>> GetPaperEnums()
+        {
+            var papers = context.Papers.Where(p => p.IsActive).ToList();
+            var returnList = new List<List<PaperEnumItem>>();
+            var paperSurfaces = Enum.GetValues(typeof(PaperSurface)).Cast<PaperSurface>();
+            var surfaceList = new List<PaperEnumItem>() { new PaperEnumItem() { Id = -1, Name = String.Empty, IsAvailable = true } };
+            var i = 0;
+            var id = 0;
+            foreach (var paperSurface in paperSurfaces)
+            {
+                id = i++;
+                surfaceList.Add(new PaperEnumItem()
+                {
+                    Id = id,
+                    Name = paperSurface.ToString(),
+                    IsAvailable = papers.Any(p => (int)p.PaperSurface == id)
+                });
+            }
+            returnList.Add(surfaceList);
+            i = 0;
+            var paperTextures = Enum.GetValues(typeof(PaperTexture)).Cast<PaperTexture>();
+            var textureList = new List<PaperEnumItem>() { new PaperEnumItem() { Id = -1, Name = String.Empty, IsAvailable = true } };
+            foreach (var paperTexture in paperTextures)
+            {
+                id = i++;
+                textureList.Add(new PaperEnumItem()
+                {
+                    Id = id,
+                    Name = paperTexture.ToString(),
+                    IsAvailable = papers.Any(p => (int)p.PaperSurface == id)
+                });
+            }
+            returnList.Add(textureList);
+            return returnList;
         }
     }
 }

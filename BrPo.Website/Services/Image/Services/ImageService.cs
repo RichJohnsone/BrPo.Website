@@ -10,19 +10,52 @@ using System.Linq;
 using System.Globalization;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BrPo.Website.Services.Image.Services
 {
     public interface IImageService
     {
         Task<ImageFileModel> CreateImageRecord(string path, string userId, string originalFileName);
+
         string GetBase64(int id);
+
         string GetBase64Thumbnail(int id, int height = 300);
+
         Task<string> GetBase64ThumbnailAsync(int id, int height = 300);
+
         Task<ImageFileModel> GetImageAsync(int id);
+
         List<string> GetIds(string userId);
+
         List<ImageFileModel> GetImages(string userId);
+
         string GetFileName(int id);
+
+        Task<List<ImageGalleryItem>> GetGalleryItemsAsync(Guid userId);
+
+        Task<ImageGalleryItem> GetGalleryItemAsync(int galleryItemId, Guid userId);
+
+        Task<List<ImageGallery>> GetUserGalleriesAsync(Guid userId);
+
+        Task AddOrUpdateGalleryItem(ImageGalleryItem galleryItem);
+
+        List<ImageTag> GetImageTags(int galleryItemId);
+
+        Task CreateImageTag(ImageTag imageTag);
+
+        Task DeleteImageTag(int imageTagId);
+
+        Task AddToGallery(ImageGalleryContent galleryContent);
+
+        Task RemoveFromGallery(int galleryId, int galleryItemId);
+
+        List<ImageGallery> GetGalleries(int galleryItemId);
+
+        Task DeleteGalleryItemAsync(int galleryItemId, Guid userId);
+
+        Task<List<ImageGallery>> GetGalleries();
     }
 
     public class ImageService : IImageService
@@ -115,7 +148,8 @@ namespace BrPo.Website.Services.Image.Services
                 {
                     _logger.LogError("from ImageService.GetImageMetaData Exif", ex);
                 }
-                if (model.Orientation.Contains("CW")){
+                if (model.Orientation.Contains("CW"))
+                {
                     model.Width = image.Height;
                     model.Height = image.Width;
                 }
@@ -159,7 +193,7 @@ namespace BrPo.Website.Services.Image.Services
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError("from ImageService.GetBase64Thumbnail", ex);
                 throw;
@@ -171,7 +205,7 @@ namespace BrPo.Website.Services.Image.Services
             var imageFile = await context.ImageFiles.FindAsync(id);
             if (imageFile == null) return null;
             RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
-            switch(imageFile.Orientation)
+            switch (imageFile.Orientation)
             {
                 case "90 CW":
                     rotate = RotateFlipType.Rotate90FlipNone;
@@ -214,7 +248,7 @@ namespace BrPo.Website.Services.Image.Services
             g.DrawImage(image, 0, 0, new_width, new_height);
             return (System.Drawing.Image)new_image;
         }
-    
+
         public List<string> GetIds(string userId)
         {
             try
@@ -254,6 +288,153 @@ namespace BrPo.Website.Services.Image.Services
         public string GetFileName(int id)
         {
             return context.ImageFiles.FirstOrDefault(i => i.Id == id).OriginalFileName;
+        }
+
+        public async Task<List<ImageGalleryItem>> GetGalleryItemsAsync(Guid userId)
+        {
+            await Task.Delay(1);
+            var items = context.ImageGalleryItems
+                .Include(g => g.ImageFile)
+                .Where(g => g.UserId == userId);
+            if (items.Any())
+            {
+                return items.ToList();
+            }
+            else
+            {
+                return new List<ImageGalleryItem>();
+            }
+        }
+
+        public async Task<ImageGalleryItem> GetGalleryItemAsync(int galleryItemId, Guid userId)
+        {
+            return await context.ImageGalleryItems
+                 .Include(g => g.ImageFile)
+                 .Include(g => g.Tags)
+                 .FirstOrDefaultAsync(g => g.UserId == userId && g.Id == galleryItemId);
+        }
+
+        public async Task<List<ImageGallery>> GetUserGalleriesAsync(Guid userId)
+        {
+            var galleries = context.ImageGalleries
+                 .Where(g => g.UserId == userId);
+            if (galleries.Any())
+            {
+                return galleries.ToList();
+            }
+            else
+            {
+                var _galleries = new List<ImageGallery>();
+                var defaultGallery = new ImageGallery() { Name = "Default", DateCreated = DateTime.UtcNow, UserId = userId };
+                context.ImageGalleries.Add(defaultGallery);
+                await context.SaveChangesAsync();
+                _galleries.Add(defaultGallery);
+                return _galleries;
+            }
+        }
+
+        public async Task AddOrUpdateGalleryItem(ImageGalleryItem galleryItem)
+        {
+            if (galleryItem == null) return;
+            if (galleryItem.Id == 0)
+            {
+                galleryItem.DateCreated = (DateTime)galleryItem.UpdatedDate;
+                context.ImageGalleryItems.Add(galleryItem);
+            }
+            else
+            {
+                var entity = context.ImageGalleryItems.Find(galleryItem.Id);
+                if (entity != null)
+                {
+                    if (entity.UserId != galleryItem.UserId) throw new ApplicationException("Attempt to update gallery item with incorrect userId");
+                    var entry = context.Entry(entity);
+                    entry.CurrentValues.SetValues(galleryItem);
+                }
+            }
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<ImageGallery>> GetGalleries()
+        {
+            var galleries = context.ImageGalleries
+                .Where(g => g.Content.Count() > 0)
+                .Include(g => g.Content)
+                .ToList();
+            return galleries;
+        }
+
+        public List<ImageTag> GetImageTags(int galleryItemId)
+        {
+            var imageTags = context.ImageTags.Where(i => i.ImageGalleryItemId == galleryItemId);
+            if (imageTags.Any())
+                return imageTags.ToList();
+            else
+                return new List<ImageTag> { };
+        }
+
+        public async Task CreateImageTag(ImageTag imageTag)
+        {
+            var entity = context.ImageTags.FirstOrDefault(i => i.ImageGalleryItemId == imageTag.ImageGalleryItemId && i.Tag == imageTag.Tag);
+            if (entity != null) throw new ApplicationException("Tag already exists");
+            context.ImageTags.Add(imageTag);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteImageTag(int imageTagId)
+        {
+            var imageTag = context.ImageTags.Find(imageTagId);
+            if (imageTag != null)
+            {
+                context.ImageTags.Remove(imageTag);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddToGallery(ImageGalleryContent galleryContent)
+        {
+            var entity = context.ImageGalleryContents.FirstOrDefault(
+                i => i.ImageGalleryItemId == galleryContent.ImageGalleryItemId
+                     && i.ImageGalleryId == galleryContent.ImageGalleryId);
+            if (entity != null) throw new ApplicationException("Gallery entry already exists");
+            context.ImageGalleryContents.Add(galleryContent);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveFromGallery(int galleryId, int galleryItemId)
+        {
+            var entity = context.ImageGalleryContents.FirstOrDefault(
+                i => i.ImageGalleryItemId == galleryItemId
+                     && i.ImageGalleryId == galleryId);
+            if (entity != null)
+            {
+                context.ImageGalleryContents.Remove(entity);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public List<ImageGallery> GetGalleries(int galleryItemId)
+        {
+            var contents = context.ImageGalleryContents.Where(
+                c => c.ImageGalleryItemId == galleryItemId);
+            var galleryIds = contents.Select(c => c.ImageGalleryId).Distinct().ToList();
+            if (!galleryIds.Any()) return new List<ImageGallery>();
+            var galleries = context.ImageGalleries.Where(g => galleryIds.Contains(g.Id)).ToList();
+            galleries.ForEach(g => g.Content = null);
+            return galleries;
+        }
+
+        public async Task DeleteGalleryItemAsync(int galleryItemId, Guid userId)
+        {
+            var entity = context.ImageGalleryItems.FirstOrDefault(
+                i => i.Id == galleryItemId
+                     && i.UserId == userId);
+            if (entity == null) throw new ApplicationException("Gallery entry not found");
+            var galleryContents = context.ImageGalleryContents.Where(c => c.ImageGalleryItemId == galleryItemId).ToList();
+            context.ImageGalleryContents.RemoveRange(galleryContents);
+            var tags = context.ImageTags.Where(c => c.ImageGalleryItemId == galleryItemId).ToList();
+            context.ImageTags.RemoveRange(tags);
+            context.ImageGalleryItems.Remove(entity);
+            await context.SaveChangesAsync();
         }
     }
 }

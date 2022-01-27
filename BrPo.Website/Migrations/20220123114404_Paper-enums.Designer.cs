@@ -3,14 +3,16 @@ using System;
 using BrPo.Website.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BrPo.Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220123114404_Paper-enums")]
+    partial class Paperenums
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,6 +276,10 @@ namespace BrPo.Website.Migrations
                     b.Property<int?>("PaperTexture")
                         .HasColumnType("int");
 
+                    b.Property<string>("Tags")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
@@ -285,32 +291,6 @@ namespace BrPo.Website.Migrations
                     b.HasIndex("ImageFileId");
 
                     b.ToTable("ImageGalleryItems");
-                });
-
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("ImageGalleryItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImageGalleryItemId");
-
-                    b.HasIndex("Tag");
-
-                    b.ToTable("ImageTags");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Paper.Models.PaperModel", b =>
@@ -382,7 +362,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(4989),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(5550),
                             Description = "natural white smooth gloss surface",
                             GSMWeight = 310,
                             IsActive = true,
@@ -400,7 +380,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(6961),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(8312),
                             Description = "natural white smooth matte surface",
                             GSMWeight = 190,
                             IsActive = true,
@@ -418,7 +398,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7441),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(8749),
                             Description = "natural white lightly pearled surface",
                             GSMWeight = 290,
                             IsActive = true,
@@ -436,7 +416,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7446),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(8753),
                             Description = "ultra white smooth matte surface",
                             GSMWeight = 230,
                             IsActive = true,
@@ -454,7 +434,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7448),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(8756),
                             Description = "natural white smooth matte surface, grey backing for added opacity, easy-peel adhesive",
                             GSMWeight = 120,
                             IsActive = true,
@@ -472,7 +452,7 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 12m,
                             CutSheetHeight = 420,
                             CutSheetWidth = 297,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7450),
+                            DateCreated = new DateTime(2022, 1, 23, 11, 44, 4, 184, DateTimeKind.Utc).AddTicks(8758),
                             Description = "neutral white smooth lustre mettalic surface",
                             GSMWeight = 260,
                             IsActive = true,
@@ -778,13 +758,13 @@ namespace BrPo.Website.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "21774353-8358-45da-8d2f-6b827072b713",
+                            ConcurrencyStamp = "746bd60a-5483-43fa-855d-b3bdb085eb0a",
                             Email = "Info@brixtonPhotographic.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumber = "07986215451",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "680e67fd-8cd7-416b-a727-93fb8cf7c5a5",
+                            SecurityStamp = "53d78a6a-1f5e-4e06-b8b6-141a769f3dfc",
                             TwoFactorEnabled = false,
                             UserName = "BPAdmin"
                         });
@@ -908,15 +888,6 @@ namespace BrPo.Website.Migrations
                     b.Navigation("ImageFile");
                 });
 
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageTag", b =>
-                {
-                    b.HasOne("BrPo.Website.Services.Image.Models.ImageGalleryItem", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("ImageGalleryItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.BasketItem", b =>
                 {
                     b.HasOne("BrPo.Website.Services.ShoppingBasket.Models.PrintOrderItem", "PrintOrderItem")
@@ -993,11 +964,6 @@ namespace BrPo.Website.Migrations
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGallery", b =>
                 {
                     b.Navigation("Content");
-                });
-
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGalleryItem", b =>
-                {
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.Invoice", b =>

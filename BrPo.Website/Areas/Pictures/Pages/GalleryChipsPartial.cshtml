@@ -1,0 +1,16 @@
+﻿@using System.Collections.Generic
+@model List<ImageGallery>
+
+                        @foreach(var gallery in Model)
+                        {
+                            <div class="chip gallery-chip-js"
+                                 data-itemid="@gallery.Id">
+                                @gallery.Name
+                                <div class="close"
+                                     data-toggle="tooltip"
+                                     title="Remove this gallery item from the @gallery.Name gallery">
+                                    <i class="close fas fa-times"
+                                       data-itemid="@gallery.Id"></i>
+                                </div>
+                            </div>
+                        }

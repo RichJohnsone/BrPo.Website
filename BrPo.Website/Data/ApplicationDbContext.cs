@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using static BrPo.Website.Services.Paper.Models.Enums;
 
 namespace BrPo.Website.Data
 {
@@ -43,6 +44,10 @@ namespace BrPo.Website.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<GuestUserModel> GuestUsers { get; set; }
         public DbSet<UserDetailsModel> UserDetails { get; set; }
+        public DbSet<ImageGalleryContent> ImageGalleryContents { get; set; }
+        public DbSet<ImageGalleryItem> ImageGalleryItems { get; set; }
+        public DbSet<ImageGallery> ImageGalleries { get; set; }
+        public DbSet<ImageTag> ImageTags { get; set; }
 
         private void SeedUsers(ModelBuilder builder)
         {
@@ -80,7 +85,7 @@ namespace BrPo.Website.Data
                 new PaperModel()
                 {
                     Id = 1,
-                    Name = "Ilford Galerie Prestige Smooth Gloss - 17 roll",
+                    Name = "Ilford Galerie Prestige Smooth Gloss - roll",
                     Description = "natural white smooth gloss surface",
                     GSMWeight = 310,
                     RollPaper = true,
@@ -88,12 +93,14 @@ namespace BrPo.Website.Data
                     RollWidth = 432,
                     CostPerMeter = 32,
                     ProductCode = "GPSGP12",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.Gloss,
+                    PaperTexture = PaperTexture.Smooth
                 },
                 new PaperModel()
                 {
                     Id = 2,
-                    Name = "Ilford Galerie Graphic Heavyweight Matt - 17 roll",
+                    Name = "Ilford Galerie Graphic Heavyweight Matt - roll",
                     Description = "natural white smooth matte surface",
                     GSMWeight = 190,
                     RollPaper = true,
@@ -102,12 +109,14 @@ namespace BrPo.Website.Data
                     CostPerMeter = 30,
                     CostPerSheet = 0,
                     ProductCode = "IGXHWMP",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.Matt,
+                    PaperTexture = PaperTexture.Smooth
                 },
                 new PaperModel()
                 {
                     Id = 3,
-                    Name = "Ilford Galerie Smooth Pearl - 17 roll",
+                    Name = "Ilford Galerie Smooth Pearl - roll",
                     Description = "natural white lightly pearled surface",
                     GSMWeight = 290,
                     RollPaper = true,
@@ -115,12 +124,14 @@ namespace BrPo.Website.Data
                     RollWidth = 432,
                     CostPerMeter = 35,
                     ProductCode = "IGSPP11",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.Gloss,
+                    PaperTexture = PaperTexture.Pearl
                 },
                 new PaperModel()
                 {
                     Id = 4,
-                    Name = "Olmec Photo Matt Archival - 17 roll",
+                    Name = "Olmec Photo Matt Archival - roll",
                     Description = "ultra white smooth matte surface",
                     GSMWeight = 230,
                     RollPaper = true,
@@ -128,12 +139,14 @@ namespace BrPo.Website.Data
                     RollWidth = 432,
                     CostPerMeter = 30,
                     ProductCode = "OLM67R17",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.Matt,
+                    PaperTexture = PaperTexture.Smooth
                 },
                 new PaperModel()
                 {
                     Id = 5,
-                    Name = "Matt Self-adhesive Poly-vinyl - 17 roll",
+                    Name = "Matt Self-adhesive Poly-vinyl - roll",
                     Description = "natural white smooth matte surface, grey backing for added opacity, easy-peel adhesive",
                     GSMWeight = 120,
                     RollPaper = true,
@@ -141,7 +154,9 @@ namespace BrPo.Website.Data
                     RollWidth = 432,
                     CostPerMeter = 45,
                     ProductCode = "M120V17",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.Matt,
+                    PaperTexture = PaperTexture.Smooth
                 },
                 new PaperModel()
                 {
@@ -155,7 +170,9 @@ namespace BrPo.Website.Data
                     CutSheetWidth = 297,
                     CostPerSheet = 12,
                     ProductCode = "OLM72A3",
-                    IsActive = true
+                    IsActive = true,
+                    PaperSurface = PaperSurface.MetallicGloss,
+                    PaperTexture = PaperTexture.Lustre
                 }
             );
         }

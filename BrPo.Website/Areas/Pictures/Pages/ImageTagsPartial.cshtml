@@ -1,0 +1,17 @@
+﻿@using System.Collections.Generic
+@model List<ImageTag>
+
+                        @foreach(var tag in Model)
+                        {
+                            <div class="chip image-tag-js"
+                                 data-itemid="@tag.Id">
+                                @tag.Tag
+                                <div class="close"
+                                     data-toggle="tooltip" 
+                                     title="Remove the tag '@tag.Tag' from this gallery item">
+                                    <i class="close fas fa-times"
+                                       data-itemid="@tag.Id"
+                                       data-imageGalleryItemId="@tag.ImageGalleryItemId"></i>
+                                </div>
+                            </div>
+                        }

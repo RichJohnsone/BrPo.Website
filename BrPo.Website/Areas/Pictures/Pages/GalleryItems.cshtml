@@ -1,0 +1,694 @@
+﻿@page
+@using BrPo.Website.Services.Image.Services
+@inject IImageService ImageService;
+@model BrPo.Website.Areas.Pictures.Pages.GalleryItemsModel
+
+<style>
+    .thumbnail{
+        max-height: 100px !important;
+    }
+    .table-sm{
+        font-size: 0.8em !important;
+    }
+    th, td {
+        /*padding: 0.1rem 0.3rem 0 0 !important;*/ 
+    }
+    div.card-header a:hover,
+    div.card-header a,
+    a.collapsed:hover,
+    a.collapsed { text-decoration: none; }
+    .headerLabel {
+        color: #212529;
+        margin-left: 5px;
+    }
+    .table-button {
+        width: 100%;
+    }
+    table.form-table {
+        border-collapse: separate;
+        border-spacing: 10px 13px;
+        width: 100%;
+        margin-top: -30px;
+    }
+    .form-table td,
+    .form-table th{
+        width: 33%;
+        padding-left: 8px !important;
+        vertical-align: top!important;
+    }
+    .form-table td:last-child,
+    .form-table th:last-child{
+        padding-right: 5px;
+    }    
+    .grid-column {
+        border-right: 1px solid #dee2e6;
+    }
+    #paper-selectors-table{
+        margin-top: -13px;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+
+</style>
+
+@section Head { <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet"> }
+
+<div class="container-fluid">
+    <div class="row">
+        <h1>Manage Gallery Items</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 col-lg-12 pl-0 mt-2 pr-3 grid-column">
+            @if (Model?.ImageGalleryItems != null && Model.ImageGalleryItems.Count > 0)
+            {
+                <partial name="GalleryItemsGridPartial" model="Model.ImageGalleryItems" />
+                <div class="grid-loading">
+                    <div class="grid-loading-text">
+                        Grid loading
+                    </div>
+                </div>
+            } else {
+                <div class="form-group row">
+                    <div class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-0 ml-3 mr-3" style="margin-top: 0!important;">
+                        <i id="alert-icon" class="fas fa-info-circle"></i>
+                        <span id="alert-message">You need to upload some files before you can add them to a gallery</span>
+                        <button type="button" class="close alert-close-js" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-xl-6 col-lg-12 pr-0 mt-2 pl-3">
+            <div id="alert-container" class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-3 mr-3" style="margin-top: 0!important;">
+                <i id="alert-icon" class="fas fa-info-circle"></i>
+                <span id="alert-message"></span>
+                <button type="button" class="close alert-close-js" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="editPanel">
+                <div>
+                    <p>Your images are listed in the grid.</p>
+                    <p>You can add your images to public galleries here.</p>
+                    <p>Images in galleries can be available for sale - you set the available sizes and prices.</p>
+                    <p>To do this we capture some extra data about your image - we call this making it into a gallery item.</p>
+                    <p>Use the action buttons in the grid to:</p>
+                    <ul>
+                        <li>Make a file into a gallery item</li>
+                        <ul>
+                            <li>The gallery item can be added to one or more galleries</li>
+                            <li>You can add tags to the gallery item</li>
+                        </ul>
+                        <li>Edit a file's gallery item data</li>
+                        <li>Remove a file's gallery item data</li>
+                        <ul>
+                            <li>Also removes associated tags and gallery entries</li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+    selects used to clone into the edit gallery item ajax form
+-->
+
+                        @Html.DropDownListFor(
+                            m => Model.ImageGalleryId, 
+                            new SelectList(Model.ImageGalleries, "Id", "Name"), 
+                            htmlAttributes: new { @class = "form-control d-none", id = "SelectedGallery", title="Select a gallery", data_toggle="tooltip" })
+                        @Html.HiddenFor(m => Model.ImageGalleryId, new { name = "ImageGalleryId", id = "Model.ImageGalleryId"})
+
+        <div class="form-group row d-none mb-0" id="paper-selectors">
+            <table class="form-table" id="paper-selectors-table">
+                <tr>
+                    <td>
+                        <label>
+                            Paper preference<i class="fas fa-question-circle"
+                                    title="Paper preference"
+                                    data-toggle="hover" 
+                                    data-html="true"
+                                    data-content="<p>You can select paper preferences for prints of your images.</p><p>We make buyers aware of your preferences but it is up to them to make the final choice.<p>"></i>
+                        </label>
+                    </td>
+                    <td>
+                        <select class="form-control" 
+                                id="SelectedPaperSurface" 
+                                data-toggle="tooltip" 
+                                title="Optional - select a preferred paper surface for your prints" 
+                                name="SelectedPaperSurfaceId">
+                            @foreach(var paperSurface in Model.PaperSurfaces)
+                            {
+                                if (paperSurface.IsAvailable)
+                                {
+                                    <option value="@paperSurface.Id">@paperSurface.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@paperSurface.Id" disabled="disabled">@paperSurface.Name</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" 
+                                id="SelectedPaperTexture" 
+                                data-toggle="tooltip" 
+                                title="Optional - select a preferred paper texture for your prints" 
+                                name="SelectedPaperTextureId">
+                            @foreach(var paperTexture in Model.PaperTextures)
+                            {
+                                if (paperTexture.IsAvailable)
+                                {
+                                    <option value="@paperTexture.Id">@paperTexture.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@paperTexture.Id" disabled="disabled">@paperTexture.Name</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+<!--
+    Modals
+-->
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h2 class="text-danger">
+                    <i class="fas fa-exclamation"></i>
+                    <span>Warning</span>
+                </h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <p>This will remove the gallery item data from your image.</p>
+                    <p>It will also remove any associated tags.</p>
+                    <p>The image is removed from all galleries.</p>
+                    <p>Your image file will remain on our servers for 90 days.</p>
+                    <h4>This process cannot be undone</h4>
+                </div>       
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" 
+                        id="deleteGalleryItemButton" 
+                        data-imageGalleryItemId="0"
+                        class="btn btn-primary">Remove gallery item and associated data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_LoaderModalPartial")
+
+<script src="~/js/mvc-grid/mvc-grid.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        $("#main_layout_container").removeClass("container").addClass("container-fluid");
+
+        const gridElement = document.querySelector('.mvc-grid');
+        const gridOptions = {
+        };
+        var grid = new MvcGrid(gridElement, gridOptions);
+
+        // load functions
+
+        function loadEditPanel(galleryItemId, fileId, alertMessage){
+            try {
+                showLoader();
+                alertClear();
+                $("#editPanel").load(`GalleryItems?handler=EditGalleryItemPartial&galleryItemId=${galleryItemId}&fileId=${fileId}`, function (response, status, xhr){
+                    console.log(`editPanel.load: status:${status}`);
+                    if (status == "error"){
+                        alertError(xhr.status + ": " + xhr.statusText);
+                        setTimeout(showLoader(false), 1000);
+                        $("#addOrEdit").removeAttr("disabled");
+                    } 
+                    if (status == "success"){
+                        try {
+                            $("#gallery-select-container-js").prepend($("#SelectedGallery").clone().removeClass("d-none"));
+                            $("#paper-selects-container-js").replaceWith($("#paper-selectors").clone().removeClass("d-none"));
+                            $("#SelectedPaperSurface option").each(function() { this.selected = (this.text == $("#PaperSurface").val()); });
+                            $("#SelectedPaperTexture option").each(function() { this.selected = (this.text == $("#PaperTexture").val()); });
+                            initialiseValidation();
+                            addIntegerControls();
+                            $("#addOrEdit").removeAttr("disabled");
+                            $("#itemForm").valid();
+                            $(".alert-close-js").on('click', alertClear);
+                            $("#addOrEdit").on('click', function(e){
+                                e.preventDefault();
+                                onSubmit();
+                            });
+                            $("#add-to-gallery").unbind().on('mouseup', function(){
+                                const galleryId = $("#SelectedGallery").val().trim();
+                                const galleryItemId = $(this).attr('data-imageGalleryItemId');
+                                addToGallery(galleryItemId, galleryId);
+                            });
+                            bindTooltips();
+                            bindImageTags();
+                            bindGalleryChips($("#Id").val());
+                            addHeigthChangeEventHandlers();
+                            addWidthChangeEventHandlers();
+                            $('[data-toggle="hover"]').unbind().popover(({ trigger: "hover" }));
+                            if (alertMessage) alertSuccess(alertMessage);
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 500);
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 1000);
+                        }
+                        catch(e) {
+                            alertError(`Error from loadEditPanel.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                            showLoader(false);
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadEditPanel: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                showLoader(false);
+            }
+        }
+
+        function bindButtons(){
+            $(".addOrEditButton-js").on('mouseup', function(){
+                const galleryItemId = $(this).attr('data-imageGalleryItemId');
+                const fileId = $(this).attr('data-fileId');
+                loadEditPanel(galleryItemId, fileId);
+            });
+            $(".deleteButton-js").on('mouseup', function(){
+                const galleryItemId = $(this).attr('data-imageGalleryItemId');
+                $("#deleteGalleryItemButton").attr('data-imageGalleryItemId', galleryItemId)
+                loadConfirmModal();
+            });
+        }
+
+        // delete functions
+
+        function loadConfirmModal(){
+            $('#confirmModal').modal('show');
+        }
+
+        $('#deleteGalleryItemButton').click(async function (e) {
+            e.preventDefault();
+            $('#confirmModal').modal('hide');
+            const galleryItemId = $(this).attr('data-imageGalleryItemId');
+            deleteGalleryItem(galleryItemId);
+            reloadGrid();
+        });
+
+        function deleteGalleryItem(galleryItemId){
+            let url = `GalleryItems?handler=DeleteGalleryItem&galleryItemId=${galleryItemId}`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $("#editPanel").html("");
+                    reloadGrid();
+                    alertSuccess("Your gallery item has been deleted");
+                },
+                error: function (response, status, error) {
+                    alertError(`deleteGalleryItem: ${response.responseText} : ${status} : ${error}`);
+                }
+            });        
+        }
+
+        // tag functions
+
+        function createTag(galleryItemId, tag){
+            let url = `GalleryItems?handler=CreateTag`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: JSON.stringify({ 
+                    'galleryItemId': parseInt(galleryItemId), 
+                    'tag': tag.trim()
+                }),
+                contentType: 'application/json',
+                processData: false,
+                success: function (response) {
+                    loadImageTags(galleryItemId);
+                    $("#Tags").val("");
+                },
+                error: function (response, status, error) {
+                    alertError(`createTag: ${response.responseText} : ${status} : ${error}`);
+                }
+            });        
+        }
+
+        function deleteTag(tagId, imageGalleryItemId){
+            let url = `GalleryItems?handler=DeleteTag&imageTagId=${tagId}`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    loadImageTags(imageGalleryItemId);
+                    $(`.image-tag-js[data-itemid=${tagId}]`).remove();
+                },
+                error: function (response, status, error) {
+                    alertError(`createTag: ${response.responseText} : ${status} : ${error}`);
+                }
+            });  
+        }
+
+        function loadImageTags(galleryItemId){
+            try {
+                alertClear();
+                $("#tag-area").load(`GalleryItems?handler=ImageTagsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
+                    console.log(`tags.load: status:${status}`);
+                    if (status == "error"){
+                        alertError(`loadTag error: ${xhr.status} : ${xhr.statusText}`);
+                    } 
+                    if (status == "success"){
+                        setTimeout(function(){
+                            bindImageTags();
+                        }, 500);
+                    } 
+                 });
+            }
+            catch(e) {
+                alertError(`loadImageTags: ${e.name} : ${e.description} : ${e.message}`);
+            }
+        }
+
+        function bindImageTags(){
+            $(".image-tag-js i.close").unbind().on('mouseup', function(){
+                const tagId = $(this).attr('data-itemid');
+                const imageGalleryItemId = $(this).attr('data-imageGalleryItemId');
+                deleteTag(tagId, imageGalleryItemId);
+            });
+            $("#create-image-tag").unbind().on('mouseup', function(){
+                const tag = $("#Tags").val().trim();
+                const imageGalleryItemId = $(this).attr('data-imageGalleryItemId');
+                createTag(imageGalleryItemId, tag);
+            });
+        }
+
+        // size change functions
+
+        function addHeigthChangeEventHandlers(){
+            $('#MinHeight, #MaxHeight').on('keyup change input', function(){
+                heightChange($(this));
+            });
+        }
+
+        function addWidthChangeEventHandlers(){
+            $('#MinWidth, #MaxWidth').on('keyup change input', function(){
+                widthChange($(this));
+            });
+        }
+
+        function heightChange(element){
+            try {
+                let newWidth = Math.round(Math.round(element.val()) * (1 /getLoadedPictureAspectRatio()));
+                $("#MinWidth").unbind();
+                $("#MaxWidth").unbind();
+                if(element.attr('id') == "MinHeight"){
+                    $("#MinWidth").val(newWidth);
+                } else {
+                    $("#MaxWidth").val(newWidth);
+                }
+                addWidthChangeEventHandlers();
+                console.log(`height change: newWidth: ${newWidth}`);
+            }
+            catch(e) {
+                alertError(`heightChange: ${e.name} : ${e.description} : ${e.message}`);
+            }
+        }
+
+        function widthChange(element){
+            try {
+                let newHeight = Math.round(Math.round(element.val()) * getLoadedPictureAspectRatio());
+                $("#MinHeight").unbind();
+                $("#MaxHeight").unbind();
+                if(element.attr('id') == "MinWidth"){
+                    $("#MinHeight").val(newWidth);
+                } else {
+                    $("#MaxHeight").val(newWidth);
+                }
+                addHeigthChangeEventHandlers();
+                console.log(`width change: newHeight: ${newHeight}`);
+            }
+            catch(e) {
+                alertError(`widthChange: ${e.name} : ${e.description} : ${e.message}`);
+            }
+        }
+
+        function getLoadedPictureAspectRatio(){
+            try {
+                let aspect = $("#ImageFileHeight").val() / $("#ImageFileWidth").val();
+                return aspect;
+            }
+            catch(e) {
+                alertError(`getLoadedPictureAspectRatio: ${e.name} : ${e.description} : ${e.message}`);
+            }
+        }
+
+        // Gallery chip functions
+
+        function addToGallery(galleryItemId, galleryId){
+            let url = `GalleryItems?handler=AddToGallery`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: JSON.stringify({ 
+                    'galleryItemId': parseInt(galleryItemId), 
+                    'galleryId': parseInt(galleryId)
+                }),
+                contentType: 'application/json',
+                processData: false,
+                success: function (response) {
+                    loadGalleryChips(galleryItemId);
+                },
+                error: function (response, status, error) {
+                    alertError(`addToGallery: ${response.responseText} : ${status} : ${error}`);
+                }
+            });        
+        }
+
+        function removeFromGallery(galleryId, galleryItemId){
+            let url = `GalleryItems?handler=RemoveFromGallery`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: JSON.stringify({ 
+                    'galleryItemId': parseInt(galleryItemId), 
+                    'galleryId': parseInt(galleryId)
+                }),
+                contentType: 'application/json',
+                processData: false,
+                success: function (response) {
+                    loadGalleryChips(galleryItemId);
+                    $(`.image-GalleryChip-js[data-itemid=${galleryId}]`).remove();
+                },
+                error: function (response, status, error) {
+                    alertError(`removeFromGallery: ${response.responseText} : ${status} : ${error}`);
+                }
+            });  
+        }
+
+        function loadGalleryChips(galleryItemId){
+            try {
+                alertClear();
+                $("#galleries-area").load(`GalleryItems?handler=GalleryChipsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
+                    console.log(`loadGalleryChips: status:${status}`);
+                    if (status == "error"){
+                        alertError(`loadGalleryChips error: ${xhr.status} : ${xhr.statusText}`);
+                    } 
+                    if (status == "success"){
+                        setTimeout(function(){
+                            bindGalleryChips(galleryItemId);
+                        }, 500);
+                    } 
+                 });
+            }
+            catch(e) {
+                alertError(`loadImageGalleryChips: ${e.name} : ${e.description} : ${e.message}`);
+            }
+        }
+
+        function bindGalleryChips(galleryItemId){
+            $(".gallery-chip-js i.close").unbind().on('mouseup', function(){
+                const _galleryItemId = galleryItemId;
+                const galleryId = $(this).attr('data-itemid');
+                removeFromGallery(galleryId, _galleryItemId);
+            });
+        }
+
+        // form functions
+
+        function onSubmit(){
+            alertClear();
+            if ($("#itemForm").valid()){
+                showLoader();
+                const alertMessage = $("#Id").val() == 0 ? "Gallery item created" : "Gallery item saved";
+                $("#addOrEdit").attr("disabled", "disabled");
+                let url = 'GalleryItems?handler=SaveGalleryItem';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    data: new FormData(document.getElementById("itemForm")),
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        let galleryItem = JSON.parse(response);
+                        let galleryItemId = galleryItem.Id;
+                        let fileId = galleryItem.ImageFileId;
+                        loadEditPanel(galleryItemId, fileId, alertMessage);
+                        if (alertMessage == "Gallery item created") reloadGrid();
+                        showLoader(false);
+                    },
+                    error: function (response, status, error) {
+                        $("#addOrEdit").removeAttr("disabled");
+                        alertError(`${response.responseText}`);
+                    }
+                });
+            }
+        };
+
+        function reloadGrid(){
+            new MvcGrid(document.querySelector('.mvc-grid')).reload();
+        }
+        
+        // initialisation
+
+        alertClear();
+        setTimeout(bindButtons, 1000);
+        $(".alert-close-js").on('click', alertClear);
+
+        $("body").on('change input', function(){
+            validateForm();
+        })
+        $("body").on('mouseup', 'select, a', function(){
+            validateForm();
+        })
+        $("body").on('mouseup', 'button', function(){
+            validateForm();
+        })  
+
+        document.addEventListener("reloadstart", e => {
+            $('.mvc-grid').fadeOut();
+            $('.grid-loading').fadeIn();
+       });
+
+        document.addEventListener("reloadend", e => {
+            $('.mvc-grid').fadeIn();
+            $('.grid-loading').fadeOut('fast');
+            bindButtons();
+        });
+    });
+
+    // UI
+
+    const validationOptions = {
+        ignore: "",
+        errorClass: "error"
+    };
+
+    function validateForm(){
+        if ($("#itemForm").length > 0 && $("#itemForm").validator){
+            setTimeout(function(){
+                $("#itemForm").valid();
+            }, 250)
+        }
+    }
+
+    function initialiseValidation(){
+        $("#itemForm").removeData("validator");
+        $("#itemForm").validate(validationOptions);
+        $.validator.unobtrusive.parse(document);
+    }
+
+@*    function bindTooltips(){
+        $('[data-toggle="tooltip"]').tooltip({
+            delay: {show: 400, hide: 300}
+        }).click(function () {
+            $('[data-toggle="tooltip"]').tooltip("hide");
+        });
+    }*@
+
+    function addIntegerControls(){
+        $(".integer-control-js").on('mouseup blur change input', function(){
+            $(this).val(roundToInteger($(this).val()));
+        });
+        $(".integer-control-js").each(function(){
+            $(this).val(roundToInteger($(this).val()));
+        })
+    }
+
+    function roundToInteger(input){
+        return Math.round(input); 
+    }
+
+    function alertSuccess(message){
+        $("#alert-container").show().removeClass("alert-danger").addClass("alert-success").removeClass("alert-warning");
+        $("#alert-icon").removeClass().addClass("fas fa-check-circle fa-lg");
+        $("#alert-message").html(`Success:   ${message}`);
+    }
+
+    function alertWarning(message){
+        $("#alert-message").show().removeClass("alert-danger").removeClass("alert-success").addClass("alert-warning");
+        $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
+        $("#alert-message").html(`Warning:   ${message}`);
+        console.log(message);
+    }
+
+    function alertError(message){
+        $("#alert-container").show().addClass("alert-danger").removeClass("alert-success").removeClass("alert-warning");
+        $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
+        $("#alert-message").html(`Error:   ${message}`);
+        console.log(message);
+    }
+
+    function alertClear(){
+        $("#alert-container").hide();
+        $("#alert-message").html();
+    }
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -165,12 +165,12 @@ Featuring two extra colours - green and orange - as well as two black inks - pho
                             <input type="text" 
                                 class="form-control" 
                                 id="inputName1" 
-                                placeholder="Enter name" 
-                                data-val-required="Name is required." 
+                                placeholder="Name" 
+                                data-val-required="Required." 
                                 data-val="true"
                                 name="name"
                                 asp-for="ContactModel.Name"
-                                data-val-regex="Name may only contain letters, spaces and the the following characters: - '"
+                                data-val-regex="May only contain letters, spaces and the the following characters: - '"
                                 data-val-regex-pattern="^[a-zA-Z \-']+$">
                             <small id="nameHelp" class="form-text text-muted float-left">We'll never share your name with anyone else.</small>
                             <div class="field-validation-valid float-left" data-valmsg-for="name" data-valmsg-replace="true"></div>                     
@@ -182,8 +182,8 @@ Featuring two extra colours - green and orange - as well as two black inks - pho
                             <input type="email" 
                                 class="form-control" 
                                 id="inputEmail" 
-                                placeholder="Enter email" 
-                                data-val-required="Email address is required." 
+                                placeholder="Email" 
+                                data-val-required="Required." 
                                 data-val="true"
                                 name="email"
                                 asp-for="ContactModel.Email">
@@ -199,10 +199,10 @@ Featuring two extra colours - green and orange - as well as two black inks - pho
                                rows="3" 
                                name="message"
                                asp-for="ContactModel.Message"
-                               placeholder="Enter your message"
-                               data-val-required="Message is required." 
+                               placeholder="Message"
+                               data-val-required="Required." 
                                data-val="true"
-                               data-val-regex="Message may only contain alpha-numerics, spaces and the the following characters: . , / _ :"
+                               data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
                                data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$">
                            </textarea>
                            <div class="field-validation-valid float-left" data-valmsg-for="message" data-valmsg-replace="true"></div>

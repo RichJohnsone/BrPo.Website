@@ -18,6 +18,8 @@ namespace BrPo.Website.Services.ApplicationUser.Services
         Task CreateUserDetailsAsync(UserDetailsModel userDetailsModel);
 
         UserDetailsModel GetUserDetails(string userId);
+
+        Task<string> GetGalleryRootName(Guid guid);
     }
 
     public class ApplicationUserService : IApplicationUserService
@@ -84,6 +86,11 @@ namespace BrPo.Website.Services.ApplicationUser.Services
             Guid.TryParse(userId, out var guid);
             var contact = _context.UserDetails.FirstOrDefault(u => u.UserId == guid);
             return contact;
+        }
+
+        public async Task<string> GetGalleryRootName(Guid guid)
+        {
+            return _context.UserDetails.FirstOrDefault(u => u.UserId == guid).GalleryRootName;
         }
 
         private async Task<GuestUserModel> GetNewGuestUser()

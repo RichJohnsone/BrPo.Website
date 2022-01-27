@@ -3,14 +3,16 @@ using System;
 using BrPo.Website.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BrPo.Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220120115500_Gallery-changes")]
+    partial class Gallerychanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,11 +247,15 @@ namespace BrPo.Website.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("Keywords")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
                     b.Property<int>("MaxHeight")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxPrice")
-                        .HasColumnType("int");
+                    b.Property<decimal>("MaxPrice")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("MaxWidth")
                         .HasColumnType("int");
@@ -257,21 +263,10 @@ namespace BrPo.Website.Migrations
                     b.Property<int>("MinHeight")
                         .HasColumnType("int");
 
-                    b.Property<int>("MinPrice")
-                        .HasColumnType("int");
+                    b.Property<decimal>("MinPrice")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("MinWidth")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("PaperSurface")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PaperTexture")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -285,32 +280,6 @@ namespace BrPo.Website.Migrations
                     b.HasIndex("ImageFileId");
 
                     b.ToTable("ImageGalleryItems");
-                });
-
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("ImageGalleryItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImageGalleryItemId");
-
-                    b.HasIndex("Tag");
-
-                    b.ToTable("ImageTags");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Paper.Models.PaperModel", b =>
@@ -354,12 +323,6 @@ namespace BrPo.Website.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("PaperSurface")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaperTexture")
-                        .HasColumnType("int");
-
                     b.Property<string>("ProductCode")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -382,13 +345,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(4989),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(1665),
                             Description = "natural white smooth gloss surface",
                             GSMWeight = 310,
                             IsActive = true,
-                            Name = "Ilford Galerie Prestige Smooth Gloss - roll",
-                            PaperSurface = 0,
-                            PaperTexture = 0,
+                            Name = "Ilford Galerie Prestige Smooth Gloss - roll paper",
                             ProductCode = "GPSGP12",
                             RollPaper = true,
                             RollWidth = 432
@@ -400,13 +361,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(6961),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(3187),
                             Description = "natural white smooth matte surface",
                             GSMWeight = 190,
                             IsActive = true,
-                            Name = "Ilford Galerie Graphic Heavyweight Matt - roll",
-                            PaperSurface = 1,
-                            PaperTexture = 0,
+                            Name = "Ilford Galerie Graphic Heavyweight Matt - roll paper",
                             ProductCode = "IGXHWMP",
                             RollPaper = true,
                             RollWidth = 432
@@ -418,13 +377,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7441),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(3519),
                             Description = "natural white lightly pearled surface",
                             GSMWeight = 290,
                             IsActive = true,
-                            Name = "Ilford Galerie Smooth Pearl - roll",
-                            PaperSurface = 0,
-                            PaperTexture = 1,
+                            Name = "Ilford Galerie Smooth Pearl - roll paper",
                             ProductCode = "IGSPP11",
                             RollPaper = true,
                             RollWidth = 432
@@ -436,13 +393,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7446),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(3523),
                             Description = "ultra white smooth matte surface",
                             GSMWeight = 230,
                             IsActive = true,
-                            Name = "Olmec Photo Matt Archival - roll",
-                            PaperSurface = 1,
-                            PaperTexture = 0,
+                            Name = "Olmec Photo Matt Archival - roll paper",
                             ProductCode = "OLM67R17",
                             RollPaper = true,
                             RollWidth = 432
@@ -454,13 +409,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 0m,
                             CutSheetHeight = 0,
                             CutSheetWidth = 0,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7448),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(3524),
                             Description = "natural white smooth matte surface, grey backing for added opacity, easy-peel adhesive",
                             GSMWeight = 120,
                             IsActive = true,
-                            Name = "Matt Self-adhesive Poly-vinyl - roll",
-                            PaperSurface = 1,
-                            PaperTexture = 0,
+                            Name = "Matt Self-adhesive Poly-vinyl - roll paper",
                             ProductCode = "M120V17",
                             RollPaper = true,
                             RollWidth = 432
@@ -472,13 +425,11 @@ namespace BrPo.Website.Migrations
                             CostPerSheet = 12m,
                             CutSheetHeight = 420,
                             CutSheetWidth = 297,
-                            DateCreated = new DateTime(2022, 1, 24, 13, 42, 49, 728, DateTimeKind.Utc).AddTicks(7450),
+                            DateCreated = new DateTime(2022, 1, 20, 11, 54, 59, 652, DateTimeKind.Utc).AddTicks(3526),
                             Description = "neutral white smooth lustre mettalic surface",
                             GSMWeight = 260,
                             IsActive = true,
                             Name = "Olmec Photo Metallic Lustre A3",
-                            PaperSurface = 2,
-                            PaperTexture = 3,
                             ProductCode = "OLM72A3",
                             RollPaper = false,
                             RollWidth = 0
@@ -778,13 +729,13 @@ namespace BrPo.Website.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "21774353-8358-45da-8d2f-6b827072b713",
+                            ConcurrencyStamp = "d9fdd57f-f113-4741-9a9a-7d91793f941a",
                             Email = "Info@brixtonPhotographic.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumber = "07986215451",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "680e67fd-8cd7-416b-a727-93fb8cf7c5a5",
+                            SecurityStamp = "32bc5930-9f1c-4dc8-a08f-9124e483ad34",
                             TwoFactorEnabled = false,
                             UserName = "BPAdmin"
                         });
@@ -908,15 +859,6 @@ namespace BrPo.Website.Migrations
                     b.Navigation("ImageFile");
                 });
 
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageTag", b =>
-                {
-                    b.HasOne("BrPo.Website.Services.Image.Models.ImageGalleryItem", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("ImageGalleryItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.BasketItem", b =>
                 {
                     b.HasOne("BrPo.Website.Services.ShoppingBasket.Models.PrintOrderItem", "PrintOrderItem")
@@ -993,11 +935,6 @@ namespace BrPo.Website.Migrations
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGallery", b =>
                 {
                     b.Navigation("Content");
-                });
-
-            modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGalleryItem", b =>
-                {
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.Invoice", b =>

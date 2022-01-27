@@ -1,0 +1,53 @@
+﻿@using BrPo.Website.Services.Image.Models;
+@using BrPo.Website.Services.Image.Services
+@using BrPo.Website.Areas.Pictures.Pages
+@using System.Text
+@inject IImageService ImageService;
+
+@model IList<ImageGalleryItem>
+@{
+    var x = 1;
+}
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {          
+        columns.Add(model => model.ImageFile).Titled("Image")
+            .Encoded(false)
+            .RenderedAs(model =>
+            {
+                var base64 = ImageService.GetBase64ThumbnailAsync(model.ImageFile.Id, 80).Result;
+                return HtmlHelpers.GetImageTag(base64);
+            });
+        columns.Add(model => model.Name).Titled("Name").Sortable(true)
+            .Encoded(false)
+            .RenderedAs(model =>
+            {
+                return HtmlHelpers.GetNameTags(model);
+            });
+        columns.Add(model => model.DateCreated).Titled("Created").Formatted("{0:d}");
+        columns.Add().Titled("Gallery Item")
+            .Encoded(false)
+            .RenderedAs(model =>
+            {
+                return HtmlHelpers.GetIsActiveTag(model);
+            });
+        columns.Add(model => model.Id).Titled("Actions")
+            .Encoded(false)
+            .RenderedAs(model =>
+            {
+                return HtmlHelpers.GetButtons(model.Id, model.ImageFileId);
+
+            });
+    })
+    .UsingUrl("GalleryItems?handler=Grid")
+    .Empty("No data found")
+    .Pageable(pager =>
+    {
+        pager.PagesToDisplay = 5;
+        pager.RowsPerPage = 5;
+    })
+    .Css("table")
+    .Attributed(new { data_type = "image-files" })
+    .Id("gallery-items-grid")
+)

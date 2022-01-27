@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BrixtonPhotographic.com - High Quality Photo Prints - Professional Photo Printing - Fine-Art Printing</title>
+    <title>@ViewData["Title"] - High Quality Photo Prints - Professional Photo Printing - Fine-Art Printing</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/rescourses/images/favicons/apple-icon-57x57.png">
@@ -28,6 +28,7 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png"> 
     <meta name="description" content="A website to sell High Quality Photo Prints, Professional Photo Printing, Fine-Art Printing, Brixton London UK">
+    @*<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=61eac75faa3f60001954c356&product=image-share-buttons" async="async"></script>*@
 
     <script>
         var mustAcceptCookies = false;
@@ -67,6 +68,20 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Pictures</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/Index">Prints For Sale</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/GalleryItems">Add Items For Sale</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/Galleries">Your Galleries</a>
+                                </li>
+                            </ul>
+                        </li>
                         @if (SignInManager.IsSignedIn(User)){
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Printing</a>
@@ -128,7 +143,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/3077efd7ad.js" crossorigin="anonymous"></script>
     <script src="~/lib/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
@@ -155,7 +169,6 @@
                 $('[data-toggle="tooltip"]').tooltip("hide");
             });
         }
-
 
         function getCurrentFormId(htmlElement) {
             var inputElement = htmlElement.currentTarget;
@@ -190,7 +203,6 @@
                 $('#spinnerModal').modal('hide');
             }
         }
-
     </script>
 </body>
 </html>

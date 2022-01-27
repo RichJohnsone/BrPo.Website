@@ -47,5 +47,8 @@ namespace BrPo.Website.Services.ApplicationUser.Models
 
         [Required]
         public DateTime DateCreated { get; set; }
+
+        [MaxLength(30)]
+        public string GalleryRootName { get; set; }
     }
 }
