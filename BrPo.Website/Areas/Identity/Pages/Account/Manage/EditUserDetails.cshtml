@@ -1,0 +1,80 @@
+﻿@page
+@model BrPo.Website.Areas.Identity.Pages.Account.Manage.EditUserDetailsModel
+
+<h1>User Details</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserDetailsModel.Id" />
+            <input type="hidden" asp-for="UserDetailsModel.DateCreated" />
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Title" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Title" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.FirstName" class="control-label"></label>
+                <input asp-for="UserDetailsModel.FirstName" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.LastName" class="control-label"></label>
+                <input asp-for="UserDetailsModel.LastName" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Address1" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Address1" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Address1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Address2" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Address2" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Address2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Address3" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Address3" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Address3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.PostalTown" class="control-label"></label>
+                <input asp-for="UserDetailsModel.PostalTown" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.PostalTown" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Postcode" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Postcode" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Postcode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.Country" class="control-label"></label>
+                <input asp-for="UserDetailsModel.Country" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.DateUpdated" class="control-label"></label>
+                <input asp-for="UserDetailsModel.DateUpdated" class="form-control" readonly="readonly"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDetailsModel.GalleryRootName" class="control-label"></label>
+                <input asp-for="UserDetailsModel.GalleryRootName" class="form-control" />
+                <span asp-validation-for="UserDetailsModel.GalleryRootName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

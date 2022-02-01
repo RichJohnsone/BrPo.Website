@@ -21,11 +21,17 @@ namespace BrPo.Website.Services.Image.Models
         [Required]
         public DateTime DateCreated { get; set; }
 
+        [Display(Name = "Updated")]
         [Required]
         public DateTime DateUpdated { get; set; }
 
         public int CoverImageId { get; set; }
+
         public int ContentCount { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        [Display(Name = "Gallery root name")]
         public string GalleryRootName { get; set; }
 
         public virtual IEnumerable<ImageGalleryContent> Content { get; set; }

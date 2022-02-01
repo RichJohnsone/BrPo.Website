@@ -294,7 +294,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
                 galleryItem.MinPrice = formVars["MinPrice"].ToString().ToInt();
                 galleryItem.MaxPrice = formVars["MaxPrice"].ToString().ToInt();
                 galleryItem.IsActive = true;
-                galleryItem.UpdatedDate = DateTime.UtcNow;
+                galleryItem.DateUpdated = DateTime.UtcNow;
                 galleryItem.Description = formVars["Description"].ToString();
                 galleryItem.UserId = ApplicationUser.Id;
                 galleryItem.PaperSurface = GetPaperSurfaceByValue(formVars["SelectedPaperSurfaceId"].ToString().ToInt());

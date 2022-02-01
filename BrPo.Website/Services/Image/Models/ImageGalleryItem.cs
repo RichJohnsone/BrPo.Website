@@ -33,7 +33,7 @@ namespace BrPo.Website.Services.Image.Models
         [Required]
         public DateTime DateCreated { get; set; }
 
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime? DateUpdated { get; set; }
 
         [Required]
         [MaxLength(50)]

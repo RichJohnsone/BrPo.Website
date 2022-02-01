@@ -18,10 +18,12 @@ namespace BrPo.Website.Services.ApplicationUser.Models
 
         [Required]
         [MaxLength(50)]
+        [Display(Name = "First name")]
         public string FirstName { get; set; }
 
         [Required]
         [MaxLength(100)]
+        [Display(Name = "Last name")]
         public string LastName { get; set; }
 
         [Required]
@@ -36,6 +38,7 @@ namespace BrPo.Website.Services.ApplicationUser.Models
 
         [Required]
         [MaxLength(50)]
+        [Display(Name = "Updated")]
         public string PostalTown { get; set; }
 
         [Required]
@@ -48,6 +51,11 @@ namespace BrPo.Website.Services.ApplicationUser.Models
         [Required]
         public DateTime DateCreated { get; set; }
 
+        [Display(Name = "Updated")]
+        [Required]
+        public DateTime DateUpdated { get; set; }
+
+        [Display(Name = "Gallery root name")]
         [MaxLength(30)]
         public string GalleryRootName { get; set; }
     }

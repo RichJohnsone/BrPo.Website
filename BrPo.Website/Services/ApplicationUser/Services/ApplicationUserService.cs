@@ -20,6 +20,8 @@ namespace BrPo.Website.Services.ApplicationUser.Services
         UserDetailsModel GetUserDetails(string userId);
 
         Task<string> GetGalleryRootName(Guid guid);
+
+        Task AddOrUpdateUserDetailsAsync(UserDetailsModel userDetailsModel);
     }
 
     public class ApplicationUserService : IApplicationUserService
@@ -55,6 +57,7 @@ namespace BrPo.Website.Services.ApplicationUser.Services
                 applicationUser.Id = guid;
                 applicationUser.IdentityUser = identityUser;
                 applicationUser.IsIdentityUser = true;
+                applicationUser.UserDetails = _context.UserDetails.First(u => u.UserId == guid) ?? null;
             }
             else
             {
@@ -78,6 +81,30 @@ namespace BrPo.Website.Services.ApplicationUser.Services
         {
             await Task.Delay(20);
             _context.UserDetails.Add(userDetailsModel);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddOrUpdateUserDetailsAsync(UserDetailsModel userDetailsModel)
+        {
+            var entity = _context.UserDetails.Find(userDetailsModel.Id);
+            if (userDetailsModel == null) return;
+            if (userDetailsModel.Id == 0)
+            {
+                if (entity != null)
+                    throw new ApplicationException("User details record already exists");
+                userDetailsModel.DateCreated = (DateTime)userDetailsModel.DateUpdated;
+                _context.UserDetails.Add(userDetailsModel);
+            }
+            else
+            {
+                if (entity != null)
+                {
+                    if (entity.UserId != userDetailsModel.UserId)
+                        throw new ApplicationException("Attempt to update user details with incorrect userId");
+                    var entry = _context.Entry(entity);
+                    entry.CurrentValues.SetValues(userDetailsModel);
+                }
+            }
             await _context.SaveChangesAsync();
         }
 

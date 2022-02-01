@@ -338,7 +338,7 @@ namespace BrPo.Website.Services.Image.Services
             if (galleryItem == null) return;
             if (galleryItem.Id == 0)
             {
-                galleryItem.DateCreated = (DateTime)galleryItem.UpdatedDate;
+                galleryItem.DateCreated = (DateTime)galleryItem.DateUpdated;
                 context.ImageGalleryItems.Add(galleryItem);
             }
             else
