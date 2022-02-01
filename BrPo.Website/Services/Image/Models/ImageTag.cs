@@ -13,6 +13,9 @@ namespace BrPo.Website.Services.Image.Models
         public int Id { get; set; }
 
         [Required]
+        public Guid UserId { get; set; }
+
+        [Required]
         public int ImageGalleryItemId { get; set; }
 
         [Required]

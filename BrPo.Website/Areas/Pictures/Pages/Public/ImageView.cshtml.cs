@@ -3,15 +3,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BrPo.Website.Areas.Pictures.Pages.Public
 {
+    [BindProperties(SupportsGet = true)]
     public class ImageViewModel : PageModel
     {
-        [BindProperty(SupportsGet = true)]
         public string GalleryRootName { get; set; }
 
-        [BindProperty(SupportsGet = true)]
         public string GalleryName { get; set; }
 
-        [BindProperty(SupportsGet = true)]
         public string ImageName { get; set; }
 
         public void OnGet()

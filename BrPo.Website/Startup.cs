@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.EntityFrameworkCore;
@@ -56,10 +55,6 @@ namespace BrPo.Website
             services.AddRazorPages();
             services.AddRazorPages(options =>
             {
-                //options.Conventions.AllowAnonymousToFolder("/Uploads");
-                //options.Conventions.AddPageRoute("/Pictures/Public/GalleriesView", "~/{galleryrootname}");
-                //options.Conventions.AddPageRoute("/Pictures/Public/GalleryView", "{galleryrootname}/{galleryname}");
-                //options.Conventions.AddPageRoute("/Pictures/Public/ImageView", "{galleryrootname}/{galleryname}/{imagename}");
             })
                 .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; })
                 .AddCookieTempDataProvider(options => { options.Cookie.IsEssential = true; });
@@ -99,16 +94,6 @@ namespace BrPo.Website
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
             services.AddSession();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("MyAllowPolicy",
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("https://localhost:44397", "https://checkout.stripe.com")
-            //                .AllowAnyMethod()
-            //                .AllowAnyHeader();
-            //        });
-            //});
             services.AddMvc();
             if (Environment.IsDevelopment())
             {
@@ -123,7 +108,6 @@ namespace BrPo.Website
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            services.AddTransient<PublicContentTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -141,7 +125,7 @@ namespace BrPo.Website
             {
                 app.UseStatusCodePagesWithReExecute("/Status/{0}");
                 app.UseExceptionHandler("/Status");
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
