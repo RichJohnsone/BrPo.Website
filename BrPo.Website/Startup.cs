@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using System;
+using System.Collections.Generic;
 
 namespace BrPo.Website
 {
@@ -52,7 +56,10 @@ namespace BrPo.Website
             services.AddRazorPages();
             services.AddRazorPages(options =>
             {
-                options.Conventions.AllowAnonymousToFolder("/Uploads");
+                //options.Conventions.AllowAnonymousToFolder("/Uploads");
+                //options.Conventions.AddPageRoute("/Pictures/Public/GalleriesView", "~/{galleryrootname}");
+                //options.Conventions.AddPageRoute("/Pictures/Public/GalleryView", "{galleryrootname}/{galleryname}");
+                //options.Conventions.AddPageRoute("/Pictures/Public/ImageView", "{galleryrootname}/{galleryname}/{imagename}");
             })
                 .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; })
                 .AddCookieTempDataProvider(options => { options.Cookie.IsEssential = true; });
@@ -116,20 +123,25 @@ namespace BrPo.Website
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            services.AddTransient<PublicContentTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            StripeConfiguration.ApiKey = Configuration["Stripe:ApiKey"];
             if (env.IsDevelopment())
             {
-                StripeConfiguration.ApiKey = Configuration["Stripe:ApiKey"];
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+                app.UseStatusCodePagesWithReExecute("/Status/{0}");
+                //app.UseExceptionHandler("/Status");
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseStatusCodePagesWithReExecute("/Status/{0}");
+                app.UseExceptionHandler("/Status");
+                //app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -155,7 +167,43 @@ namespace BrPo.Website
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapRouteForExistingEndpoint("/{galleryrootname}/{galleryname}/{imagename}", "/Public/ImageView");
+                endpoints.MapRouteForExistingEndpoint("/{galleryrootname}/{galleryname}", "/Public/GalleryView");
+                endpoints.MapRouteForExistingEndpoint("/{galleryrootname}", "/Public/GalleriesView");
             });
+            app.Use((context, next) =>
+            {
+                var currentEndPoint = context.GetEndpoint();
+                var routes = context.Request.RouteValues;
+                return next();
+            });
+        }
+    }
+
+    public static class EndpointBuilderExtensions
+    {
+        public static IEndpointConventionBuilder MapRouteForExistingEndpoint(
+           this IEndpointRouteBuilder endpoints,
+           string pattern,
+           string existingEndpointDisplayName)
+        {
+            IEnumerable<string> httpMethods = new[] { "GET", "POST" };
+            var eds = endpoints.DataSources.GetEnumerator();
+            while (eds.MoveNext())
+            {
+                foreach (var ep in eds.Current.Endpoints)
+                {
+                    if (ep.DisplayName == existingEndpointDisplayName)
+                    {
+                        var builder = endpoints.Map(RoutePatternFactory.Parse(pattern), ep.RequestDelegate);
+                        builder.WithDisplayName($"{pattern} HTTP: {string.Join(", ", httpMethods)}");
+                        builder.WithMetadata(new HttpMethodMetadata(httpMethods));
+                        return builder;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
