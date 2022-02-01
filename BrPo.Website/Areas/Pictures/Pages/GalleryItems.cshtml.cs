@@ -34,6 +34,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public ImageGallery SelectedGallery { get; set; }
         public List<PaperEnumItem> PaperSurfaces { get; set; }
         public List<PaperEnumItem> PaperTextures { get; set; }
+        public string GalleryRootName { get; set; }
 
         public GalleryItemsModel(
             ILogger<GalleryItemsModel> logger,
@@ -50,9 +51,17 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
-            ImageGalleryItems = await GetImageGalleryItemsAndFiles(ApplicationUser.Id);
-            ImageGalleries = await _imageService.GetUserGalleriesAsync(ApplicationUser.Id);
             SetPaperEnumLists();
+            if (ApplicationUser.UserDetails?.GalleryRootName != null)
+            {
+                return Page();
+            }
+            else
+            {
+                GalleryRootName = ApplicationUser.UserDetails.GalleryRootName;
+                ImageGalleryItems = await GetImageGalleryItemsAndFiles(ApplicationUser.Id);
+                ImageGalleries = await _imageService.GetUserGalleriesAsync(ApplicationUser.Id);
+            }
             return Page();
         }
 

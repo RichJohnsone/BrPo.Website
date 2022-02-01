@@ -1,16 +1,14 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using BrPo.Website.Services.ApplicationUser.Models;
 using System;
 using Microsoft.Extensions.Logging;
 using BrPo.Website.Services.ApplicationUser.Services;
-using BrPo.Website.Services.Email;
 
 namespace BrPo.Website.Areas.Identity.Pages.Account.Manage
 {
+    [BindProperties]
     public class EditUserDetailsModel : PageModel
     {
         private readonly ILogger<EditUserDetailsModel> _logger;
@@ -25,8 +23,9 @@ namespace BrPo.Website.Areas.Identity.Pages.Account.Manage
             _applicationUserService = applicationUserService;
         }
 
-        [BindProperty]
         public UserDetailsModel UserDetailsModel { get; set; }
+
+        public string StatusMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -54,14 +53,16 @@ namespace BrPo.Website.Areas.Identity.Pages.Account.Manage
             }
             try
             {
-                if (UserDetailsModel.Id == 0) UserDetailsModel.UserId = ApplicationUser.Id;
+                UserDetailsModel.UserId = ApplicationUser.Id;
                 UserDetailsModel.DateUpdated = DateTime.UtcNow;
+                if (UserDetailsModel.Id != 0 && !string.IsNullOrEmpty(ApplicationUser.UserDetails?.GalleryRootName)) UserDetailsModel.GalleryRootName = ApplicationUser.UserDetails.GalleryRootName;
                 await _applicationUserService.AddOrUpdateUserDetailsAsync(UserDetailsModel);
+                StatusMessage = $"User details updated";
             }
             catch (Exception ex)
             {
                 _logger.LogError("from EditUserDetails.OnPostAsync", ex);
-                return BadRequest($"Error saving form values: {ex.ToMessageString()}");
+                StatusMessage = $"Error saving user details: {ex.Message}";
             }
 
             return Page();

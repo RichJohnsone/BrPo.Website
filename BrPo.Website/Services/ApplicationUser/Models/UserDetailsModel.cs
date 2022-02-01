@@ -38,7 +38,7 @@ namespace BrPo.Website.Services.ApplicationUser.Models
 
         [Required]
         [MaxLength(50)]
-        [Display(Name = "Updated")]
+        [Display(Name = "Postal town")]
         public string PostalTown { get; set; }
 
         [Required]

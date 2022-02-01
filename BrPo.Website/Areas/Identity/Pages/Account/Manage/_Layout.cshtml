@@ -26,4 +26,10 @@
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
+
+    <script>
+        $(document).ready(function(){
+            $(".btn-close").remove();
+        });
+    </script>
 }
