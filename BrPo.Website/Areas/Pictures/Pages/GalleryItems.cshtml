@@ -24,24 +24,11 @@
     .table-button {
         width: 100%;
     }
-    table.form-table {
-        border-collapse: separate;
-        border-spacing: 10px 13px;
-        width: 100%;
-        margin-top: -30px;
-    }
-    .form-table td,
-    .form-table th{
-        width: 33%;
-        padding-left: 8px !important;
-        vertical-align: top!important;
-    }
-    .form-table td:last-child,
-    .form-table th:last-child{
-        padding-right: 5px;
-    }    
     .grid-column {
-        border-right: 1px solid #dee2e6;
+        border: 0;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
     }
     #paper-selectors-table{
         margin-top: -13px;
@@ -56,7 +43,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <h1>Manage Gallery Items</h1>
+        <h1>My Images</h1>
     </div>
     <div class="row">
     @if (string.IsNullOrEmpty(Model.GalleryRootName)){
@@ -79,7 +66,7 @@
             </div>
         </div>
     } else {
-        <div class="col-xl-6 col-lg-12 pl-0 mt-2 pr-3 grid-column">
+        <div class="col-12 col-xl-6 pl-0 mt-2 pr-0 grid-column">
             @if (Model?.ImageGalleryItems != null && Model.ImageGalleryItems.Count > 0)
             {
                 <partial name="GalleryItemsGridPartial" model="Model.ImageGalleryItems" />
@@ -101,7 +88,7 @@
                     </div>
             }
         </div>
-        <div class="col-xl-6 col-lg-12 pr-0 mt-2 pl-3">
+        <div class="col-12 col-xl-6 pr-0 mt-2 pl-0 form-column">
             <div id="alert-container" class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-3 mr-3" style="margin-top: 0!important;">
                 <i id="alert-icon" class="fas fa-info-circle"></i>
                 <span id="alert-message"></span>
@@ -147,7 +134,7 @@
                             htmlAttributes: new { @class = "form-control d-none", id = "SelectedGallery", title="Select a gallery", data_toggle="tooltip" })
                         @Html.HiddenFor(m => Model.ImageGalleryId, new { name = "ImageGalleryId", id = "Model.ImageGalleryId"})
 
-        <div class="form-group row d-none mb-0" id="paper-selectors">
+        <div class="form-group row d-none mb-0 mt-2 p-3" id="paper-selectors">
             <table class="form-table" id="paper-selectors-table">
                 <tr>
                     <td>
@@ -609,6 +596,7 @@
                     error: function (response, status, error) {
                         $("#addOrEdit").removeAttr("disabled");
                         alertError(`${response.responseText}`);
+                        showLoader(false);
                     }
                 });
             }
@@ -637,7 +625,7 @@
         document.addEventListener("reloadstart", e => {
             $('.mvc-grid').fadeOut();
             $('.grid-loading').fadeIn();
-       });
+        });
 
         document.addEventListener("reloadend", e => {
             $('.mvc-grid').fadeIn();
@@ -687,32 +675,6 @@
     function roundToInteger(input){
         return Math.round(input); 
     }
-
-    function alertSuccess(message){
-        $("#alert-container").show().removeClass("alert-danger").addClass("alert-success").removeClass("alert-warning");
-        $("#alert-icon").removeClass().addClass("fas fa-check-circle fa-lg");
-        $("#alert-message").html(`Success:   ${message}`);
-    }
-
-    function alertWarning(message){
-        $("#alert-message").show().removeClass("alert-danger").removeClass("alert-success").addClass("alert-warning");
-        $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
-        $("#alert-message").html(`Warning:   ${message}`);
-        console.log(message);
-    }
-
-    function alertError(message){
-        $("#alert-container").show().addClass("alert-danger").removeClass("alert-success").removeClass("alert-warning");
-        $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
-        $("#alert-message").html(`Error:   ${message}`);
-        console.log(message);
-    }
-
-    function alertClear(){
-        $("#alert-container").hide();
-        $("#alert-message").html();
-    }
-
 </script>
 
 @section Scripts {

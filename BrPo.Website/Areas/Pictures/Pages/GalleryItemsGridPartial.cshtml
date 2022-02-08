@@ -23,20 +23,20 @@
             .Encoded(false)
             .RenderedAs(model =>
             {
-                return HtmlHelpers.GetNameTags(model);
+                return HtmlHelpers.GetGalleryItemNameTags(model);
             });
-        columns.Add(model => model.DateCreated).Titled("Created").Formatted("{0:d}");
+        columns.Add(model => model.DateCreated).Titled("Created").Formatted("{0:d}").Css("grid-column-display");
         columns.Add().Titled("Gallery Item")
             .Encoded(false)
             .RenderedAs(model =>
             {
-                return HtmlHelpers.GetIsActiveTag(model);
+                return HtmlHelpers.GetIsGalleryItemActiveTag(model);
             });
         columns.Add(model => model.Id).Titled("Actions")
             .Encoded(false)
             .RenderedAs(model =>
             {
-                return HtmlHelpers.GetButtons(model.Id, model.ImageFileId);
+                return HtmlHelpers.GetGalleryItemButtons(model.Id, model.ImageFileId);
 
             });
     })

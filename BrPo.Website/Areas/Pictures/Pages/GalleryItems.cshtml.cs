@@ -52,7 +52,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
         {
             ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             SetPaperEnumLists();
-            if (ApplicationUser.UserDetails?.GalleryRootName != null)
+            if (ApplicationUser.UserDetails?.GalleryRootName == null)
             {
                 return Page();
             }
@@ -280,7 +280,6 @@ namespace BrPo.Website.Areas.Pictures.Pages
 
         public async Task<IActionResult> OnPostSaveGalleryItemAsync()
         {
-            await Task.Delay(1);
             if (!ModelState.IsValid)
             {
                 return Page();

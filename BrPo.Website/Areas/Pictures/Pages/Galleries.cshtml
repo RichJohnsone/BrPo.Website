@@ -8,14 +8,6 @@
         <h1>Galleries</h1>
     </div>
     <div class="row">
-        <div class="col-12">
-            @foreach(var gallery in Model.Galleries)
-            {
-                var href = $"/{@gallery.Name}";
-                <a data-toggle="tooltip" title="View gallery" href="@href">
-                    <img  class="galleryImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(gallery.Content.First().ImageGalleryItem.ImageFile.Id)">
-                </a>
-            }
-        </div>
+        <partial name="CarouselPartial" model="Model.CarouselModel" />
     </div>
 </div>

@@ -1,0 +1,136 @@
+﻿@model BrPo.Website.Services.Image.Models.ImageGallery
+        <hr/>
+        <div class="form-group row m-0">
+            <div id="alert-container" class="mt-3 alert alert-info alert-dismissible fade show w-100 " style="margin-top: 0!important;">
+                <i id="alert-icon" class="fas fa-info-circle"></i>
+                <span id="alert-message"></span>
+                <button type="button" class="close alert-close-js" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+
+        <form id="galleriesForm">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <input type="hidden" asp-for="Id" name="Id"/>
+            <input asp-for="DateCreated" type="hidden" />
+            @{
+                var editorLabel = Model.Id != 0  ? $"Edit : {Model.Name}" : "Create  a new gallery";
+            }
+            <div class="form-group row m-0 mb-3">
+                <h3 class="ellipsis" data-toggle="tooltip" title="@Model.Name">@editorLabel</h3>
+            </div>
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <table class="form-table">
+                        <tr><th></th><th></th><th></th></tr>
+                        <tr>
+                            <td>
+                                <label asp-for="Name">
+                                    Name<i class="fas fa-question-circle"
+                                            title="How the name is used"
+                                            data-toggle="hover" 
+                                            data-html="true"
+                                            data-content="<h6>Think about the name</h6>
+<p>The name you give your gallery here will appear underneath the gallery.</p>
+<p>The name must be unique in your gallery collection</p>
+<p>The name will form part of the gallery's URL</p>
+<p>Your gallery will also be available on it's own page where the name will be crawled by search engines, and available in public search. So once set, it is unwise to change it.<p>"></i>
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <input asp-for="Name" 
+                                          class="form-control" 
+                                          id="Name" 
+                                          name="Name"
+                                          type="text"
+                                          placeholder="Name"
+                                          title="Required, 2 - 50 chars, may only contain alpha-numerics, spaces and _"
+                                          data-toggle="tooltip"
+                                          data-val="true"
+                                          data-val-required="Required" 
+                                          data-val-regex="May only contain alpha-numerics, spaces and _"
+                                          data-val-regex-pattern="^[a-zA-Z0-9_ ]+$"
+                                          data-val-maxlength="length should be 2 - 50 characters"
+                                          />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td>
+                                <label asp-for="Description">
+                                    Description<i class="fas fa-question-circle"
+                                                    title="How the description is used"
+                                                    data-toggle="hover" 
+                                                    data-html="true"
+                                                    data-content="<p>The description you give your gallery here will appear below your gallery.</p>
+<p>The description will be crawled by search engines, and available in public search.<p>"></i>
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <textarea asp-for="Description" 
+                                          class="form-control" 
+                                          id="Description" 
+                                          rows="2" 
+                                          name="Description"
+                                          type="text"
+                                          placeholder="Description"
+                                          title="Optional, up to 1000 chars, may only contain alpha-numerics, spaces and . , / _ :"
+                                          data-toggle="tooltip"
+                                          data-val="true"
+                                          data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
+                                          data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td><label>Cover image</label></td>
+                            <td colspan="2">
+                                <input asp-for="CoverImageId" 
+                                       name="CoverImageId" 
+                                       class="form-control" 
+                                       readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td><label asp-for="ContentCount">Content count</label></td>
+                            <td colspan="2">
+                                <input asp-for="ContentCount" 
+                                       name="ContentCount" 
+                                       class="form-control" 
+                                       readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                    </table>
+                </div>
+            </div>
+            @if (Model.ContentCount > 0)
+            {
+            <div class="form-group row pt-0 pl-3 pr-3 pb-0 mb-1">
+                <div class="w-33">
+                    <label class="">
+                        Content<i class="fas fa-question-circle"
+                                        title="How Content is used"
+                                        data-toggle="hover" 
+                                        data-html="true"
+                                        data-content="<p>Click on an image in the content scroller to make it the cover image for this gallery.<p>"></i>
+
+                    </label>
+                </div>
+                <div class="w-66">
+                    <div class="" id="content-image-scroller-container"></div>
+                </div>
+            </div>
+            }
+            <div class="form-group row">
+                @{
+                    var buttonLabel = Model.Id != 0  ? "Save gallery" : "Create gallery";
+                }
+                <button type="button" id="addOrEdit" class="btn btn-primary table-button mt-0 ml-3 mr-3 w-100">@buttonLabel</button>
+            </div>
+        </form>

@@ -17,122 +17,133 @@
             <input type="hidden" name="SelectedPaperTextureId" id="SelectedPaperTextureId" value="" />
             <input type="hidden" name="PaperSurface" id="PaperSurface" value="@Model.PaperSurface" />
             <input type="hidden" name="PaperTexture" id="PaperTexture" value="@Model.PaperTexture" />
-            <div class="form-group row">
-                <label asp-for="ImageFile.OriginalFileName" class="col-sm-6 col-md-4 col-2 col-form-label">Filename</label>
-                <div class="col-sm-6 col-md-8 col-10">
-                    <input asp-for="ImageFile.OriginalFileName" 
-                           name="ImageFile.OriginalFileName" 
-                           class="form-control" 
-                           disabled="disabled" />
-                </div>
-                <span asp-validation-for="ImageFile.OriginalFileName" class="text-danger"></span>
-            </div>
 
-            <div class="form-group row">
-                <label asp-for="Name" class="col-sm-6 col-md-4 col-2 col-form-label">
-                    Name<i class="fas fa-question-circle"
-                                    title="How the name is used"
-                                    data-toggle="hover" 
-                                    data-html="true"
-                                    data-content="<h6>Think about the name</h6>
-<p>The name you give your image here will appear above the image when it is displayed in galleries.</p>
+            <div class="row">
+                <div class="col-12">
+                    <table class="form-table">
+                        <tr><th></th><th></th><th></th></tr>
+                        <tr>
+                            <td><label asp-for="ImageFile.OriginalFileName">Filename</label></td>
+                            <td colspan="2">
+                                <input asp-for="ImageFile.OriginalFileName" 
+                                       name="ImageFile.OriginalFileName" 
+                                       class="form-control" 
+                                       disabled="disabled" />
+                                <span asp-validation-for="ImageFile.OriginalFileName" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td>
+                                <label asp-for="Name">
+                                    Name<i class="fas fa-question-circle"
+                                            title="How the name is used"
+                                            data-toggle="hover" 
+                                            data-html="true"
+                                            data-content="<h6>Think about the name</h6>
+<p>The name you give your image here will appear below the image.</p>
+<p>The name must be unique in your image collection</p>
+<p>The name will form part of the image's URL</p>
 <p>It will also appear on invoices.</p>
-<p>Your image will also be available on it's own page where the name will be crawled by search engines, and available in public search.<p>
+<p>Your image will also be available on it's own page where the name will be crawled by search engines, and available in public search. So once set, it is unwise to change it.<p>
 <p>For the more nerdy, the name is also used in image alt tags.</p>"></i>
-                </label>
-                <div class="col-sm-6 col-md-8 col-10">
-                    <input asp-for="Name" 
-                              class="form-control" 
-                              id="Name" 
-                              name="Name"
-                              type="text"
-                              placeholder="Name"
-                              title="Required, 2 - 50 chars, may only contain alpha-numerics, spaces and _"
-                              data-toggle="tooltip"
-                              data-val="true"
-                              data-val-required="Required" 
-                              data-val-regex="May only contain alpha-numerics, spaces and _"
-                              data-val-regex-pattern="^[a-zA-Z0-9_ ]+$"
-                              data-val-maxlength="length should be 2 - 50 characters"
-                              />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label asp-for="Description" class="col-sm-6 col-md-4 col-2 col-form-label">
-                    Description<i class="fas fa-question-circle"
-                                    title="How the description is used"
-                                    data-toggle="hover" 
-                                    data-html="true"
-                                    data-content="<p>The description you give your image here will appear below the image when it is displayed in galleries.</p>
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <input asp-for="Name" 
+                                          class="form-control" 
+                                          id="Name" 
+                                          name="Name"
+                                          type="text"
+                                          placeholder="Name"
+                                          title="Required, 2 - 50 chars, may only contain alpha-numerics, spaces and _"
+                                          data-toggle="tooltip"
+                                          data-val="true"
+                                          data-val-required="Required" 
+                                          data-val-regex="May only contain alpha-numerics, spaces and _"
+                                          data-val-regex-pattern="^[a-zA-Z0-9_ ]+$"
+                                          data-val-maxlength="length should be 2 - 50 characters"
+                                          />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td>
+                                <label asp-for="Description">
+                                    Description<i class="fas fa-question-circle"
+                                                    title="How the description is used"
+                                                    data-toggle="hover" 
+                                                    data-html="true"
+                                                    data-content="<p>The description you give your image here will appear below the image when it is displayed in galleries.</p>
 <p>Your image will also be available on it's own page where the description will be crawled by search engines, and available in public search.<p>"></i>
-                </label>
-                <div class="col-sm-6 col-md-8 col-10">
-                    <textarea asp-for="Description" 
-                              class="form-control" 
-                              id="Description" 
-                              rows="2" 
-                              name="Description"
-                              type="text"
-                              placeholder="Description"
-                              title="Optional, up to 1000 chars, may only contain alpha-numerics, spaces and . , / _ :"
-                              data-toggle="tooltip"
-                              data-val="true"
-                              data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
-                              data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-            </div>
-            @if (Model.Id != 0)
-            {
-            <div class="form-group row">
-                <label class="col-sm-6 col-md-4 col-2 col-form-label">
-                    Tags<i class="fas fa-question-circle"
-                                    title="Tags"
-                                    data-toggle="hover" 
-                                    data-html="true"
-                                    data-content="<p>Tags can be used to add descriptive attributes to your image, like <strong>Sunset</strong> or <strong>Brockwell Park</strong>.</p>
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <textarea asp-for="Description" 
+                                          class="form-control" 
+                                          id="Description" 
+                                          rows="2" 
+                                          name="Description"
+                                          type="text"
+                                          placeholder="Description"
+                                          title="Optional, up to 1000 chars, may only contain alpha-numerics, spaces and . , / _ :"
+                                          data-toggle="tooltip"
+                                          data-val="true"
+                                          data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
+                                          data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        @if (Model.Id != 0)
+                        {
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            <td>
+                                <label>
+                                    Tags<i class="fas fa-question-circle"
+                                            title="Tags"
+                                            data-toggle="hover" 
+                                            data-html="true"
+                                            data-content="<p>Tags can be used to add descriptive attributes to your image, like <strong>Sunset</strong> or <strong>Brockwell Park</strong>.</p>
 <p>You add as many as you like to your image.<p>
 <p>Tags will be crawled by search engines, and available in public search.</p>
 <p>Tags are also searchable here in the site."></i>
-                </label>
-                <div class="col-sm-6 col-md-8 col-10">
-                    <div class="input-group">
-                        <input class="form-control" 
-                                  id="Tags" 
-                                  rows="2" 
-                                  name="Tags"
-                                  type="text"
-                                  placeholder="Add tags one at a time with the + button"
-                                  data-val="true"
-                                  title="3 to 50 chars, not case-sensitive, may only contain alpha-numerics, spaces and _"
-                                  data-imageGalleryItemId="@Model.Id"
-                                  data-toggle="tooltip"
-                                  data-val-length="Must be 3 to 50 chars in length"
-                                  data-val-regex="May only contain characters, spaces and _"
-                                  data-val-regex-pattern="^[a-zA-Z0-9_ ]+$" />
-                        <div class="input-group-append">
-                            <button type="button" 
-                                    class="btn btn-primary" 
-                                    id="create-image-tag" 
-                                    data-imageGalleryItemId="@Model.Id"
-                                    data-toggle="tooltip" 
-                                    title="Add tag">
-                                <i class="fas fa-plus fa-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <span asp-validation-for="Tags" class="text-danger"></span>
-                    <div id="tag-area">
-                        <partial name="ImageTagsPartial" model="Model.Tags"/>
-                    </div>
-                </div>
-            </div>                
-            }
-            <div class="row">
-                <div class="col-12 p-0">
-                    <table class="form-table">
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <div class="input-group">
+                                    <input class="form-control" 
+                                              id="Tags" 
+                                              rows="2" 
+                                              name="Tags"
+                                              type="text"
+                                              placeholder="Add tags one at a time with the + button"
+                                              data-val="true"
+                                              title="3 to 50 chars, not case-sensitive, may only contain alpha-numerics, spaces and _"
+                                              data-imageGalleryItemId="@Model.Id"
+                                              data-toggle="tooltip"
+                                              data-val-length="Must be 3 to 50 chars in length"
+                                              data-val-regex="May only contain characters, spaces and _"
+                                              data-val-regex-pattern="^[a-zA-Z0-9_ ]+$" />
+                                    <div class="input-group-append">
+                                        <button type="button" 
+                                                class="btn btn-primary" 
+                                                id="create-image-tag" 
+                                                data-imageGalleryItemId="@Model.Id"
+                                                data-toggle="tooltip" 
+                                                title="Add tag">
+                                            <i class="fas fa-plus fa-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Tags" class="text-danger"></span>
+                                <div id="tag-area">
+                                    <partial name="ImageTagsPartial" model="Model.Tags"/>
+                                </div>
+                            </td>
+                        </tr>                
+                        }
                         <tr style="bottom: -9px; position: relative;">
                             <td><i class="fas fa-question-circle"
                                     title="Print size and pricing"
@@ -142,11 +153,12 @@
 Prints are then available between the specified sizes.</p>
 <p>The final sale price is calculated on a sliding scale, based on the print size chosen at sale time.</p>
 <p>You can set minimums and maximums to the same values to sell prints at just one size.</p>
-<p>The minimum size allowed fits your image to A4, maximum is a little over A2.</p>"></i>
+<p>The minimum size allowed fits your image to A4 (297 x 210mm), maximum is a little over A2 width (432mm) x 2000mm.</p>"></i>
                             </td>
                             <td><span class="">Minimum</span></td>
                             <td><span class="">Maximum</span></td>
                         </tr>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
                         <tr>
                             <td>Height</td>
                             <td>
@@ -183,7 +195,7 @@ Prints are then available between the specified sizes.</p>
                                        <span asp-validation-for="MaxHeight" class="text-danger"></span>
                             </td>
                         </tr>
-
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
                         <tr>
                             <td>Width</td>
                             <td>
@@ -219,7 +231,7 @@ Prints are then available between the specified sizes.</p>
                                 <span asp-validation-for="MaxWidth" class="text-danger"></span>
                             </td>
                         </tr>
-
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
                         <tr>
                             <td>Price</td>
                             <td>
@@ -255,41 +267,43 @@ Prints are then available between the specified sizes.</p>
                                 <span asp-validation-for="MaxPrice" class="text-danger"></span>
                             </td>
                         </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                @{
-                    var galleryLabel = Model.Id == 0 ? "Gallery" : "Galleries";
-                }
-                <label class="col-sm-6 col-md-4 col-2 col-form-label">
-                    @galleryLabel<i class="fas fa-question-circle"
-                                    title="@galleryLabel"
-                                    data-toggle="hover" 
-                                    data-html="true"
-                                    data-content="<p>You can add your image to one or more galleries.</p>
+                        <tr class="form-table-spacer-row"><td><div>&nbsp;</div></td></tr>
+                        <tr>
+                            @{
+                                var galleryLabel = Model.Id == 0 ? "Gallery" : "Galleries";
+                            }
+                            <td>
+                                <label>
+                                    @galleryLabel<i class="fas fa-question-circle"
+                                                    title="@galleryLabel"
+                                                    data-toggle="hover" 
+                                                    data-html="true"
+                                                    data-content="<p>You can add your image to one or more galleries.</p>
 <p>Galleries will be crawled by search engines and available in public search.</p>"></i>
-                </label>
-                <div class="col-sm-6 col-md-8 col-10">
-                    <div class="input-group" id="gallery-select-container-js">
-                        @{
-                            var addToGalleryButtonClass = Model.Id == 0 ? "d-none" : string.Empty;
-                        }
-                        <div class="input-group-append @addToGalleryButtonClass">
-                            <button type="button" 
-                                    class="btn btn-primary" 
-                                    id="add-to-gallery" 
-                                    data-imageGalleryItemId="@Model.Id"
-                                    data-toggle="tooltip" 
-                                    title="Add to Gallery">
-                                <i class="fas fa-plus fa-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="galleries-area">
-                        <partial name="GalleryChipsPartial" model="Model.Galleries"/>
-                    </div>
+                                </label>
+                            </td>
+                            <td colspan="2">
+                                <div class="input-group" id="gallery-select-container-js">
+                                    @{
+                                        var addToGalleryButtonClass = Model.Id == 0 ? "d-none" : string.Empty;
+                                    }
+                                    <div class="input-group-append @addToGalleryButtonClass">
+                                        <button type="button" 
+                                                class="btn btn-primary" 
+                                                id="add-to-gallery" 
+                                                data-imageGalleryItemId="@Model.Id"
+                                                data-toggle="tooltip" 
+                                                title="Add to Gallery">
+                                            <i class="fas fa-plus fa-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="galleries-area">
+                                    <partial name="GalleryChipsPartial" model="Model.Galleries"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 

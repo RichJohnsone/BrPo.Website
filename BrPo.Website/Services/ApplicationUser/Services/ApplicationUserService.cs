@@ -22,6 +22,10 @@ namespace BrPo.Website.Services.ApplicationUser.Services
         Task<string> GetGalleryRootName(Guid guid);
 
         Task AddOrUpdateUserDetailsAsync(UserDetailsModel userDetailsModel);
+
+        string GetOrSetImagesViewCookieValue(string value = null);
+
+        string GetOrSetGalleriesViewCookieValue(string value = null);
     }
 
     public class ApplicationUserService : IApplicationUserService
@@ -31,7 +35,12 @@ namespace BrPo.Website.Services.ApplicationUser.Services
         private readonly ILogger<ApplicationUserService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
-        internal const String BrPoSessionCookieName = "BrPoSession";
+        internal const String BrPoSessionCookieKey = "BrPoSession";
+        internal const int BrPoSessionCookieExpiry = 120;
+        internal const String BrPoImagesViewCookieKey = "BrPoImagesView";
+        internal const int BrPoImagesViewCookieExpiry = 525600;
+        internal const String BrPoGalleriesViewCookieKey = "BrPoGalleriesView";
+        internal const int BrPoGalleriesViewCookieExpiry = 525600;
 
         public ApplicationUserService(
             ApplicationDbContext applicationDbContext,
@@ -62,11 +71,11 @@ namespace BrPo.Website.Services.ApplicationUser.Services
             else
             {
                 applicationUser.IsIdentityUser = false;
-                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(BrPoSessionCookieName, out var sessionId))
+                if (_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(BrPoSessionCookieKey, out var sessionId))
                 {
                     Guid.TryParse(sessionId, out var guid);
                     applicationUser.Id = guid;
-                    CreateCookie(sessionId);
+                    CreateCookie(BrPoSessionCookieKey, sessionId, BrPoSessionCookieExpiry);
                 }
                 else
                 {
@@ -120,6 +129,42 @@ namespace BrPo.Website.Services.ApplicationUser.Services
             return _context.UserDetails.FirstOrDefault(u => u.UserId == guid).GalleryRootName;
         }
 
+        public string GetOrSetImagesViewCookieValue(string value = null)
+        {
+            var cookieValue = value;
+            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(BrPoImagesViewCookieKey))
+            {
+                cookieValue = _httpContextAccessor.HttpContext.Request.Cookies[BrPoImagesViewCookieKey].ToString();
+                if (value == null) return cookieValue;
+                if (cookieValue == value) return cookieValue;
+                cookieValue = value;
+            }
+            else
+            {
+                if (value == null) cookieValue = "slider";
+            }
+            CreateCookie(BrPoImagesViewCookieKey, cookieValue, BrPoImagesViewCookieExpiry);
+            return cookieValue;
+        }
+
+        public string GetOrSetGalleriesViewCookieValue(string value = null)
+        {
+            var cookieValue = value;
+            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(BrPoGalleriesViewCookieKey))
+            {
+                cookieValue = _httpContextAccessor.HttpContext.Request.Cookies[BrPoGalleriesViewCookieKey].ToString();
+                if (value == null) return cookieValue;
+                if (cookieValue == value) return cookieValue;
+                cookieValue = value;
+            }
+            else
+            {
+                if (value == null) cookieValue = "slider";
+            }
+            CreateCookie(BrPoGalleriesViewCookieKey, cookieValue, BrPoGalleriesViewCookieExpiry);
+            return cookieValue;
+        }
+
         private async Task<GuestUserModel> GetNewGuestUser()
         {
             Guid newId;
@@ -131,24 +176,25 @@ namespace BrPo.Website.Services.ApplicationUser.Services
                     var guestUser = new GuestUserModel(newId);
                     _context.GuestUsers.Add(guestUser);
                     await _context.SaveChangesAsync();
-                    CreateCookie(newId.ToString());
+                    CreateCookie(BrPoSessionCookieKey, newId.ToString(), BrPoSessionCookieExpiry);
                     return guestUser;
                 }
             }
         }
 
-        private void CreateCookie(string userId)
+        private void CreateCookie(string key, string value, int expiryInMinutes)
         {
-            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(BrPoSessionCookieName))
+            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(key))
             {
-                _httpContextAccessor.HttpContext.Response.Cookies.Delete(BrPoSessionCookieName);
+                _httpContextAccessor.HttpContext.Response.Cookies.Delete(key);
             }
             CookieOptions options = new CookieOptions();
-            options.Expires = DateTime.Now.AddMinutes(120);
-            options.MaxAge = TimeSpan.FromHours(2);
+            options.Expires = DateTime.Now.AddMinutes(expiryInMinutes);
+            options.MaxAge = TimeSpan.FromMinutes(expiryInMinutes);
             options.IsEssential = true;
             options.HttpOnly = true;
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(BrPoSessionCookieName, userId, options);
+            options.Secure = true;
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(key, value, options);
         }
 
         private bool GuestUserExists(Guid userId)

@@ -1,3 +1,4 @@
+using BrPo.Website.Areas.Pictures.Models;
 using BrPo.Website.Services.ApplicationUser.Services;
 using BrPo.Website.Services.Image.Models;
 using BrPo.Website.Services.Image.Services;
@@ -16,7 +17,8 @@ namespace BrPo.Website.Areas.Pictures.Pages
         private readonly IImageService _imageService;
         private readonly IApplicationUserService _applicationUserService;
 
-        public List<ImageGallery> Galleries { get; set; }
+        private List<ImageGallery> Galleries { get; set; }
+        public CarouselModel CarouselModel { get; set; } = new CarouselModel();
 
         public GalleriesModel(
             ILogger<GalleryItemsModel> logger,
@@ -31,6 +33,17 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public async Task<PageResult> OnGetAsync()
         {
             Galleries = await _imageService.GetGalleries();
+            foreach (var gallery in Galleries)
+            {
+                CarouselModel.Content.Add(new CarouselContentModel()
+                {
+                    ImageFileId = gallery.CoverImageId,
+                    ImageGalleryId = gallery.Id,
+                    Name = gallery.Name,
+                    Description = gallery.Description,
+                    Link = $"/{gallery.GalleryRootName}/{gallery.Name}"
+                });
+            }
             return Page();
         }
     }

@@ -1,0 +1,31 @@
+﻿@using BrPo.Website.Areas.Pictures.Models
+@using BrPo.Website.Services.Image.Services
+@model CarouselModel
+@inject IImageService ImageService;
+@{
+    var index = -1;
+}
+@foreach(var item in Model.Content)
+{
+                    var isActive = ++index == 0 ? "active" : "";
+                    <li data-target="#carouselExampleIndicators" 
+                        data-slide-to="@index" 
+                        data-toggle="tooltip"
+                        title="Edit this gallery"
+                        data-imageFileId="@item.ImageFileId"
+                        data-imageGalleryId="@item.ImageGalleryId"
+                        data-imageGalleryItemId="@item.ImageGalleryItemId"
+                        class="carousel-indicator-js @isActive">
+                        <div>
+                            @if (item.ImageFileId == 0)
+                            {
+                            <img class="indicatorImage" src="~/resources/images/NoContent.png" height="@Model.IndicatorHeight">
+                            }
+                            else
+                            {
+                            <img class="indicatorImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(item.ImageFileId, Model.IndicatorHeight)">
+                            }
+                        </div>
+                        <div><h6>@item.Name</h6></div>
+                    </li>
+}

@@ -3,6 +3,7 @@ using System;
 using BrPo.Website.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BrPo.Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220202112140_Gallery-Updates2")]
+    partial class GalleryUpdates2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GuestUsers", (string)null);
+                    b.ToTable("GuestUsers");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ApplicationUser.Models.UserDetailsModel", b =>
@@ -95,7 +97,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserDetails", (string)null);
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ContactForm.Models.ContactModel", b =>
@@ -124,7 +126,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageFileModel", b =>
@@ -186,7 +188,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageFiles", (string)null);
+                    b.ToTable("ImageFiles");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGallery", b =>
@@ -226,7 +228,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageGalleries", (string)null);
+                    b.ToTable("ImageGalleries");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGalleryContent", b =>
@@ -250,7 +252,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasIndex("ImageGalleryItemId");
 
-                    b.ToTable("ImageGalleryContent", (string)null);
+                    b.ToTable("ImageGalleryContent");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageGalleryItem", b =>
@@ -311,7 +313,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasIndex("ImageFileId");
 
-                    b.ToTable("ImageGalleryItems", (string)null);
+                    b.ToTable("ImageGalleryItems");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Image.Models.ImageTag", b =>
@@ -340,7 +342,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasIndex("Tag");
 
-                    b.ToTable("ImageTags", (string)null);
+                    b.ToTable("ImageTags");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.Paper.Models.PaperModel", b =>
@@ -402,7 +404,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Papers", (string)null);
+                    b.ToTable("Papers");
 
                     b.HasData(
                         new
@@ -531,7 +533,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasIndex("PrintOrderItemId");
 
-                    b.ToTable("basketItems", (string)null);
+                    b.ToTable("basketItems");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.Invoice", b =>
@@ -574,7 +576,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.PrintInvoiceItem", b =>
@@ -622,7 +624,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("PrintInvoiceItems", (string)null);
+                    b.ToTable("PrintInvoiceItems");
                 });
 
             modelBuilder.Entity("BrPo.Website.Services.ShoppingBasket.Models.PrintOrderItem", b =>
@@ -665,7 +667,7 @@ namespace BrPo.Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrintOrderItems", (string)null);
+                    b.ToTable("PrintOrderItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

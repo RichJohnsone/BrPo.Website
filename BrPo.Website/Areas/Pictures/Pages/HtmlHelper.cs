@@ -5,31 +5,26 @@ namespace BrPo.Website.Areas.Pictures.Pages
 {
     public static class HtmlHelpers
     {
-        public static string GetImageTag(string base64)
+        public static string GetImageTag(string base64, string name = "")
         {
             var html = new StringBuilder();
-            html.AppendLine($"<img class=\"mt-1 mb-1\" src=\"data:image/png;base64,{base64}\" />");
+            html.AppendLine($"<div class=\"grid-image-container\"><img alt=\"{name}\" class=\"mt-1 mb-1\" src=\"data:image/png;base64,{base64}\" data-toggle=\"tooltip\" title=\"{name}\" /></div>");
             return html.ToString();
         }
 
-        public static string GetNameTags(ImageGalleryItem imageGalleryItem)
+        public static string GetGalleryItemNameTags(ImageGalleryItem imageGalleryItem)
         {
             var html = new StringBuilder();
             html.AppendLine("<table class=\"table-sm\">");
             html.AppendLine($"<span data-toggle=\"tooltip\" title=\"Gallery item name\">{imageGalleryItem.Name}</span>");
-            html.AppendLine($"<tr><th class=\"\">Filename</th><td data-toggle=\"tooltip\" title=\"original filename\">{imageGalleryItem.ImageFile.OriginalFileName}</td></tr>");
-            //html.AppendLine($"<tr><th>Dimensions</th><td><span data-toggle=\"tooltip\" title=\"Height in pixels\">{imageGalleryItem.ImageFile.Height}</span>* <span data-toggle=\"tooltip\" title=\"Width in pixels\">{imageGalleryItem.ImageFile.Width}</span></td></tr>");
+            html.AppendLine($"<tr><th class=\"\">Filename</th><td data-toggle=\"tooltip\" title=\"original filename\"><div class=\"grid-image-container\">{imageGalleryItem.ImageFile.OriginalFileName}<div></td></tr>");
             if (!string.IsNullOrEmpty(imageGalleryItem.ImageFile.ColourSpace))
                 html.AppendLine($"<tr><th>Colour space</th><td>{imageGalleryItem.ImageFile.ColourSpace}</td></tr>");
-            //if (imageGalleryItem.ImageFile.ImageCreatedDate != null)
-            //    html.AppendLine($"<tr><th>Created</th><td>{imageGalleryItem.ImageFile.ImageCreatedDate.ToString()}</td></tr>");
-            //if (imageGalleryItem.ImageFile.Orientation != null)
-            //    html.AppendLine($"<tr><th>Orientation</th><td>{imageGalleryItem.ImageFile.Orientation}</td>");
             html.AppendLine("</tr></table>");
             return html.ToString();
         }
 
-        public static string GetIsActiveTag(ImageGalleryItem imageGalleryItem)
+        public static string GetIsGalleryItemActiveTag(ImageGalleryItem imageGalleryItem)
         {
             var html = new StringBuilder();
             var label = imageGalleryItem.Id == 0 ? "No" : imageGalleryItem.IsActive ? "Active" : "Inactive";
@@ -37,7 +32,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
             return html.ToString();
         }
 
-        public static string GetButtons(int galleryItemId, int imageFileId)
+        public static string GetGalleryItemButtons(int galleryItemId, int imageFileId)
         {
             var html = new StringBuilder();
             var title = galleryItemId != 0 ? "Edit" : "Make this file a ";
@@ -57,6 +52,39 @@ namespace BrPo.Website.Areas.Pictures.Pages
             html.Append($"data-imageGalleryItemId=\"{galleryItemId}\"");
             html.Append($"data-fileId=\"{imageFileId}\">");
             html.Append("<i class=\"fas fa-trash fa-lg\"></i></button>");
+            return html.ToString();
+        }
+
+        public static string GetGalleryNameTags(ImageGallery imageGallery)
+        {
+            var html = new StringBuilder();
+            html.AppendLine($"<span class=\"image-grid-ellipsis\" data-toggle=\"tooltip\" title=\"{imageGallery.Name}\">{imageGallery.Name}</span>");
+            return html.ToString();
+        }
+
+        public static string GetGalleryDescription(string description)
+        {
+            var html = new StringBuilder();
+            html.AppendLine($"<span class=\"image-grid-ellipsis\" data-toggle=\"tooltip\" title=\"{description}\">{description}</span>");
+            return html.ToString();
+        }
+
+        public static string GetGalleryButtons(int galleryId)
+        {
+            var html = new StringBuilder();
+            var deleteButtonClass = galleryId == 0 ? "d-none" : "";
+            html.Append("<button class=\"btn-icon-sml btn-primary d-inline addOrEditButton-js\" ");
+            html.Append("name=\"EditGallery\" ");
+            html.Append("data-toggle=\"tooltip\" ");
+            html.Append($"title=\"Edit gallery\">");
+            html.Append($"<i class=\"fas fa-pen image-scroller-edit-button edit-js\" ");
+            html.Append($"data-imageGalleryId=\"{galleryId}\"></i></button>");
+            html.Append($"<button class=\"btn-icon-sml btn-danger d-inline ml-1 {deleteButtonClass}\" ");
+            html.Append("name=\"DeleteGallery\" ");
+            html.Append("data-toggle=\"tooltip\" ");
+            html.Append("title=\"Delete gallery\">");
+            html.Append("<i class=\"fas fa-times fa-lg image-scroller-delete-button delete-js\" ");
+            html.Append($"data-imageGalleryId=\"{galleryId}\"></i></button>");
             return html.ToString();
         }
     }
