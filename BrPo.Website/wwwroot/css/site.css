@@ -7,6 +7,26 @@ a.navbar-brand {
     word-break: break-all;
 }
 
+.scrolled-down {
+    transform: translateY(-100%);
+    transition: all 0.3s ease-in-out;
+}
+
+.scrolled-up {
+    transform: translateY(0);
+    transition: all 0.3s ease-in-out;
+}
+
+.footer-scrolled-down {
+    transform: translateY(+100%);
+    transition: all 0.3s ease-in-out;
+}
+
+.footer-scrolled-up {
+    transform: translateY(0);
+    transition: all 0.3s ease-in-out;
+}
+
 /* Provide sufficient contrast against white background */
 a {
     color: #0366d6;
@@ -164,13 +184,6 @@ small {
 
 label.error {
     font-size: .8em;
-}
-
-#shoppingBasketCount {
-    position: relative;
-    font-size: .6em;
-    top: -27px;
-    right: -12px;
 }
 
 #CookieConsent {
@@ -398,19 +411,19 @@ button.mvc-grid-apply {
     visibility: hidden;
 }
 
-button.mvc-grid-apply:before {
-    content: 'Filter';
-    visibility: visible;
-    display: block;
-    position: relative;
-    background-color: green;
-    border-radius: 0.25rem;
-    height: 2rem !important;
-    width: 4rem !important;
-    left: -42px;
-    font-weight: 400;
-    padding-top: 6px;
-}
+    button.mvc-grid-apply:before {
+        content: 'Filter';
+        visibility: visible;
+        display: block;
+        position: relative;
+        background-color: green;
+        border-radius: 0.25rem;
+        height: 2rem !important;
+        width: 4rem !important;
+        left: -42px;
+        font-weight: 400;
+        padding-top: 6px;
+    }
 
 .mvc-grid-cancel {
     border-radius: 0.25rem;
@@ -435,7 +448,6 @@ button.mvc-grid-cancel:after {
     font-weight: 400;
     padding-top: 6px;
 }
-
 
 .grid-loading {
     background-color: #0366d6;
@@ -635,7 +647,22 @@ table.form-table {
     box-shadow: 2px 2px 2px 3px #00000005;
 }
 
+#textLogo {
+    display: none;
+}
 
+.fa-shopping-basket {
+    max-height: 20px;
+    padding: 0;
+    margin-top: 3px;
+}
+
+#shoppingBasketCount {
+    position: relative;
+    font-size: .6em;
+    margin-left: 3px;
+    margin-top: 3px;
+}
 
 @media (min-width: 420px) {
     .grid-image-container, .image-scroller-image-container {
@@ -645,7 +672,14 @@ table.form-table {
         min-height: 100px !important;
     }
 
+    #textLogo {
+        display: block;
+    }
 
+    #shoppingBasketCount {
+        position: relative;
+        font-size: .65em;
+    }
 }
 
 .grid-image-container img, .image-scroller-image-container img {

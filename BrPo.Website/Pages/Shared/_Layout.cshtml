@@ -46,18 +46,10 @@
 
     @RenderSection("Head", required: false)
 </head>
-<style>
-    .navbar-toggler {
-        margin-top:-50px;
-    }
-    main {
-        margin-top: 100px;
-    }
-</style>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
+        <nav class="autohide navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">
                     <img src="/resources/images/BPLogo1s.png" alt="Brixton Photographic logo" style="width:50px" class="float-left"/>
@@ -98,10 +90,10 @@
                             </ul>
                         </li>
                         <li class="nav-item" id="shopping-basket-nav">
-                            <a class="nav-link" asp-area="ShoppingBasket" asp-page="/Basket">
+                            <a class="nav-link d-flex justify-content-left" asp-area="ShoppingBasket" asp-page="/Basket">
                                 <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket">
-                                    <span class="badge badge-pill badge-danger" id="shoppingBasketCount"></span>
-                                </i>                                
+                                    
+                                </i><span class="badge badge-pill badge-danger" id="shoppingBasketCount"></span>                                
                             </a>
                         </li>
                         @if (User.IsInRole(RolesConfig.Administrator))
@@ -131,7 +123,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted fixed-bottom bg-white box-shadow">
+    <footer class="autohide border-top footer text-muted fixed-bottom bg-white box-shadow">
         <div class="container">
             &copy; @DateTime.UtcNow.Year - Brixton Photographic@* - <a asp-area="" asp-page="/Privacy">Privacy*@</a>
         </div>
@@ -150,15 +142,15 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
-            window.addEventListener('resize', textLogoDisplay);
+            //window.addEventListener('resize', textLogoDisplay);
 
-            function textLogoDisplay(){
-                if ($(window).width() < 800){
-                    $("#textLogo").hide();
-                } else {
-                    $("#textLogo").show();
-                }
-            }
+            //function textLogoDisplay(){
+            //    if ($(window).width() < 800){
+            //        $("#textLogo").hide();
+            //    } else {
+            //        $("#textLogo").show();
+            //    }
+            //}
 
             setTimeout(bindTooltips, 1000);
             updateBasketCount();
@@ -235,6 +227,54 @@
             $("#alert-container").hide();
             $("#alert-message").html();
         }
+
+        // autohide nav 
+
+        nav_autohide = document.querySelector('nav.autohide');
+        footer_autohide = document.querySelector('footer.autohide');
+        // add padding-top to body (if necessary)
+        navbar_height = document.querySelector('.navbar').offsetHeight;
+        document.body.style.paddingTop = navbar_height + 'px';
+
+        if(nav_autohide){
+            var last_scroll_top = 0;
+            window.addEventListener('scroll', function() {
+                    let scroll_top = window.scrollY;
+                    if(scroll_top < last_scroll_top) {
+                        nav_autohide.classList.remove('scrolled-down');
+                        nav_autohide.classList.add('scrolled-up');
+                        footer_autohide.classList.remove('footer-scrolled-down');
+                        footer_autohide.classList.add('footer-scrolled-up');
+                    }
+                    else {
+                        nav_autohide.classList.remove('scrolled-up');
+                        nav_autohide.classList.add('scrolled-down');
+                        footer_autohide.classList.remove('footer-scrolled-up');
+                        footer_autohide.classList.add('footer-scrolled-down');
+                    }
+                    last_scroll_top = scroll_top;
+            }); 
+            // window.addEventListener
+        }
+
+
+        //if(footer_autohide){
+        //    var last_scroll_top = 0;
+        //    window.addEventListener('scroll', function() {
+        //            let scroll_top = window.scrollY;
+        //            if(scroll_top < last_scroll_top) {
+        //                footer_autohide.classList.remove('footer-scrolled-down');
+        //                footer_autohide.classList.add('footer-scrolled-up');
+        //            }
+        //            else {
+        //                footer_autohide.classList.remove('footer-scrolled-up');
+        //                footer_autohide.classList.add('footer-scrolled-down');
+        //            }
+        //            last_scroll_top = scroll_top;
+        //    }); 
+        //    // window.addEventListener
+        //}
+
     </script>
 </body>
 </html>
