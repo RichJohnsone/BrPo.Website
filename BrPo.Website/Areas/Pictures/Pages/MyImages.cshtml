@@ -1,8 +1,16 @@
 ﻿@page
+@model BrPo.Website.Areas.Pictures.Pages.MyImagesModel
 @using BrPo.Website.Services.Image.Services
 @inject IImageService ImageService;
-@model BrPo.Website.Areas.Pictures.Pages.GalleryItemsModel
-
+@{
+    var gridStyle = "display: none !important;";
+    var sliderStyle = "";
+    if (Model.DisplayAsGrid)
+    {
+        gridStyle = "";
+        sliderStyle = "display: none !important;";
+    }
+}
 <style>
     .thumbnail{
         max-height: 100px !important;
@@ -33,6 +41,9 @@
     #paper-selectors-table{
         margin-top: -13px;
     }
+    #gallery-items-grid {
+        width: 100%;
+    }
     .table {
         margin-bottom: 0;
     }
@@ -41,11 +52,20 @@
 
 @section Head { <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet"> }
 
-<div class="container-fluid">
-    <div class="row">
-        <h1>My Images</h1>
+<div class="container p-0">
+    <div class="row d-inline-block w-100 mb-3 ml-1">
+        <div class="col-12 p-0 mx-auto">
+            <h1 class="d-inline">My Images</h1>
+            <button class="btn-icon btn-info d-inline ml-1" id="set-view-grid" data-toggle="tooltip" title="Switch to grid view" style="@sliderStyle">
+                <i class="fas fa-grip-horizontal"></i>
+            </button>
+            <button class="btn-icon btn-info d-inline ml-2" id="set-view-slider" data-toggle="tooltip" title="Switch to slider view" style="@gridStyle">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+        </div>
     </div>
-    <div class="row">
+
+    <div class="row m-0 mb-3">
     @if (string.IsNullOrEmpty(Model.GalleryRootName)){
         <div class="col-12 pl-0 pr-0">
             <div class="form-group row">
@@ -66,129 +86,125 @@
             </div>
         </div>
     } else {
-        <div class="col-12 col-xl-6 pl-0 mt-2 pr-0 grid-column">
-            @if (Model?.ImageGalleryItems != null && Model.ImageGalleryItems.Count > 0)
-            {
-                <partial name="GalleryItemsGridPartial" model="Model.ImageGalleryItems" />
-                <div class="grid-loading">
-                    <div class="grid-loading-text">
-                        Grid loading
-                    </div>
+        if (Model?.ImageGalleryItems != null && Model.ImageGalleryItems.Count > 0)
+        {
+        <div class="overlay-container">
+            <div id="gallery-items-grid-container" class="col-12 d-flex justify-content-center flex-nowrap mx-auto p-0" style="@gridStyle"></div>
+            <div class="grid-loading">
+                <div class="grid-loading-text">
+                    Grid loading
                 </div>
-            } else {
-
-                    <div class="form-group row">
-                        <div class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-0 ml-3 mr-3" style="margin-top: 0!important;">
-                            <i id="alert-icon" class="fas fa-info-circle"></i>
-                            <span id="alert-message">You need to upload some files before you can add them to a gallery</span>
-                            <button type="button" class="close alert-close-js" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    </div>
-            }
+            </div>
         </div>
-        <div class="col-12 col-xl-6 pr-0 mt-2 pl-0 form-column">
-            <div id="alert-container" class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-3 mr-3" style="margin-top: 0!important;">
+        <div id="gallery-items-image-scroller-container" class="w-100 d-flex justify-content-center flex-nowrap" style="@sliderStyle"></div>
+        } else {
+        <div class="form-group row">
+            <div class="mt-3 alert alert-info alert-dismissible fade show w-100 mb-0 ml-3 mr-3" style="margin-top: 0!important;">
                 <i id="alert-icon" class="fas fa-info-circle"></i>
-                <span id="alert-message"></span>
+                <span id="alert-message">You need to upload some files before you can add them to a gallery</span>
                 <button type="button" class="close alert-close-js" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div id="editPanel">
-                <div>
-                    <p>Your images are listed in the grid.</p>
-                    <p>You can add your images to public galleries here.</p>
-                    <p>Images in galleries can be available for sale - you set the available sizes and prices.</p>
-                    <p>To do this we capture some extra data about your image - we call this making it into a gallery item.</p>
-                    <p>Use the action buttons in the grid to:</p>
+        </div>
+        }
+    }
+    </div>
+
+    <div class="form-group row m-0 mb-2 d-flex justify-content-center flex-nowrap">
+        <div class="col-12 p-0" id="editPanel">
+            <div>
+                <p>Your images are shown above.</p>
+                <p>You can add your images to public galleries here.</p>
+                <p>Images in galleries can be available for sale - you set the available sizes and prices.</p>
+                <p>To do this we capture some extra data about your image - we call this making it into a gallery item.</p>
+                <p>Use the action buttons above to:</p>
+                <ul>
+                    <li>Make a file into a gallery item</li>
                     <ul>
-                        <li>Make a file into a gallery item</li>
-                        <ul>
-                            <li>The gallery item can be added to one or more galleries</li>
-                            <li>You can add tags to the gallery item</li>
-                        </ul>
-                        <li>Edit a file's gallery item data</li>
-                        <li>Remove a file's gallery item data</li>
-                        <ul>
-                            <li>Also removes associated tags and gallery entries</li>
-                        </ul>
+                        <li>The gallery item can be added to one or more galleries</li>
+                        <li>You can add tags to the gallery item</li>
                     </ul>
-                </div>
+                    <li>Edit a file's gallery item data</li>
+                    <li>Remove a file's gallery item data</li>
+                    <ul>
+                        <li>Also removes associated tags and gallery entries</li>
+                    </ul>
+                </ul>
             </div>
         </div>
-    }
     </div>
 </div>
 
 @if (Model?.ImageGalleryItems != null && Model.ImageGalleryItems.Count > 0)
 {
-    <!--
-        selects used to clone into the edit gallery item ajax form
-    -->
+@*    
+    selects used to clone into the edit gallery item ajax form
+*@
+    @Html.DropDownListFor(
+        m => Model.ImageGalleryId, 
+        new SelectList(Model.ImageGalleries, "Id", "Name"), 
+        htmlAttributes: new { 
+            @class = "form-control d-none", 
+            id = "SelectedGallery", 
+            title="Select a gallery", 
+            data_toggle="tooltip" });
+    @Html.HiddenFor(m => Model.ImageGalleryId, new { name = "ImageGalleryId", id = "Model.ImageGalleryId"});
 
-                        @Html.DropDownListFor(
-                            m => Model.ImageGalleryId, 
-                            new SelectList(Model.ImageGalleries, "Id", "Name"), 
-                            htmlAttributes: new { @class = "form-control d-none", id = "SelectedGallery", title="Select a gallery", data_toggle="tooltip" })
-                        @Html.HiddenFor(m => Model.ImageGalleryId, new { name = "ImageGalleryId", id = "Model.ImageGalleryId"})
-
-        <div class="form-group row d-none mb-0 mt-2 p-3" id="paper-selectors">
-            <table class="form-table" id="paper-selectors-table">
-                <tr>
-                    <td>
-                        <label>
-                            Paper preference<i class="fas fa-question-circle"
-                                    title="Paper preference"
-                                    data-toggle="hover" 
-                                    data-html="true"
-                                    data-content="<p>You can select paper preferences for prints of your images.</p><p>We make buyers aware of your preferences but it is up to them to make the final choice.<p>"></i>
-                        </label>
-                    </td>
-                    <td>
-                        <select class="form-control" 
-                                id="SelectedPaperSurface" 
-                                data-toggle="tooltip" 
-                                title="Optional - select a preferred paper surface for your prints" 
-                                name="SelectedPaperSurfaceId">
-                            @foreach(var paperSurface in Model.PaperSurfaces)
+    <div class="form-group row d-none mb-0 mt-2 p-3" id="paper-selectors">
+        <table class="form-table" id="paper-selectors-table">
+            <tr>
+                <td>
+                    <label>
+                        Paper preference<i class="fas fa-question-circle"
+                            title="Paper preference"
+                            data-toggle="hover" 
+                            data-html="true"
+                            data-content="<p>You can select paper preferences for prints of your images.</p><p>We make buyers aware of your preferences but it is up to them to make the final choice.<p>"></i>
+                    </label>
+                </td>
+                <td>
+                    <select class="form-control" 
+                        id="SelectedPaperSurface" 
+                        data-toggle="tooltip" 
+                        title="Optional - select a preferred paper surface for your prints" 
+                        name="SelectedPaperSurfaceId">
+                        @foreach (var paperSurface in Model.PaperSurfaces)
+                        {
+                            if (paperSurface.IsAvailable)
                             {
-                                if (paperSurface.IsAvailable)
-                                {
-                                    <option value="@paperSurface.Id">@paperSurface.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@paperSurface.Id" disabled="disabled">@paperSurface.Name</option>
-                                }
+                                <option value="@paperSurface.Id">@paperSurface.Name</option>
                             }
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" 
-                                id="SelectedPaperTexture" 
-                                data-toggle="tooltip" 
-                                title="Optional - select a preferred paper texture for your prints" 
-                                name="SelectedPaperTextureId">
-                            @foreach(var paperTexture in Model.PaperTextures)
+                            else
                             {
-                                if (paperTexture.IsAvailable)
-                                {
-                                    <option value="@paperTexture.Id">@paperTexture.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@paperTexture.Id" disabled="disabled">@paperTexture.Name</option>
-                                }
+                                <option value="@paperSurface.Id" disabled="disabled">@paperSurface.Name</option>
                             }
-                        </select>
-                    </td>
-                </tr>
-            </table>
-        </div>    
+                        }
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" 
+                        id="SelectedPaperTexture" 
+                        data-toggle="tooltip" 
+                        title="Optional - select a preferred paper texture for your prints" 
+                        name="SelectedPaperTextureId">
+                        @foreach (var paperTexture in Model.PaperTextures)
+                        {
+                            if (paperTexture.IsAvailable)
+                            {
+                                <option value="@paperTexture.Id">@paperTexture.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@paperTexture.Id" disabled="disabled">@paperTexture.Name</option>
+                            }
+                        }
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
 }
-
 
 <!--
     Modals
@@ -230,14 +246,72 @@
 
 <script src="~/js/mvc-grid/mvc-grid.js"></script>
 <script>
+    var displayAsGrid = @Model.DisplayAsGrid.ToString().ToLower();
+
     document.addEventListener('DOMContentLoaded', function () {
+        showLoader();
 
-        $("#main_layout_container").removeClass("container").addClass("container-fluid");
+        // grid functions
 
-        const gridElement = document.querySelector('.mvc-grid');
+        var gridElement;
         const gridOptions = {
         };
-        var grid = new MvcGrid(gridElement, gridOptions);
+        var grid;
+
+        function initialiseGrid(){
+            gridElement = document.querySelector('.mvc-grid');
+            grid = new MvcGrid(gridElement, gridOptions);
+        }
+
+        function reloadGrid(){
+            new MvcGrid(document.querySelector('.mvc-grid')).reload();
+            $("#editPanel").html("");
+        }
+
+        document.addEventListener("reloadend", e => {
+            bindTooltips();
+            bindButtons();
+            scrollTo($("body"));
+        });
+
+        
+        function setSelectedGridRow(galleryId){
+            $(".edit-js").parent().parent().parent().removeClass('selected-grid-row');
+            if (galleryId == 0) return;
+            $(".edit-js[data-imagegalleryitemid=" + galleryId + "]").parent().parent().parent().addClass('selected-grid-row');
+        }
+
+        // set view functions
+
+        $("#set-view-grid").on('click', function(){
+                 showLoader();
+           displayAsGrid = true;
+            loadGalleryItemsGrid();
+            $("#gallery-items-image-scroller-container").hide();
+            $("#gallery-items-image-scroller-container").removeClass("d-flex");
+            $("#gallery-items-grid-container").show();
+            $("#gallery-items-grid-container").addClass("d-flex");
+            $("#set-view-grid").hide();
+            $("#set-view-grid").removeClass("d-inline");
+            $("#set-view-slider").show();
+            $("#set-view-slider").addClass("d-inline");
+            $("#editPanel").html("");
+        });
+
+        $("#set-view-slider").on('click', function(){
+                showLoader();
+            displayAsGrid = false;
+            loadGalleryItemsImageScroller();
+            $("#gallery-items-image-scroller-container").show();
+            $("#gallery-items-image-scroller-container").addClass("d-flex")
+            $("#gallery-items-grid-container").hide();
+            $("#gallery-items-grid-container").removeClass("d-flex")
+            $("#set-view-grid").show();
+            $("#set-view-grid").addClass("d-inline")
+            $("#set-view-slider").hide();
+            $("#set-view-slider").removeClass("d-inline")
+            $("#editPanel").html("");
+        });
 
         // load functions
 
@@ -245,7 +319,7 @@
             try {
                 showLoader();
                 alertClear();
-                $("#editPanel").load(`GalleryItems?handler=EditGalleryItemPartial&galleryItemId=${galleryItemId}&fileId=${fileId}`, function (response, status, xhr){
+                $("#editPanel").load(`MyImages?handler=EditGalleryItemPartial&galleryItemId=${galleryItemId}&fileId=${fileId}`, function (response, status, xhr){
                     console.log(`editPanel.load: status:${status}`);
                     if (status == "error"){
                         alertError(xhr.status + ": " + xhr.statusText);
@@ -254,6 +328,11 @@
                     } 
                     if (status == "success"){
                         try {
+                            if (alertMessage) {
+                                alertSuccess(alertMessage);
+                            }else{
+                                alertClear();
+                            }
                             $("#gallery-select-container-js").prepend($("#SelectedGallery").clone().removeClass("d-none"));
                             $("#paper-selects-container-js").replaceWith($("#paper-selectors").clone().removeClass("d-none"));
                             $("#SelectedPaperSurface option").each(function() { this.selected = (this.text == $("#PaperSurface").val()); });
@@ -278,13 +357,15 @@
                             addHeigthChangeEventHandlers();
                             addWidthChangeEventHandlers();
                             $('[data-toggle="hover"]').unbind().popover(({ trigger: "hover" }));
-                            if (alertMessage) alertSuccess(alertMessage);
+                            if (displayAsGrid) setSelectedGridRow(galleryItemId);
+                                showLoader(false);
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 250);
                             setTimeout(function(){
                                 showLoader(false);
                             }, 500);
-                            setTimeout(function(){
-                                showLoader(false);
-                            }, 1000);
+                            scrollTo($("#editPanel"));
                         }
                         catch(e) {
                             alertError(`Error from loadEditPanel.success: ${e.name} : ${e.description} : ${e.message}`)
@@ -303,13 +384,80 @@
             }
         }
 
+        function loadGalleryItemsImageScroller(){
+            try {
+                $("#gallery-items-image-scroller-container").load(`MyImages?handler=GalleryItemsImageScroller`, function (response, status, xhr){
+                    console.log(`loadGalleryItemsImageScroller: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadGalleryItemsImageScroller.error: ${response}`)
+                    } 
+                    if (status == "success"){
+                        try {
+                            bindButtons();
+                            initialiseImageScroller($("#content-scroller"));
+                            showLoader(false);
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 250);
+                            scrollTo($("body"));
+                        }
+                        catch(e) {
+                            alertError(`Error from loadGalleryItemsImageScroller.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadGalleryItemsImageScroller: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                    showLoader(false);
+            }
+        }
+
+        function loadGalleryItemsGrid(){
+            try {
+                $("#gallery-items-grid-container").load(`MyImages?handler=GalleryItemsGrid`, function (response, status, xhr){
+                    console.log(`loadGalleryItemsGrid: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadGalleryItemsGrid.error: ${response}`)
+                    } 
+                    if (status == "success"){
+                        try {
+                            initialiseGrid();
+                            bindTooltips();
+                            bindButtons();
+                                showLoader(false);
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 250);
+                            scrollTo($("body"));
+                        }
+                        catch(e) {
+                            alertError(`Error from loadGalleryItemsGrid.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadGalleryItemsGrid: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                    showLoader(false);
+            }
+        }
+
         function bindButtons(){
-            $(".addOrEditButton-js").on('mouseup', function(){
+            $(".edit-js").on('mouseup', function(){
                 const galleryItemId = $(this).attr('data-imageGalleryItemId');
-                const fileId = $(this).attr('data-fileId');
+                const fileId = $(this).attr('data-imageFileId');
                 loadEditPanel(galleryItemId, fileId);
             });
-            $(".deleteButton-js").on('mouseup', function(){
+            $(".delete-js").on('mouseup', function(){
                 const galleryItemId = $(this).attr('data-imageGalleryItemId');
                 $("#deleteGalleryItemButton").attr('data-imageGalleryItemId', galleryItemId)
                 loadConfirmModal();
@@ -331,7 +479,7 @@
         });
 
         function deleteGalleryItem(galleryItemId){
-            let url = `GalleryItems?handler=DeleteGalleryItem&galleryItemId=${galleryItemId}`;
+            let url = `MyImages?handler=DeleteGalleryItem&galleryItemId=${galleryItemId}`;
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -354,7 +502,7 @@
         // tag functions
 
         function createTag(galleryItemId, tag){
-            let url = `GalleryItems?handler=CreateTag`;
+            let url = `MyImages?handler=CreateTag`;
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -378,7 +526,7 @@
         }
 
         function deleteTag(tagId, imageGalleryItemId){
-            let url = `GalleryItems?handler=DeleteTag&imageTagId=${tagId}`;
+            let url = `MyImages?handler=DeleteTag&imageTagId=${tagId}`;
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -400,7 +548,7 @@
         function loadImageTags(galleryItemId){
             try {
                 alertClear();
-                $("#tag-area").load(`GalleryItems?handler=ImageTagsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
+                $("#tag-area").load(`MyImages?handler=ImageTagsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
                     console.log(`tags.load: status:${status}`);
                     if (status == "error"){
                         alertError(`loadTag error: ${xhr.status} : ${xhr.statusText}`);
@@ -493,7 +641,7 @@
         // Gallery chip functions
 
         function addToGallery(galleryItemId, galleryId){
-            let url = `GalleryItems?handler=AddToGallery`;
+            let url = `MyImages?handler=AddToGallery`;
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -516,7 +664,7 @@
         }
 
         function removeFromGallery(galleryId, galleryItemId){
-            let url = `GalleryItems?handler=RemoveFromGallery`;
+            let url = `MyImages?handler=RemoveFromGallery`;
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -542,7 +690,7 @@
         function loadGalleryChips(galleryItemId){
             try {
                 alertClear();
-                $("#galleries-area").load(`GalleryItems?handler=GalleryChipsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
+                $("#galleries-area").load(`MyImages?handler=GalleryChipsPartial&galleryItemId=${galleryItemId}`, function (response, status, xhr){
                     console.log(`loadGalleryChips: status:${status}`);
                     if (status == "error"){
                         alertError(`loadGalleryChips error: ${xhr.status} : ${xhr.statusText}`);
@@ -575,7 +723,7 @@
                 showLoader();
                 const alertMessage = $("#Id").val() == 0 ? "Gallery item created" : "Gallery item saved";
                 $("#addOrEdit").attr("disabled", "disabled");
-                let url = 'GalleryItems?handler=SaveGalleryItem';
+                let url = 'MyImages?handler=SaveGalleryItem';
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -590,7 +738,13 @@
                         let galleryItemId = galleryItem.Id;
                         let fileId = galleryItem.ImageFileId;
                         loadEditPanel(galleryItemId, fileId, alertMessage);
-                        if (alertMessage == "Gallery item created") reloadGrid();
+                        if (alertMessage == "Gallery item created") {
+                            if (displayAsGrid){
+                                loadGalleryItemsGrid();
+                            } else {
+                                loadGalleryItemsImageScroller();
+                            }
+                        }
                         showLoader(false);
                     },
                     error: function (response, status, error) {
@@ -601,10 +755,6 @@
                 });
             }
         };
-
-        function reloadGrid(){
-            new MvcGrid(document.querySelector('.mvc-grid')).reload();
-        }
         
         // initialisation
 
@@ -632,6 +782,11 @@
             $('.grid-loading').fadeOut('fast');
             bindButtons();
         });
+        if (displayAsGrid){
+            loadGalleryItemsGrid();
+        } else {
+            loadGalleryItemsImageScroller();
+        }
     });
 
     // UI
@@ -641,6 +796,14 @@
         errorClass: "error"
     };
 
+    function initialiseImageScroller(element) {
+        $(".image-scroller-name").each(function(){
+            var imageWidth = $(this).parent().parent().children().first().children().first().width();
+            $(this).css('max-width', imageWidth);
+        });
+        $(".image-scroller-nav").hide();
+    }
+
     function validateForm(){
         if ($("#itemForm").length > 0 && $("#itemForm").validator){
             setTimeout(function(){
@@ -649,19 +812,16 @@
         }
     }
 
+    function setSelectedGridRow(galleryId){
+        $(".edit-js").parent().parent().parent().removeClass('selected-grid-row');
+        $(".edit-js[data-imagegalleryitemid=" + galleryId + "]").parent().parent().parent().addClass('selected-grid-row');
+    }
+
     function initialiseValidation(){
         $("#itemForm").removeData("validator");
         $("#itemForm").validate(validationOptions);
         $.validator.unobtrusive.parse(document);
     }
-
-@*    function bindTooltips(){
-        $('[data-toggle="tooltip"]').tooltip({
-            delay: {show: 400, hide: 300}
-        }).click(function () {
-            $('[data-toggle="tooltip"]').tooltip("hide");
-        });
-    }*@
 
     function addIntegerControls(){
         $(".integer-control-js").on('mouseup blur change input', function(){
@@ -674,6 +834,13 @@
 
     function roundToInteger(input){
         return Math.round(input); 
+    }
+
+    function scrollTo(element) {
+        var position = element.offset().top
+            - $(".container").offset().top 
+            + $(".container").scrollTop();            
+        $("html, body").animate({ scrollTop: position - 50 }, 1000);
     }
 </script>
 

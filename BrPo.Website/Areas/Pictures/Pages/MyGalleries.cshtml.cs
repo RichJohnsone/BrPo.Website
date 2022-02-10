@@ -16,7 +16,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
 {
     public class MyGalleriesModel : PageModel
     {
-        private readonly ILogger<GalleryItemsModel> _logger;
+        private readonly ILogger<MyImagesModel> _logger;
         private readonly IImageService _imageService;
         private readonly IApplicationUserService _applicationUserService;
 
@@ -29,7 +29,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public bool DisplayAsGrid { get; set; }
 
         public MyGalleriesModel(
-            ILogger<GalleryItemsModel> logger,
+            ILogger<MyImagesModel> logger,
             IImageService imageService,
             IApplicationUserService applicationUserService)
         {

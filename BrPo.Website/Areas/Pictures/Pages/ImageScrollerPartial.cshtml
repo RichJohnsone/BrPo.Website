@@ -39,28 +39,39 @@
                                             data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="@item.Name">
-                                        <h6 class="image-scroller-name mb-0">@item.Name</h6>
+                                        <h6 class="image-scroller-name mb-0">@item.Name&nbsp;</h6>
                                     </div>                        
                                     }
                                     @if (Model.ShowButtons)
                                     {
-                                    <div class="mb-0 mt-2">
-@*                                        <span data-toggle="tooltip" title= "Edit">
-                                            <i class="fas fa-pen image-scroller-edit-button edit-js"
-                                               data-imageGalleryId="@item.ImageGalleryId"></i>
-                                        </span>
-                                        <span data-toggle="tooltip" title= "Delete">
-                                            <i class="fas fa-times fa-lg ml-2 image-scroller-delete-button delete-js"
-                                               data-imageGalleryId="@item.ImageGalleryId"></i>
-                                        </span>*@
-                                        <button class="btn-icon-sml btn-primary d-inline" data-toggle="tooltip" title="Edit">
-                                            <i class="fas fa-pen image-scroller-edit-button edit-js"
+                        <div class="mb-0 mt-2">
+                            @*                                        <span data-toggle="tooltip" title= "Edit">
+                                <i class="fas fa-pen image-scroller-edit-button edit-js"
+                                data-imageGalleryId="@item.ImageGalleryId"></i>
+                                </span>
+                                <span data-toggle="tooltip" title= "Delete">
+                                <i class="fas fa-times fa-lg ml-2 image-scroller-delete-button delete-js"
+                                data-imageGalleryId="@item.ImageGalleryId"></i>
+                                </span>*@
+                                        @{
+                                            var label = item.ImageGalleryId == 0 && item.ImageGalleryItemId == 0 ? "Add" : "Edit";
+                                            var icon = item.ImageGalleryId == 0 && item.ImageGalleryItemId == 0 ? "fa-plus" : "fa-pen";
+                                        }
+                                        <button class="btn-icon-sml btn-primary d-inline" data-toggle="tooltip" title="@label">
+                                            <i class="fas @icon image-scroller-edit-button edit-js"
+                                               data-imageFileId="@item.ImageFileId"
+                                               data-imageGalleryItemId="@item.ImageGalleryItemId"
                                                data-imageGalleryId="@item.ImageGalleryId"></i>
                                         </button>
+                                        @if (item.ImageGalleryId != 0 || (item.ImageGalleryId == 0 && item.ImageGalleryItemId != 0))
+                                        {
                                         <button class="btn-icon-sml btn-danger d-inline ml-1" data-toggle="tooltip" title="Delete">
                                             <i class="fas fa-times fa-lg image-scroller-delete-button delete-js"
+                                               data-imageFileId="@item.ImageFileId"
+                                               data-imageGalleryItemId="@item.ImageGalleryItemId"
                                                data-imageGalleryId="@item.ImageGalleryId"></i>
                                         </button>
+                                        }
                                     </div>
                                     }
                                 </li>

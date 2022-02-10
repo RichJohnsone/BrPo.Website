@@ -18,29 +18,36 @@
     }
 </style>
 
-@section Head { <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet"> }
+@*@section Head { <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet"> }*@
 
-<div class="container-fluid p-0">
-    <div class="row d-inline-block w-100 mb-3 ml-1">
-            <div class="col-12 col-xl-8 col-lg-10 p-0 mx-auto">
-                <h1 class="d-inline">My Galleries</h1>
-                <button class="btn-icon btn-primary d-inline ml-2" id="add-gallery" data-toggle="tooltip" title="Add gallery">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="btn-icon btn-info d-inline ml-1" id="set-view-grid" data-toggle="tooltip" title="Switch to grid view" style="@sliderStyle">
-                    <i class="fas fa-grip-horizontal"></i>
-                </button>
-                <button class="btn-icon btn-info d-inline ml-2" id="set-view-slider" data-toggle="tooltip" title="Switch to slider view" style="@gridStyle">
-                    <i class="fas fa-arrows-alt-h"></i>
-                </button>
-            </div>
+<div class="container p-0">
+    <div class="row d-inline-block w-100 m-0 mb-3">
+        <div class="col-12 p-0 mx-auto">
+            <h1 class="d-inline">My Galleries</h1>
+            <button class="btn-icon btn-primary d-inline ml-2" id="add-gallery" data-toggle="tooltip" title="Add gallery">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="btn-icon btn-info d-inline ml-1" id="set-view-grid" data-toggle="tooltip" title="Switch to grid view" style="@sliderStyle">
+                <i class="fas fa-grip-horizontal"></i>
+            </button>
+            <button class="btn-icon btn-info d-inline ml-2" id="set-view-slider" data-toggle="tooltip" title="Switch to slider view" style="@gridStyle">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+        </div>
     </div>
     <div class="row m-0 mb-3">
-        <div id="gallery-grid-container" class="col-12 col-xl-8 col-lg-10 d-flex justify-content-center flex-nowrap mx-auto p-0" style="@gridStyle"></div>
+        <div class="overlay-container">
+            <div id="gallery-grid-container" class="col-12 d-flex justify-content-center flex-nowrap mx-auto p-0" style="@gridStyle"></div>
+            <div class="grid-loading">
+                <div class="grid-loading-text">
+                    Grid loading
+                </div>
+            </div>
+        </div>
         <div id="gallery-image-scroller-container" class="w-100 d-flex justify-content-center flex-nowrap" style="@sliderStyle"></div>
     </div>
     <div class="form-group row m-0 mb-2 d-flex justify-content-center flex-nowrap">
-        <div class="col-12 col-xl-8 col-lg-10 p-0" id="editPanel"></div>
+        <div class="col-12 p-0" id="editPanel"></div>
     </div>
 </div>
 
@@ -83,7 +90,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        $("#main_layout_container").removeClass("container").addClass("container-fluid");
+        // grid functions
 
         var gridElement;
         const gridOptions = {
@@ -94,6 +101,17 @@
             gridElement = document.querySelector('.mvc-grid');
             grid = new MvcGrid(gridElement, gridOptions);
         }
+
+        function reloadGrid(){
+            new MvcGrid(document.querySelector('.mvc-grid')).reload();
+            $("#editPanel").html("");
+        }
+
+        document.addEventListener("reloadend", e => {
+            bindTooltips();
+            bindButtons();
+            scrollTo($("body"));
+        });
 
         // set view functions
 
@@ -108,7 +126,7 @@
             $("#set-view-grid").removeClass("d-inline");
             $("#set-view-slider").show();
             $("#set-view-slider").addClass("d-inline");
-                $("#editPanel").html("");
+            $("#editPanel").html("");
         });
 
         $("#set-view-slider").on('click', function(){
@@ -122,7 +140,7 @@
             $("#set-view-grid").addClass("d-inline")
             $("#set-view-slider").hide();
             $("#set-view-slider").removeClass("d-inline")
-                 $("#editPanel").html("");
+            $("#editPanel").html("");
        });
 
         // load functions
@@ -176,11 +194,6 @@
             finally {
                 //showLoader(false);
             }
-        }
-
-        function setSelectedGridRow(galleryId){
-            $(".edit-js").parent().parent().parent().removeClass('selected-grid-row');
-            $(".edit-js[data-imagegalleryid=" + galleryId + "]").parent().parent().parent().addClass('selected-grid-row');
         }
 
         function loadContentPanel(galleryId){
@@ -265,7 +278,7 @@
                     } 
                     if (status == "success"){
                         try {
-                            if (grid == undefined) initialiseGrid();
+                            initialiseGrid();
                             bindTooltips();
                             bindButtons();
                         }
@@ -278,15 +291,11 @@
                 });
             }
             catch(e) {
-                alertError(`Error from loadGrid: ${e.name} : ${e.description} : ${e.message}` );
+                alertError(`Error from loadGalleryGrid: ${e.name} : ${e.description} : ${e.message}` );
             }
             finally {
                     showLoader(false);
             }
-        }
-
-        function reloadGrid(){
-            new MvcGrid(document.querySelector('.mvc-grid')).reload();
         }
 
         function bindButtons(){
@@ -415,6 +424,11 @@
     });
 
     // UI
+
+    function setSelectedGridRow(galleryId){
+        $(".edit-js").parent().parent().parent().removeClass('selected-grid-row');
+        $(".edit-js[data-imagegalleryid=" + galleryId + "]").parent().parent().parent().addClass('selected-grid-row');
+    }
 
     let debounceTimeoutId;
     function resizeImageScroller(){

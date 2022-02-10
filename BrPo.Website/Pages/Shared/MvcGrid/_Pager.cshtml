@@ -11,13 +11,13 @@
     {
         if (currentPage > 1)
         {
-        <button class=accept-policy type="button" data-page="1">&#171;</button>
-        <button type="button" data-page="@(currentPage - 1)">&#8249;</button>
+        <button class=accept-policy type="button" data-page="1"><i class="fas fa-angle-double-left"></i></button>
+        <button type="button" data-page="@(currentPage - 1)"><i class="fas fa-angle-left"></i></button>
         }
         else
         {
-        <button type="button" disabled>&#171;</button>
-        <button type="button" disabled>&#8249;</button>
+        <button type="button" disabled><i class="fas fa-angle-double-left"></i></button>
+        <button type="button" disabled><i class="fas fa-angle-left"></i></button>
         }
         for (Int32 page = firstDisplayPage; page <= totalPages && page < firstDisplayPage + Model.PagesToDisplay; page++)
         {
@@ -32,13 +32,13 @@
         }
         if (currentPage < totalPages)
         {
-        <button type="button" data-page="@(currentPage + 1)">&#8250;</button>
-        <button type="button" data-page="@totalPages">&#187;</button>
+        <button type="button" data-page="@(currentPage + 1)"><i class="fas fa-angle-right"></i></button>
+        <button type="button" data-page="@totalPages"><i class="fas fa-angle-double-right"></i></button>
         }
         else
         {
-        <button type="button" disabled>&#8250;</button>
-        <button type="button" disabled>&#187;</button>
+        <button type="button" disabled><i class="fas fa-angle-right"></i></button>
+        <button type="button" disabled><i class="fas fa-angle-double-right"></i></button>
         }
         if (Model.ShowPageSizes)
         {

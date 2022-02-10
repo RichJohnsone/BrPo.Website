@@ -27,7 +27,7 @@ a {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-    font-size: 17px;
+    font-size: 16px;
 }
 
 /*@media (min-width: 768px) {
@@ -224,6 +224,7 @@ label.error {
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 5%, rgba(255, 255, 255, 0.5) 5%, #0366d699 90%);
     margin: auto;
     overflow: hidden;
+    opacity: 0.7;
 }
 
 #loader-container {
@@ -240,6 +241,7 @@ label.error {
     margin-top: 30px;
     margin-left: 0px;
 }
+
     #loader-label:after {
         overflow: hidden;
         display: inline-block;
@@ -251,6 +253,16 @@ label.error {
         color: #0366d6;
         font-size: 1.5em;
     }
+
+/* these next two keep modals from pushing content stop to the left when they open */
+
+body:not(.modal-open) {
+    padding-right: 0px !important;
+}
+
+nav:not(.modal-open) {
+    padding-right: 18px !important;
+}
 
 @keyframes ellipsis {
     to {
@@ -326,30 +338,108 @@ label.error {
 
 .mvc-grid-pager button {
     display: inline-block;
-    font-weight: 600;
-    color: #212529;
+    font-weight: 500;
+    color: #0275d8;
     text-align: center;
     vertical-align: middle;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    padding: 0.375rem 0.75rem;
-    font-size: .9rem;
+    padding: 0.06rem;
+    font-size: .8rem;
     line-height: 1.5;
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
+    border-width: 0.05rem;
+    aspect-ratio: 1 !important;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .mvc-grid-headers th {
+}
+
+    .mvc-grid-headers th:first-child {
+        border-radius: 0.25rem 0rem 0rem 0.25rem !important;
+    }
+
+    .mvc-grid-headers th:last-child {
+        border-radius: 0rem 0.25rem 0.25rem 0rem !important;
+    }
+
+.mvc-grid-filter {
+    color: #00000050
+}
+
+.mvc-grid-sort {
+    background: #00000003 !important;
+}
+
+.mvc-grid-sort,
+.mvc-grid-filter {
+    transition: background-color 0.3s !important;
+    background: #00000003;
+}
+
+    .mvc-grid-sort:focus,
+    .mvc-grid-sort:hover {
+        background: rgb(0 0 0 / 0.09) !important;
+        color: inherit;
+    }
+
+.mvc-grid-text-filter {
     border-radius: 0.25rem;
 }
 
+button.mvc-grid-apply {
+    border-radius: 0.25rem;
+    height: 2rem !important;
+    width: 2rem !important;
+    min-width: 2rem !important;
+    visibility: hidden;
+}
+
+button.mvc-grid-apply:before {
+    content: 'Filter';
+    visibility: visible;
+    display: block;
+    position: relative;
+    background-color: green;
+    border-radius: 0.25rem;
+    height: 2rem !important;
+    width: 4rem !important;
+    left: -42px;
+    font-weight: 400;
+    padding-top: 6px;
+}
+
+.mvc-grid-cancel {
+    border-radius: 0.25rem;
+    height: 2rem !important;
+    width: 2rem !important;
+    min-width: 2rem !important;
+    top: -6px;
+    visibility: hidden;
+}
+
+button.mvc-grid-cancel:after {
+    content: 'Clear';
+    visibility: visible;
+    display: block;
+    position: relative;
+    background-color: red;
+    border-radius: 0.25rem;
+    height: 2rem !important;
+    width: 4rem !important;
+    top: -33px;
+    left: -7px;
+    font-weight: 400;
+    padding-top: 6px;
+}
+
+
 .grid-loading {
     background-color: #0366d6;
-    opacity: 0.3;
+    opacity: 0.4;
     bottom: 0;
     left: 0;
     position: absolute;
@@ -362,25 +452,25 @@ label.error {
 .grid-loading-text {
     color: #ffffff;
     float: left;
-    font-size: 22px;
+    font-size: 2em;
     left: 38%;
     padding: 20px;
     position: absolute;
-    top: 40%;
+    top: 30%;
     width: auto;
 }
 
-.grid-loading-text:after {
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: bottom;
-    -webkit-animation: ellipsis 900ms infinite;
-    animation: ellipsis 900ms infinite;
-    content: "\2026"; /* ascii code for the ellipsis character */
-    width: 0px;
-    color: white;
-    font-size: 2em;
-}
+    .grid-loading-text:after {
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: bottom;
+        -webkit-animation: ellipsis 900ms infinite;
+        animation: ellipsis 1200ms infinite;
+        content: "\2026"; /* ascii code for the ellipsis character */
+        width: 0px;
+        color: white;
+        font-size: 2em;
+    }
 
 .table-sm {
     border-collapse: separate;
@@ -436,15 +526,15 @@ table.form-table {
     padding-left: 5px;
 }
 
-.form-table td:first-child,
-.form-table th:first-child {
-    width: 33%;
-}
+    .form-table td:first-child,
+    .form-table th:first-child {
+        width: 33%;
+    }
 
-.form-table td:last-child,
-.form-table th:last-child {
-    margin-left: 15px
-}
+    .form-table td:last-child,
+    .form-table th:last-child {
+        margin-left: 15px
+    }
 
 .form-table-spacer-row td div {
     max-height: 10px;
@@ -454,19 +544,15 @@ table.form-table {
     html {
         font-size: 18px;
     }
+
     .grid-column {
         border: 0px !important;
         border-right: 1px solid #dee2e6 !important;
         padding-right: 15px !important;
     }
+
     .form-column {
         padding-left: 15px !important;
-    }
-}
-
-@media (max-width: 1500px) and (min-width: 1200px) {
-    .grid-column-display {
-        display: none !important;
     }
 }
 
@@ -532,23 +618,44 @@ table.form-table {
     border-left: 1px solid #00000030;
 }
 
-.image-scroller-content:first-child {
-    border-left: none;
-}
+    .image-scroller-content:first-child {
+        border-left: none;
+    }
 
 .grid-image-container,
 .image-scroller-image-container {
-    max-width: 133px !important;
-    min-width: 133px !important;
-    max-height: 100px !important;
-    min-height: 100px !important;
+    max-width: 100px !important;
+    min-width: 100px !important;
+    max-height: 75px !important;
+    min-height: 75px !important;
     overflow: hidden;
     display: flex;
+    align-items: center;
     justify-content: center;
+    box-shadow: 2px 2px 2px 3px #00000005;
 }
 
+
+
+@media (min-width: 420px) {
+    .grid-image-container, .image-scroller-image-container {
+        max-width: 133px !important;
+        min-width: 133px !important;
+        max-height: 100px !important;
+        min-height: 100px !important;
+    }
+
+
+}
+
+.grid-image-container img, .image-scroller-image-container img {
+    flex: 1 1 auto;
+    align-self: center;
+}
+
+.grid-image-container,
 .image-scroller-image {
-    border: 1px solid #00000030;
+    border: 1px solid #00000030 !important;
 }
 
 .image-scroller {
@@ -563,7 +670,7 @@ table.form-table {
 }
 
 .image-scroller-edit-button {
-/*    border-radius: 50%;
+    /*    border-radius: 50%;
     background: #007bff;
     border: 5px solid #007bff;
     height: 30px;
@@ -574,7 +681,7 @@ table.form-table {
 }
 
 .image-scroller-delete-button {
-/*    background: #dc3545;
+    /*    background: #dc3545;
     border-radius: 50%;
     border: 5px solid #dc3545;
     height: 30px;
@@ -590,9 +697,8 @@ table.form-table {
     text-overflow: ellipsis;
 }
 
-
 .btn-icon {
-    border-radius: 0.4em;
+    border-radius: 0.25em;
     border: none;
     height: 1.8em;
     width: 1.8em;
@@ -602,7 +708,7 @@ table.form-table {
 }
 
 .btn-icon-sml {
-    border-radius: 0.4em;
+    border-radius: 0.25em;
     border: none;
     height: 1.8em;
     width: 1.8em;
@@ -619,11 +725,11 @@ table.form-table {
 
 .selected-grid-row {
     background: #00000002;
-    font-weight:500;
+    font-weight: 500;
 }
 
 .actions-column {
-    min-width: 90px;
+    max-width: 40px;
 }
 
 .image-grid-ellipsis {
@@ -633,4 +739,17 @@ table.form-table {
     max-height: 80px !important;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+}
+
+.breakout {
+    position: relative;
+    left: calc( 0% - ((100vw - 100%) / 4));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.overlay-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
 }

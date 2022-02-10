@@ -18,9 +18,9 @@ using static BrPo.Website.Services.Paper.Models.Enums;
 
 namespace BrPo.Website.Areas.Pictures.Pages
 {
-    public class GalleryItemsModel : PageModel
+    public class MyImagesModel : PageModel
     {
-        private readonly ILogger<GalleryItemsModel> _logger;
+        private readonly ILogger<MyImagesModel> _logger;
         private readonly IImageService _imageService;
         private readonly IApplicationUserService _applicationUserService;
         private readonly IPaperService _paperService;
@@ -35,9 +35,11 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public List<PaperEnumItem> PaperSurfaces { get; set; }
         public List<PaperEnumItem> PaperTextures { get; set; }
         public string GalleryRootName { get; set; }
+        public ImageScrollerModel ImageScroller { get; set; } = new ImageScrollerModel();
+        public bool DisplayAsGrid { get; set; }
 
-        public GalleryItemsModel(
-            ILogger<GalleryItemsModel> logger,
+        public MyImagesModel(
+            ILogger<MyImagesModel> logger,
             IImageService imageService,
             IApplicationUserService applicationUserService,
             IPaperService paperService)
@@ -52,6 +54,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
         {
             ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             SetPaperEnumLists();
+            DisplayAsGrid = _applicationUserService.GetOrSetImagesViewCookieValue() == "slider" ? false : true;
             if (ApplicationUser.UserDetails?.GalleryRootName == null)
             {
                 return Page();
@@ -79,13 +82,6 @@ namespace BrPo.Website.Areas.Pictures.Pages
                 imageGalleryItems.Add(new ImageGalleryItem() { Id = 0, ImageFileId = file.Id, ImageFile = file });
             }
             return imageGalleryItems;
-        }
-
-        public async Task<IActionResult> OnGetGridAsync()
-        {
-            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
-            var galleryItems = await GetImageGalleryItemsAndFiles(ApplicationUser.Id);
-            return Partial("GalleryItemsGridPartial", galleryItems);
         }
 
         private void SetPaperEnumLists()
@@ -116,6 +112,46 @@ namespace BrPo.Website.Areas.Pictures.Pages
                 galleryItem.Galleries = _imageService.GetGalleries(galleryItem.Id);
             }
             return Partial("EditGalleryItemPartial", galleryItem);
+        }
+
+        public PartialViewResult OnGetGalleryItemsImageScroller()
+        {
+            ApplicationUser = _applicationUserService.GetCurrentUserAsync(this.User).Result;
+            if (!ApplicationUser.IsIdentityUser) Redirect("/Index");
+            DisplayAsGrid = _applicationUserService.GetOrSetImagesViewCookieValue("slider") == "slider" ? false : true;
+            var galleryItems = GetImageGalleryItemsAndFiles(ApplicationUser.Id).Result;
+            var imageScroller = new ImageScrollerModel();
+            foreach (var galleryItem in galleryItems)
+            {
+                imageScroller.Content.Add(new CarouselContentModel()
+                {
+                    ImageFileId = galleryItem.ImageFile.Id,
+                    ImageGalleryItemId = galleryItem.Id,
+                    Name = galleryItem.Name,
+                    Description = galleryItem.Description,
+                    Link = $"/{ApplicationUser.UserDetails.GalleryRootName}/{galleryItem.Name}",
+                    LinkClass = "gallery-item-js"
+                });
+            }
+            imageScroller.ImageScrollerId = "gallery-items-scroller";
+            imageScroller.ShowButtons = true;
+            return Partial("ImageScrollerPartial", imageScroller);
+        }
+
+        public PartialViewResult OnGetGalleryItemsGrid()
+        {
+            ApplicationUser = _applicationUserService.GetCurrentUserAsync(this.User).Result;
+            if (!ApplicationUser.IsIdentityUser) Redirect("/Index");
+            DisplayAsGrid = _applicationUserService.GetOrSetImagesViewCookieValue("grid") == "grid" ? true : false;
+            var galleryItems = GetImageGalleryItemsAndFiles(ApplicationUser.Id).Result;
+            return Partial("GalleryItemsGridPartial", galleryItems);
+        }
+
+        public async Task<IActionResult> OnGetGridAsync()
+        {
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
+            var galleryItems = await GetImageGalleryItemsAndFiles(ApplicationUser.Id);
+            return Partial("GalleryItemsGridPartial", galleryItems);
         }
 
         public async Task<IActionResult> OnPostDeleteGalleryItemAsync([FromQuery] int galleryItemId)

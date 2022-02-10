@@ -13,7 +13,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
     [BindProperties]
     public class GalleriesModel : PageModel
     {
-        private readonly ILogger<GalleryItemsModel> _logger;
+        private readonly ILogger<MyImagesModel> _logger;
         private readonly IImageService _imageService;
         private readonly IApplicationUserService _applicationUserService;
 
@@ -21,7 +21,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
         public CarouselModel CarouselModel { get; set; } = new CarouselModel();
 
         public GalleriesModel(
-            ILogger<GalleryItemsModel> logger,
+            ILogger<MyImagesModel> logger,
             IImageService imageService,
             IApplicationUserService applicationUserService)
         {

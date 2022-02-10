@@ -64,6 +64,8 @@ namespace BrPo.Website.Services.Image.Services
         List<ImageGalleryContent> GetGalleryContents(int galleryId);
 
         Task AddOrUpdateGallery(ImageGallery gallery, Guid userId);
+
+        string GetGalleryItemName(int fileId);
     }
 
     public class ImageService : IImageService
@@ -308,12 +310,18 @@ namespace BrPo.Website.Services.Image.Services
             return context.ImageFiles.FirstOrDefault(i => i.Id == id).OriginalFileName;
         }
 
+        public string GetGalleryItemName(int fileId)
+        {
+            return context.ImageGalleryItems.FirstOrDefault(i => i.ImageFileId == fileId).Name;
+        }
+
         public async Task<List<ImageGalleryItem>> GetGalleryItemsAsync(Guid userId)
         {
             await Task.Delay(1);
             var items = context.ImageGalleryItems
                 .Include(g => g.ImageFile)
-                .Where(g => g.UserId == userId);
+                .Where(g => g.UserId == userId)
+                .OrderByDescending(g => g.DateUpdated);
             if (items.Any())
             {
                 return items.ToList();

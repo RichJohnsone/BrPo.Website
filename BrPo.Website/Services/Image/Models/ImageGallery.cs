@@ -37,6 +37,9 @@ namespace BrPo.Website.Services.Image.Models
         [Display(Name = "Gallery root name")]
         public string GalleryRootName { get; set; }
 
+        [Required]
+        public bool IsActive { get; set; }
+
         public virtual IEnumerable<ImageGalleryContent> Content { get; set; }
     }
 }
