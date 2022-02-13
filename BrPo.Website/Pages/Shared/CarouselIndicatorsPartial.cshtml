@@ -8,10 +8,11 @@
 @foreach(var item in Model.Content)
 {
                     var isActive = ++index == 0 ? "active" : "";
-                    <li data-target="#carouselExampleIndicators" 
+                    <li data-target="#@Model.CarouselId" 
                         data-slide-to="@index" 
                         data-toggle="tooltip"
-                        title="Edit this gallery"
+                        title="View this image"
+                        data-placement="top"
                         data-imageFileId="@item.ImageFileId"
                         data-imageGalleryId="@item.ImageGalleryId"
                         data-imageGalleryItemId="@item.ImageGalleryItemId"
@@ -26,6 +27,6 @@
                             <img class="indicatorImage" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(item.ImageFileId, Model.IndicatorHeight)">
                             }
                         </div>
-                        <div><h6>@item.Name</h6></div>
+                        @*<div><h6>@item.Name</h6></div>*@
                     </li>
 }

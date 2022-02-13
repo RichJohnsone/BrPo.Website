@@ -1,0 +1,39 @@
+﻿@using BrPo.Website.Areas.Pictures.Models
+@using BrPo.Website.Services.Image.Services
+@model CarouselModel
+@inject IImageService ImageService;
+@{
+    var index = 0;
+}
+@foreach(var item in Model.Content)
+                    {
+                        var orientationClass = item.IsPortrait ? "portrait-image" : "landscape-image";
+                        var isActive = index++ == 0 ? "active" : "";
+                        <div class="carousel-item @isActive w-100 full-height">
+                            <div class="carousel-image-container d-flex justify-content-center align-content-center full-height ">
+                                <a href="@item.Link"
+                                   class="@item.LinkClass d-flex"
+                                   data-toggle="tooltip"
+                                   data-imageFileId="@item.ImageFileId"
+                                   data-imageGalleryId="@item.ImageGalleryId"
+                                   data-imageGalleryItemId="@item.ImageGalleryItemId"
+                                   title="@item.LinkTitle">
+                                        @if (item.ImageFileId == 0)
+                                        {
+                                        <img class="carouselImage" src="~/resources/images/NoContent.png">
+                                        }
+                                        else
+                                        {
+                                        <img class="carouselImage d-flex" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(item.ImageFileId, item.ViewHeight, item.ViewWidth)">
+                                        }
+                                </a>
+                            </div>
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>@item.Name</h5>
+                                @if (!string.IsNullOrEmpty(@item.Description))
+                                {
+                                    <p>@item.Description</p>
+                                }
+                            </div>
+                        </div>
+                    }

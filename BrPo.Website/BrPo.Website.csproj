@@ -130,4 +130,8 @@
     <Folder Include="Services\ContactForm\Persistence\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\js\galleries-view.js" />
+  </ItemGroup>
+
 </Project>

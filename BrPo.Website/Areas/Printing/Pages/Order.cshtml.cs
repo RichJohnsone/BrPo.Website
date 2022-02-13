@@ -84,6 +84,20 @@ namespace BrPo.Website.Areas.Printing.Pages
         {
             ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
             Files = _imageService.GetImages(ApplicationUser.Id.ToString());
+            InitialiseControls();
+            return Page();
+        }
+
+        public async Task<IActionResult> OnGetBuyPrintAsync(int galleryItemId)
+        {
+            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
+            Files = await _imageService.GetImage(galleryItemId);
+            InitialiseControls();
+            return Page();
+        }
+
+        private void InitialiseControls()
+        {
             if (Files.Count > 0)
             {
                 SelectedFile = Files[0];
@@ -96,7 +110,6 @@ namespace BrPo.Website.Areas.Printing.Pages
                 SelectedPaperId = Papers[0].Id;
             Qualities = new List<string>() { "Premium", "High" };
             SelectedQuality = "Premium";
-            return Page();
         }
 
         public async Task<IActionResult> OnPostOrderPrints()

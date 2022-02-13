@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - High Quality Photo Prints - Professional Photo Printing - Fine-Art Printing</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
     <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/rescourses/images/favicons/apple-icon-57x57.png">
@@ -137,6 +138,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/3077efd7ad.js" crossorigin="anonymous"></script>
     <script src="~/lib/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+    <script src="~/lib/bootstrap-slider/dist/bootstrap-slider.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
@@ -228,7 +230,7 @@
             $("#alert-message").html();
         }
 
-        // autohide nav 
+        // autohide nav and footer
 
         nav_autohide = document.querySelector('nav.autohide');
         footer_autohide = document.querySelector('footer.autohide');
@@ -254,27 +256,7 @@
                     }
                     last_scroll_top = scroll_top;
             }); 
-            // window.addEventListener
         }
-
-
-        //if(footer_autohide){
-        //    var last_scroll_top = 0;
-        //    window.addEventListener('scroll', function() {
-        //            let scroll_top = window.scrollY;
-        //            if(scroll_top < last_scroll_top) {
-        //                footer_autohide.classList.remove('footer-scrolled-down');
-        //                footer_autohide.classList.add('footer-scrolled-up');
-        //            }
-        //            else {
-        //                footer_autohide.classList.remove('footer-scrolled-up');
-        //                footer_autohide.classList.add('footer-scrolled-down');
-        //            }
-        //            last_scroll_top = scroll_top;
-        //    }); 
-        //    // window.addEventListener
-        //}
-
     </script>
 </body>
 </html>

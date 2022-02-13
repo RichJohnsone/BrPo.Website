@@ -11,7 +11,11 @@ namespace BrPo.Website.Areas.Pictures.Models
         public string Description { get; set; }
         public string Name { get; set; }
         public string Link { get; set; }
-        public List<ImageTag> Tags { get; set; }
         public string LinkClass { get; set; }
+        public string LinkTitle { get; set; }
+        public List<ImageTag> Tags { get; set; }
+        public int ViewHeight { get; set; }
+        public int ViewWidth { get; set; }
+        public bool IsPortrait { get; set; }
     }
 }

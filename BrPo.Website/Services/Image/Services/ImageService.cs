@@ -21,7 +21,7 @@ namespace BrPo.Website.Services.Image.Services
 
         string GetBase64(int id);
 
-        string GetBase64Thumbnail(int id, int height = 300);
+        string GetBase64Thumbnail(int id, int height = 300, int? width = null);
 
         Task<string> GetBase64ThumbnailAsync(int id, int height = 300);
 
@@ -61,11 +61,17 @@ namespace BrPo.Website.Services.Image.Services
 
         Task<ImageGallery> GetGalleryAsync(int gallery, Guid userId);
 
+        Task<ImageGallery> GetGalleryAsync(int galleryId);
+
+        Task<ImageGallery> GetGalleryAsync(string galleryRootName, string galleryName);
+
         List<ImageGalleryContent> GetGalleryContents(int galleryId);
 
         Task AddOrUpdateGallery(ImageGallery gallery, Guid userId);
 
         string GetGalleryItemName(int fileId);
+
+        Task<List<ImageFileModel>> GetImage(int galleryItemId);
     }
 
     public class ImageService : IImageService
@@ -186,9 +192,32 @@ namespace BrPo.Website.Services.Image.Services
             }
         }
 
-        public string GetBase64Thumbnail(int id, int height = 170)
+        public string GetBase64Thumbnail(int id, int height, int? width = null)
         {
-            var imageFile = context.ImageFiles.FindAsync(id).Result;
+            var imageFile = context.ImageFiles.Find(id);
+            if (imageFile == null) return null;
+            if (width != null) height = GetImageHeight(imageFile, height, (int)width);
+            return GetBase64Thumbnail(imageFile, height);
+        }
+
+        private int GetImageHeight(ImageFileModel image, int height, int width)
+        {
+            var imageAspect = (double)image.Width / image.Height;
+            var newHeight = height;
+            var newWidth = 0;
+            //if (image.Height < height && image.Width < width)
+            //{
+            newWidth = (int)(imageAspect * height);
+            if (newWidth > width)
+            {
+                newHeight = (int)((1 / imageAspect) * width);
+            }
+            return newHeight;
+            //}
+        }
+
+        private string GetBase64Thumbnail(ImageFileModel imageFile, int height)
+        {
             if (imageFile == null) return null;
             RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
             switch (imageFile.Orientation)
@@ -201,8 +230,8 @@ namespace BrPo.Website.Services.Image.Services
             {
                 using (System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile.Location))
                 {
-                    var ratio = (double)image.Width / image.Height;
-                    var width = (int)(ratio * height);
+                    var aspect = (double)image.Width / image.Height;
+                    var width = (int)(aspect * height);
                     using var thumbnail = ResizeImage(image, height, width);
                     using (MemoryStream m = new MemoryStream())
                     {
@@ -224,40 +253,7 @@ namespace BrPo.Website.Services.Image.Services
         {
             var imageFile = await context.ImageFiles.FindAsync(id);
             if (imageFile == null) return null;
-            RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
-            switch (imageFile.Orientation)
-            {
-                case "90 CW":
-                    rotate = RotateFlipType.Rotate90FlipNone;
-                    break;
-            }
-            try
-            {
-                using (System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile.Location))
-                {
-                    var ratio = (double)image.Width / image.Height;
-                    var width = (int)(ratio * height);
-                    using System.Drawing.Image thumbnail = ResizeImage(image, height, width);
-                    using (MemoryStream m = new MemoryStream())
-                    {
-                        thumbnail.RotateFlip(rotate);
-                        thumbnail.Save(m, image.RawFormat);
-                        byte[] imageBytes = m.ToArray();
-                        return Convert.ToBase64String(imageBytes);
-                    }
-                }
-                //using (var image = await SixLabors.ImageSharp.Image.LoadAsync(imageFile.Location))
-                //{
-                //    var ratio = (double)image.Width / image.Height;
-                //    var width = (int)(ratio * height);
-                //    var tmp = image.Mutate(x => x.Rotate(90));
-                //}
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("from ImageService.GetBase64Thumbnail", ex);
-                throw;
-            }
+            return GetBase64Thumbnail(imageFile, height);
         }
 
         private System.Drawing.Image ResizeImage(System.Drawing.Image image, int new_height, int new_width)
@@ -423,8 +419,14 @@ namespace BrPo.Website.Services.Image.Services
                      && i.ImageGalleryId == galleryContent.ImageGalleryId);
             if (entity != null) throw new ApplicationException("Gallery entry already exists");
             context.ImageGalleryContents.Add(galleryContent);
+            await context.SaveChangesAsync();
             var gallery = context.ImageGalleries.FirstOrDefault(g => g.Id == galleryContent.ImageGalleryId);
             gallery.ContentCount = GetGalleryContentCount(gallery.Id);
+            if (gallery.ContentCount == 1)
+            {
+                var image = context.ImageGalleryItems.FirstOrDefault(gi => gi.Id == galleryContent.ImageGalleryItemId);
+                gallery.CoverImageId = image.Id;
+            }
             var entry = context.Entry(gallery);
             entry.State = EntityState.Modified;
             await context.SaveChangesAsync();
@@ -440,6 +442,15 @@ namespace BrPo.Website.Services.Image.Services
                 context.ImageGalleryContents.Remove(entity);
                 await context.SaveChangesAsync();
             }
+            var gallery = context.ImageGalleries.FirstOrDefault(g => g.Id == galleryId);
+            gallery.ContentCount = GetGalleryContentCount(gallery.Id);
+            if (gallery.ContentCount == 0)
+            {
+                gallery.CoverImageId = 0;
+            }
+            var entry = context.Entry(gallery);
+            entry.State = EntityState.Modified;
+            await context.SaveChangesAsync();
         }
 
         public List<ImageGallery> GetGalleries(int galleryItemId)
@@ -483,6 +494,22 @@ namespace BrPo.Website.Services.Image.Services
                 .FirstOrDefaultAsync(g => g.UserId == userId && g.Id == galleryId);
         }
 
+        public async Task<ImageGallery> GetGalleryAsync(int galleryId)
+        {
+            return await context.ImageGalleries
+                .Include(g => g.Content)
+                .FirstOrDefaultAsync(g => g.Id == galleryId);
+        }
+
+        public async Task<ImageGallery> GetGalleryAsync(string galleryRootName, string galleryName)
+        {
+            return await context.ImageGalleries
+                .Include(g => g.Content)
+                    .ThenInclude(c => c.ImageGalleryItem)
+                    .ThenInclude(i => i.ImageFile)
+                .FirstOrDefaultAsync(g => g.GalleryRootName == galleryRootName && g.Name == galleryName);
+        }
+
         public List<ImageGalleryContent> GetGalleryContents(int galleryId)
         {
             var contents = context.ImageGalleryContents
@@ -514,6 +541,16 @@ namespace BrPo.Website.Services.Image.Services
                 }
             }
             await context.SaveChangesAsync();
+        }
+
+        public async Task<List<ImageFileModel>> GetImage(int galleryItemId)
+        {
+            var list = new List<ImageFileModel>();
+            var galleryItem = await context.ImageGalleryItems.Include(g => g.ImageFile).FirstAsync(g => g.Id == galleryItemId);
+            galleryItem.ImageFile.OriginalFileName = galleryItem.Name;
+            if (galleryItem != null)
+                list.Add(galleryItem.ImageFile);
+            return list;
         }
 
         private int GetGalleryContentCount(int galleryId)

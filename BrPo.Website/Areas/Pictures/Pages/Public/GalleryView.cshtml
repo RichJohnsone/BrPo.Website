@@ -2,5 +2,77 @@
 @model BrPo.Website.Areas.Pictures.Pages.Public.GalleryViewModel
 @{
 }
-<h2>@Model.GalleryRootName</h2>
-<h2>@Model.GalleryName</h2>
+
+<div class="row full-height">
+    <div class="col-12 full-height">
+        <div id="carousel-container" class="full-height"></div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Gallery display settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <h6>Background:</h6>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="form-check form-check-inline">
+                                <div id="bg-colour" class="input-group">
+                                    <input class=" border-rounded colorpicker-input-addon w-100" style=""
+                                           data-toggle="tooltip" 
+                                           title="Set gallery background"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+                <div class="row">
+                    <div class="col">
+                        <h6>Duration:</h6>
+                    </div>
+                    <div class="col">
+                        <div class="row pt-2">
+                            <input id="duration" data-slider-id='durationSlider' type="text" data-slider-min="4" data-slider-max="30" data-slider-step="1" data-slider-value="7"/>
+                        </div>
+                    </div>
+                </div>   
+                <div class="row mt-3">
+                    <div class="col">
+                        <h6>Animation:</h6>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <label class = "radio-inline">
+                                <input type = "radio" name = "animation" id = "optionsRadios3" value = "fade" checked> Fade
+                            </label>
+                            <label class = "radio-inline ml-3">
+                                <input type = "radio" name = "animation" id = "optionsRadios4" value = "slide"> Slide
+                            </label>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var galleryRootName = "@Model.GalleryRootName";
+    var galleryName = "@Model.GalleryName";
+</script>
+
+<script src="~/js/galleries-view.js"></script>

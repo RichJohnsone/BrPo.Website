@@ -10,6 +10,11 @@
     {
       "library": "bootstrap-colorpicker@3.4.0",
       "destination": "wwwroot/lib/bootstrap-colorpicker/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "bootstrap-slider@11.0.2",
+      "destination": "wwwroot/lib/bootstrap-slider/"
     }
   ]
 }
