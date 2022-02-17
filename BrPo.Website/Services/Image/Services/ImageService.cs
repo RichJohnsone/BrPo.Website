@@ -23,9 +23,9 @@ namespace BrPo.Website.Services.Image.Services
 
         string GetBase64Thumbnail(int id, int height = 300, int? width = null);
 
-        Task<string> GetBase64ThumbnailAsync(int id, int height = 300);
+        Task<string> GetBase64ThumbnailAsync(int id, int height = 300, int? width = null);
 
-        Task<ImageFileModel> GetImageAsync(int id);
+        Task<ImageFileModel> GetImageFileModelAsync(int id);
 
         List<string> GetIds(string userId);
 
@@ -72,6 +72,8 @@ namespace BrPo.Website.Services.Image.Services
         string GetGalleryItemName(int fileId);
 
         Task<List<ImageFileModel>> GetImage(int galleryItemId);
+
+        Task<byte[]> GetImageAsync(int id, int height, int? width);
     }
 
     public class ImageService : IImageService
@@ -102,7 +104,7 @@ namespace BrPo.Website.Services.Image.Services
             return model;
         }
 
-        public async Task<ImageFileModel> GetImageAsync(int id)
+        public async Task<ImageFileModel> GetImageFileModelAsync(int id)
         {
             try
             {
@@ -249,10 +251,45 @@ namespace BrPo.Website.Services.Image.Services
             }
         }
 
-        public async Task<string> GetBase64ThumbnailAsync(int id, int height = 170)
+        public async Task<byte[]> GetImageAsync(int id, int height, int? width)
         {
             var imageFile = await context.ImageFiles.FindAsync(id);
             if (imageFile == null) return null;
+            if (width != null) height = GetImageHeight(imageFile, height, (int)width);
+            RotateFlipType rotate = RotateFlipType.RotateNoneFlipNone;
+            switch (imageFile.Orientation)
+            {
+                case "90 CW":
+                    rotate = RotateFlipType.Rotate90FlipNone;
+                    break;
+            }
+            try
+            {
+                using (System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile.Location))
+                {
+                    var aspect = (double)image.Width / image.Height;
+                    var _width = (int)(aspect * height);
+                    using var thumbnail = ResizeImage(image, height, _width);
+                    using (MemoryStream m = new MemoryStream())
+                    {
+                        thumbnail.RotateFlip(rotate);
+                        thumbnail.Save(m, image.RawFormat);
+                        return m.ToArray();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("from ImageService.GetImageAsync", ex);
+                throw;
+            }
+        }
+
+        public async Task<string> GetBase64ThumbnailAsync(int id, int height = 170, int? width = null)
+        {
+            var imageFile = await context.ImageFiles.FindAsync(id);
+            if (imageFile == null) return null;
+            if (width != null) height = GetImageHeight(imageFile, height, (int)width);
             return GetBase64Thumbnail(imageFile, height);
         }
 

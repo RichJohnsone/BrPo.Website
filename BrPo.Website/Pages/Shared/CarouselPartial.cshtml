@@ -2,7 +2,7 @@
 @model CarouselModel
 
         <div class="col-12 image-carousel full-height" id="">
-            <div id="@Model.CarouselId" class="carousel slide carousel-fade d-flex flex-column full-height" data-ride="carousel">
+            <div id="@Model.CarouselId" class="carousel slide carousel-fade d-flex flex-column full-height" data-interval="5000" @*data-ride="carousel"*@>
             @if (Model.ShowContent)
             {
                 <div class="carousel-content-navbar-spacer"></div>
@@ -24,29 +24,10 @@
                         <div><i class="fas fa-expand"></i></div>
                         <span class="sr-only">Toggle full screen</span>
                     </a>
-                </div>
-            }
-            @if (Model.ShowIndicators)
-            {
-                <div id="carousel-indicators-flex-div">
-                    <ol class="carousel-indicators disable-scrollbars">
-                        <partial name="CarouselIndicatorsPartial" model="Model" />
-                    </ol>
-                </div>
-                <div>
-                    <a class="carousel-control carousel-control-scroll-left" role="button" data-toggle="tooltip" title="Move left">
-                        <div><i class="fas fa-angle-left fa-lg"></i></div>
-                        <span class="sr-only">Move left</span>
+                    <a class="carousel-control carousel-control-play-pause carousel-control-show-hide" role="button" data-toggle="tooltip" title="Toggle full screen">
+                        <div><i class="fas fa-pause"></i></div>
+                        <span class="sr-only">Toggle full screen</span>
                     </a>
-                    <a class="carousel-control carousel-control-scroll-right" role="button" data-toggle="tooltip" title="Move right">
-                        <div><i class="fas fa-angle-right fa-lg"></i></div>
-                        <span class="sr-only">Move right</span>
-                    </a>
-                </div>
-            }
-            @if (Model.ShowNav)
-            {
-                <div>
                     <a class="carousel-control carousel-control-prev" href="#@Model.CarouselId" role="button" data-slide="prev" data-toggle="tooltip" title="">
                         <div><i class="fas fa-angle-left fa-lg"></i></div>
                         <span class="sr-only">Previous</span>
@@ -54,6 +35,22 @@
                     <a class="carousel-control carousel-control-next" href="#@Model.CarouselId" role="button" data-slide="next" data-toggle="tooltip" title="">
                         <div><i class="fas fa-angle-right fa-lg"></i></div>
                         <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            }
+            @if (Model.ShowIndicators)
+            {
+                <div id="carousel-indicators-flex-div">
+                    <div class="carousel-indicators disable-scrollbars row flex-nowrap">
+                        <partial name="CarouselIndicatorsPartial" model="Model" />
+                    </div>
+                    <a class="carousel-control carousel-control-scroll-left" role="button" data-toggle="tooltip" title="Move left">
+                        <div><i class="fas fa-angle-left fa-lg"></i></div>
+                        <span class="sr-only">Move left</span>
+                    </a>
+                    <a class="carousel-control carousel-control-scroll-right" role="button" data-toggle="tooltip" title="Move right">
+                        <div><i class="fas fa-angle-right fa-lg"></i></div>
+                        <span class="sr-only">Move right</span>
                     </a>
                 </div>
             }

@@ -101,7 +101,7 @@ namespace BrPo.Website.Areas.Pictures.Pages
             if (galleryItemId != 0) galleryItem = _imageService.GetGalleryItemAsync(galleryItemId, ApplicationUser.Id).Result;
             if (galleryItemId == 0)
             {
-                galleryItem.ImageFile = _imageService.GetImageAsync(fileId).Result;
+                galleryItem.ImageFile = _imageService.GetImageFileModelAsync(fileId).Result;
                 CalculateSizes(ref galleryItem);
                 galleryItem.MinPrice = 50;
                 galleryItem.MaxPrice = 200;

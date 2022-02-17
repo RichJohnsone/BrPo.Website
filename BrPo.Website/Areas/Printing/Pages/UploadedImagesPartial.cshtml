@@ -5,7 +5,7 @@
 @inject IImageService ImageService
 @foreach( var id in Model)
 {
-    var imageFile = await ImageService.GetImageAsync(id.ToInt());
+    var imageFile = await ImageService.GetImageFileModelAsync(id.ToInt());
     <div class="card">
         <div class="card-body">
             <div class="row">

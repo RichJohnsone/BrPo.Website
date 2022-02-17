@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BrPo.Website.Areas.Pictures.Pages.Public
 {
@@ -70,6 +71,12 @@ namespace BrPo.Website.Areas.Pictures.Pages.Public
             carousel.ShowContent = true;
             carousel.ShowIndicators = true;
             return Partial("CarouselPartial", carousel);
+        }
+
+        public IActionResult OnGetImageAsync(int imageId, int height, int width)
+        {
+            if (imageId == 0) return null;
+            return File(_imageService.GetImageAsync(imageId, height, width).Result, "image/jpeg");
         }
     }
 }

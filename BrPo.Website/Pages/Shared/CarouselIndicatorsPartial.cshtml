@@ -8,7 +8,7 @@
 @foreach(var item in Model.Content)
 {
                     var isActive = ++index == 0 ? "active" : "";
-                    <li data-target="#@Model.CarouselId" 
+                    <div data-target="#@Model.CarouselId" 
                         data-slide-to="@index" 
                         data-toggle="tooltip"
                         title="View this image"
@@ -28,5 +28,5 @@
                             }
                         </div>
                         @*<div><h6>@item.Name</h6></div>*@
-                    </li>
+                    </div>
 }

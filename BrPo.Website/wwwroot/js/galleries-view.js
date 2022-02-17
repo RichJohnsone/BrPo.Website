@@ -4,10 +4,11 @@
     $( "#main_layout_container" ).removeClass( "container" ).addClass( "p-0" );
     $( "main" ).addClass( "full-height" ).removeClass( "pb-3" );
     $( ".container-fluid" ).addClass( "full-height" );
+    $( "nav" ).removeClass( "mb-3" );
     //window.addEventListener('resize', resizeCarousel);
     // load functions
-    var viewHeight = 700;
-    var viewWidth = 1200;
+    var viewHeight = 1080;
+    var viewWidth = 1920;
 
     function loadGalleryCarousel( galleryRootName, galleryName ) {
         try {
@@ -25,7 +26,9 @@
                         bindCarouselControls();
                         bindTooltips();
                         bindKeyboardInput();
-                        $( ".carousel-content-navbar-spacer" ).css( 'height', ( $( "nav" ).height() + 47 ) + 'px' );
+                        showTimer = setTimeout( mouseStopped, 5000 );
+                        let navbarspacerheight = ( $( "nav" ).height() + 19 ) + 'px';
+                        $( ".carousel-content-navbar-spacer" ).css( 'height', navbarspacerheight ).css( 'min-height', navbarspacerheight );
                         cssVar( 'nav-bar-height', $( "nav" ).height() + 'px' );
                         cssVar( 'indicators-height', $( "#carousel-indicators-flex-div" ).height() + 'px' );
                     }
@@ -77,16 +80,109 @@
                 showMenu();
             }
         } );
-        bindSettingsControl();
+        $( ".carousel-control-play-pause" ).on( 'click', function () {
+            playOrPause();
+        } );
+        bindSettingsControls();
     }
 
-    function bindSettingsControl() {
+    function playOrPause() {
+        if ( $( ".carousel-control-play-pause i" ).hasClass( 'fa-pause' ) ) {
+            $( ".carousel-control-play-pause i" ).removeClass( 'fa-pause' ).addClass( 'fa-play' );
+            carousel.carousel( 'pause' );
+        } else {
+            $( ".carousel-control-play-pause i" ).removeClass( 'fa-play' ).addClass( 'fa-pause' );
+            carousel.carousel( 'cycle' );
+        }
+    }
+
+    var carousel;
+
+    function bindSettingsControls() {
         $( ".carousel-control-show-settings" ).on( 'click', function ( e ) {
             if ( !$( "#settingsModal" ).hasClass( "show" ) ) {
                 $( "#settingsModal" ).modal( 'show' );
             }
         } );
+
+        $( "#duration" ).on( "slide change", function ( slideEvt ) {
+            setCarouselTransitionTime( slideEvt.value );
+        } );
+
+        carousel = $( '#gallery-carousel' ).carousel( {
+            interval: 5000,
+            wrap: true,
+            ride: 'carousel',
+            pause: false,
+            cycle: 'reverse'
+        } );
+
+        $( "#interval" ).on( "slide change", function ( slideEvt ) {
+            var multiplier = $( 'input[type=radio][name=animation]' ).val() == 'fade' ? 1000 : 100;
+            var interval = ( slideEvt.value * multiplier );
+            setCarouselInterval( interval );
+        } );
+
+        $( 'input[type=radio][name=animation]' ).change( function () {
+            if ( this.value == 'fade' ) {
+                setCarouselInterval( 5000 );
+                setCarouselTransitionTime( 5 );
+                carousel.addClass( 'carousel-fade' );
+            }
+            else if ( this.value == 'slide' ) {
+                setCarouselInterval( 5000 );
+                setCarouselTransitionTime( 7 );
+                carousel.removeClass( 'carousel-fade' );
+            }
+        } );
+
+        $( "#show-name" ).on( 'change', function () {
+            if ( $( this ).prop( 'checked' ) ) {
+                $( ".carousel-item-name" ).fadeIn();
+            } else {
+                $( ".carousel-item-name" ).fadeOut();
+            }
+        } );
+
+        $( "#show-description" ).on( 'change', function () {
+            if ( $( this ).prop( 'checked' ) ) {
+                $( ".carousel-item-description" ).fadeIn();
+            } else {
+                $( ".carousel-item-description" ).fadeOut();
+            }
+        } );
     }
+
+    function setCarouselTransitionTime( value ) {
+        let inTime = value / 100;
+        let outTime = value / 100;
+        if ( $( 'input[type=radio][name=animation]' ).val() == 'fade' ) {
+            inTime *= 10;
+            outTime *= 10;
+            inTime -= ( parseFloat( inTime ) / 5 );
+            outTime += ( parseFloat( inTime ) / 5 );
+        }
+        cssVar( 'slide-transition-in-time', inTime + 's' );
+        cssVar( 'slide-transition-out-time', outTime + 's' );
+    }
+
+    function setCarouselInterval( intervalMs ) {
+        config = carousel.data()[ 'bs.carousel' ]._config
+        config.interval = intervalMs;
+        carousel.data( { _config: config } )
+    }
+
+    $( '#duration' ).slider( {
+        formatter: function ( value ) {
+            return value;
+        }
+    } );
+
+    $( '#interval' ).slider( {
+        formatter: function ( value ) {
+            return value;
+        }
+    } );
 
     function bindKeyboardInput() {
         $( document ).keydown( function ( event ) {
@@ -95,8 +191,13 @@
             }
         } );
         $( document ).keydown( function ( event ) {
-            if ( event.which === 39 || event.which === 32 ) {
+            if ( event.which === 39) {
                 moveCarouselRight();
+            }
+        } );
+        $( document ).keydown( function ( event ) {
+            if (event.which === 32 ) {
+                playOrPause();
             }
         } );
     }
@@ -134,14 +235,7 @@
                     20
                 );
                 $( "#carousel-container" ).css( 'background', e.color.toString() );
-
-           } );
-    } );
-
-    $( '#duration' ).slider( {
-        formatter: function ( value ) {
-            return 'Current value: ' + value;
-        }
+            } );
     } );
 
     //function resizeCarousel() {
@@ -156,15 +250,18 @@
     }
 
     function moveIndicatorsRight() {
-        $( ".carousel-indicators" ).animate( { scrollLeft: $( ".carousel-indicators" ).width() }, 800 );
+        let containerWidth = $( ".carousel-indicators" ).width();
+        let offset = $( ".carousel-indicators" ).scrollLeft();
+        let scrollAmount = containerWidth - offset < containerWidth ? containerWidth - offset : containerWidth;
+        $( ".carousel-indicators" ).animate( { scrollLeft: scrollAmount }, 800 );
     }
 
     function moveCarouselLeft() {
-        $( '.carousel' ).carousel('prev')
+        $( '.carousel' ).carousel( 'prev' )
     }
 
     function moveCarouselRight() {
-        $( '.carousel' ).carousel('next')
+        $( '.carousel' ).carousel( 'next' )
     }
 
     function showMenu() {
@@ -176,7 +273,7 @@
     }
 
     function hideMenu() {
-        $( ".carousel-content-navbar-spacer" ).addClass( 'carousel-content-navbar-spacer-scrolled-down' );
+        $( ".carousel-content-navbar-spacer" ).addClass( 'carousel-content-navbar-spacer-scrolled-down' ).css('min-height', '0');
         $( ".carousel-content-navbar-spacer" ).removeClass( 'carousel-content-navbar-spacer-scrolled-up' );
         $( "nav" ).addClass( 'scrolled-down' );
         $( "nav" ).removeClass( 'scrolled-up' );
@@ -212,25 +309,31 @@
         loadGalleryCarousel( galleryRootName, galleryName ),
         150 );
 
+    function addListenerMulti( element, eventNames, listener ) {
+        var events = eventNames.split( ' ' );
+        for ( var i = 0, iLen = events.length; i < iLen; i++ ) {
+            element.addEventListener( events[ i ], listener, false );
+        }
+    }
+
     var hideTimer;
     var showTimer;
-    var lastCalled = 0;
 
-    window.addEventListener( "mousemove", function () {
+    addListenerMulti( window, 'mousemove touchmove', function () {
         showControls();
         clearTimeout( hideTimer );
-        hideTimer = setTimeout( mouseStopped, 3000 );
+        hideTimer = setTimeout( mouseStopped, 2500 );
     } );
 
     function mouseStopped() {
-        $( ".carousel-control" ).finish().animate( { opacity: 0 }, 500 );
+        //$( ".carousel-control" ).finish().animate( { opacity: 0 }, 500 );
     }
 
     function showControls() {
         $( ".carousel-control" ).finish().animate( { opacity: 0.1 }, 200, "swing" );
-        $( ".carousel-control" ).finish().animate( { opacity: 1 }, 300, "swing");
+        $( ".carousel-control" ).finish().animate( { opacity: 1 }, 300, "swing" );
         clearTimeout( showTimer );
-        showTimer = setTimeout( mouseStopped, 5000 );
+        showTimer = setTimeout( mouseStopped, 3500 );
     }
 } );
 

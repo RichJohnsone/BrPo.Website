@@ -158,12 +158,17 @@
             updateBasketCount();
         });
 
+        var tooltipHideTimer;
         function bindTooltips(){
             $('[data-toggle="tooltip"]').tooltip({
-                delay: {show: 400, hide: 300}
+                delay: {show: 300, hide: 300}
             }).click(function () {
                 $('[data-toggle="tooltip"]').tooltip("hide");
             });
+            //$('[data-toggle="tooltip"]').on('shown.bs.tooltip', function (){
+            //    clearTimeout( tooltipHideTimer );
+            //    tooltipHideTimer = setTimeout($('[data-toggle="tooltip"]').tooltip("hide"), 1000);
+            //});
         }
 
         function getCurrentFormId(htmlElement) {

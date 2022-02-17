@@ -135,7 +135,7 @@ namespace BrPo.Website.Areas.Printing.Pages
                 var paper = await _paperService.GetPaperAsync(printOrder.PaperId);
                 if (!_shoppingBasketService.PriceIsCorrect(printOrder, paper))
                     return new BadRequestObjectResult("Price discrepancy");
-                var file = await _imageService.GetImageAsync(printOrder.FileId);
+                var file = await _imageService.GetImageFileModelAsync(printOrder.FileId);
                 var orientation = file.Height > file.Width ? "portrait" : "landscape";
                 if (!PrintDimenisonsFitOnPaper(printOrder.Height, printOrder.Width, paper, orientation))
                     return new BadRequestObjectResult("Print dimensions too large for paper");
@@ -178,7 +178,7 @@ namespace BrPo.Website.Areas.Printing.Pages
 
         public PartialViewResult OnGetOrderDisplayPanelPartial(string id)
         {
-            var model = _imageService.GetImageAsync(id.ToInt()).Result;
+            var model = _imageService.GetImageFileModelAsync(id.ToInt()).Result;
             return Partial("OrderDisplayPanelPartial", model);
         }
 

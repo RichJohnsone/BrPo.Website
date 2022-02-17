@@ -3,6 +3,8 @@
 @{
 }
 
+@section Scripts { <link rel="stylesheet" href="~/css/carousel.css" /> }
+
 <div class="row full-height">
     <div class="col-12 full-height">
         <div id="carousel-container" class="full-height"></div>
@@ -22,7 +24,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
-                        <h6>Background:</h6>
+                        <h6>Background</h6>
                     </div>
                     <div class="col">
                         <div class="row">
@@ -37,19 +39,33 @@
                         </div>
                     </div>
                 </div>            
-                <div class="row">
+@*                <div class="row mt-3">
                     <div class="col">
-                        <h6>Duration:</h6>
+                        <h6>Transition</h6>
                     </div>
                     <div class="col">
-                        <div class="row pt-2">
-                            <input id="duration" data-slider-id='durationSlider' type="text" data-slider-min="4" data-slider-max="30" data-slider-step="1" data-slider-value="7"/>
+                        <div class="row pt-1">
+                            <input id="duration" data-slider-id='durationSlider' type="text" data-slider-min="3" data-slider-max="30" data-slider-step="1" data-slider-value="5"
+                                           data-toggle="tooltip" 
+                                           title="Set transition duration"/>
+                        </div>
+                    </div>
+                </div> *@  
+                <div class="row mt-3">
+                    <div class="col">
+                        <h6>Interval</h6>
+                    </div>
+                    <div class="col">
+                        <div class="row pt-1">
+                            <input id="interval" data-slider-id='intervalSlider' type="text" data-slider-min="3" data-slider-max="30" data-slider-step="1" data-slider-value="5"
+                                           data-toggle="tooltip" 
+                                           title="Set slide interval"/>
                         </div>
                     </div>
                 </div>   
                 <div class="row mt-3">
                     <div class="col">
-                        <h6>Animation:</h6>
+                        <h6>Animation</h6>
                     </div>
                     <div class="col">
                         <div class="row">
@@ -62,9 +78,24 @@
                         </div>
                     </div>
                 </div>   
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="row mt-3">
+                    <div class="col">
+                        <h6>Show</h6>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <label class = "checkbox-inline">
+                                <input type = "checkbox" name = "animation" id = "show-name" value = "fade" checked> Name
+                            </label>
+                            <label class = "checkbox-inline ml-3">
+                                <input type = "checkbox" name = "animation" id = "show-description" value = "slide" checked> Description
+                            </label>
+                        </div>
+                    </div>
+                </div>   
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
