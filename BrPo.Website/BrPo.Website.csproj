@@ -127,7 +127,6 @@
     <Folder Include="Areas\Identity\Pages\Services\" />
     <Folder Include="Areas\Identity\Pages\Roles\" />
     <Folder Include="Pages\Grids\" />
-    <Folder Include="Services\ContactForm\Persistence\" />
   </ItemGroup>
 
   <ItemGroup>

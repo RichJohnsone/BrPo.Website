@@ -1,10 +1,49 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
+:root {
+    --logo-colour: #e6109f;
+}
+
+nav {
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.nav-link.dropdown-toggle {
+    color: #343a40 !important;
+}
+
+.navbar-logo {
+    width: 1.8em;
+    height: 1.8em;
+}
+
+.navbar-name {
+    height: 2em;
+    max-height: 2em;
+    padding-left: 15px;
+}
+
+.navbar-nav.justify-content-end .nav-item:last-child .dropdown-menu.show {
+    left: unset;
+    right: 0px;
+}
+
+.navbar-nav.justify-content-end .nav-item:last-child .nav-link,
+.navbar-nav.justify-content-end .nav-item:last-child a {
+    padding-right: 0;
+}
+
+.navbar-collapse.show .navbar-nav .nav-item .dropdown-menu.show li a {
+    padding-left: 5px;
+}
+
+@media ( min-width: 920px )
+{
+    .navbar-nav.flex-grow-1.justify-content-center {
+        padding-right: 10%;
+    }
 }
 
 input[type=radio] {
@@ -53,8 +92,6 @@ a {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -587,192 +624,6 @@ table.form-table {
     }
 }
 
-
-/*.carousel-indicators li {*/
-    /*    box-sizing: content-box;
-    -ms-flex: 0 1 auto;
-    flex: 0 1 auto;
-    width: 30px;
-    height: 3px;
-    margin-right: 3px;
-    margin-left: 3px;
-    text-indent: -999px;
-    cursor: pointer;
-    background-color: #fff;
-    background-clip: padding-box;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    opacity: .5;
-    transition: opacity .6s ease;*/
-    /*opacity: 1;
-    text-indent: 0px !important;
-    height: 100px !important;
-    width: auto !important;
-    filter: none !important;
-}
-
-.carousel-indicators {
-    position: relative !important;
-    filter: none !important;*/
-    /*    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 15;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    padding-left: 0;
-    margin-right: 15%;
-    margin-left: 15%;
-    list-style: none;
-*/
-/*}*/
-
-/*.carousel-image-container {
-    margin: auto;
-    width: 100% !important;
-}
-
-    .carousel-image-container img {
-        margin: auto;
-    }*/
-
-/*.carousel-control-scroll-left, .carousel-control-scroll-right {*/
-    /*    min-width: 3em;
-    width: 3em;
-*/ /*    margin-top: auto;
-    margin-bottom: auto;
-*/
-/*}
-
-.carousel-control-prev,
-.carousel-control-next {
-    min-width: 3em;
-    width: 3em;
-    height: 40%;
-    margin: auto .5em;
-    z-index: 1050;
-}*/
-
-/*.carousel-control-scroll-left {
-    left: 1em;
-}
-
-.carousel-control-scroll-right {
-    right: 1em
-}*/
-
-/*.carousel-control-scroll-left,
-.carousel-control-scroll-right {
-    position: absolute;
-    bottom: 2.2em;
-    z-index: 1050;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-    align-items: end;
-    -ms-flex-pack: center;
-    justify-content: center;
-    min-width: 2em;
-    color: #fff !important;
-    text-align: center;
-    opacity: .7;
-    transition: opacity .15s ease;
-}*/
-
-/*    .carousel-control-scroll-left div,
-    .carousel-control-scroll-right div,
-    .carousel-control-show-hide div,
-    .carousel-control-prev div,
-    .carousel-control-next div {
-        background: #00000040;
-        border-radius: .25em;
-        height: 1.5em;
-        min-width: 1.5em;
-        font-size: 1.4em;
-        padding: 0;
-    }
-
-.carousel-control-show-hide-menu {
-    top: 1em;
-}
-
-.carousel-control-show-hide-indicators {
-    bottom: 1em;
-}
-
-.carousel-control-show-settings {
-    right: unset !important;
-    left: 1em;
-    top: 1em;
-}
-
-.carousel-control-full-screen {
-    right: 3.9em !important;
-    top: 1em;
-}
-
-.carousel-control-play-pause {
-    right: 3.9em !important;
-    bottom: 1em;
-}
-*/
-/*.carousel-control-scroll-left:focus,
-.carousel-control-scroll-left:hover,
-.carousel-control-scroll-right:focus,
-.carousel-control-scroll-right:hover,
-.carousel-control-show-hide:focus,
-.carousel-control-show-hide:hover {
-    color: #fff;
-    text-decoration: none;
-    outline: 0;
-    opacity: .9;
-}
-
-.carousel-control-show-hide {
-    position: absolute;
-    right: 1em;
-    z-index: 1050;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-    align-items: end;
-    -ms-flex-pack: center;
-    justify-content: center;
-    min-width: 2em;
-    color: #fff !important;
-    text-align: center;
-    opacity: .7;
-    transition: opacity .15s ease;
-}
-
-.carousel-inner img {
-    margin: 0;
-    width: 100%;
-    object-fit: contain;
-}
-
-.carousel-control-next div {*/
-    /*padding: 0 0 .3rem;*/
-/*}
-
-.carousel-indicators {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 15;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    padding-left: 0;
-    margin: 0 3.5em 0 3.5em;
-    list-style: none;
-    overflow-x: auto;
-}*/
-
 /* image-scroller */
 .image-scroller {
     /*padding: 10px;*/
@@ -864,8 +715,8 @@ table.form-table {
 
 .image-scroller-edit-button {
     /*    border-radius: 50%;
-    background: #007bff;
-    border: 5px solid #007bff;
+    background: #e6109f;
+    border: 5px solid #e6109f;
     height: 30px;
     width: 30px;
     font-size: 18px;
@@ -973,14 +824,15 @@ table.form-table {
 }
 
 .disable-scrollbars::-webkit-scrollbar {
-    background: transparent;  Chrome/Safari/Webkit 
-    width: 0px !important;
+    background: transparent;
+    Chrome /Safari/Webkit width: 0px !important;
     display: none;
 }
 
 .disable-scrollbars {
-    overflow: -moz-scrollbars-none;  Firefox 
-    -ms-overflow-style: none;  IE 10+ 
+    overflow: -moz-scrollbars-none;
+    Firefox -ms-overflow-style: none;
+    IE 10+
 }
 
 .outline-text {
@@ -1010,4 +862,87 @@ table.form-table {
 .colorpicker-element input {
     border-radius: .25em;
     border: 0 !important;
+}
+
+.home-page-display-box-container {
+    gap: 1em;
+    width: 100%;
+}
+
+.home-page-display-box {
+    border: 5px solid;
+    border-color: var(--logo-colour);
+    border-radius: .5em;
+}
+
+.home-page-display-box-header-container {
+    padding: 1em 1em 0.5em 1em;
+    background: #00000030;
+    margin: 0;
+}
+
+.home-page-display-box-text-container {
+    padding: 0.5em 1em 0.5em 1em;
+    background: #00000040;
+    margin: 0;
+}
+
+.home-page-display-box-actions-container {
+    padding: 0.5em 1em 1em 1em;
+    background: #00000020;
+    margin: 0;
+    width: 100%;
+}
+
+    .home-page-display-box-header-container div,
+    .home-page-display-box-text-container div,
+    .home-page-display-box-actions-container div {
+        padding: 0;
+    }
+
+/*@media (min-width: 576px) {
+    .home-page-display-box {
+    }
+    .home-page-display-box-container {
+        flex-basis: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .home-page-display-box {
+        flex-basis: 50%;
+    }
+}
+
+@media (min-width: 922px) {
+    .home-page-display-box {
+        flex-basis: 33%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .home-page-display-box {
+        flex-basis: 33%;
+    }
+}*/
+@media (max-width: 576px) {
+    .home-page-display-box {
+        flex-basis: 100%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 922px) {
+    .home-page-display-box {
+        flex-basis: 45%;
+    }
+}
+
+@media (min-width: 922px) {
+    .home-page-display-box {
+        flex-basis: 30%;
+    }
+}
+
+.nav-item.dropdown:last-child > nav-link {
+    padding-right: 0;
 }

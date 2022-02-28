@@ -1,0 +1,107 @@
+﻿@page
+@model BrPo.Website.Pages.ContactModel
+@{
+}
+
+<h1>Contact</h1>
+
+<div class="row">
+    <div class="col">
+        <p>Please use this form to contact us.</p>
+        <form data-ajax-begin="onBegin" 
+            data-ajax-complete="onComplete"
+            data-ajax-failure="onFailed" 
+            data-ajax-success="onSuccess"
+            data-ajax="true" 
+            data-ajax-method="POST"
+            asp-page-handler="SaveForm">
+            @Html.ValidationSummary(true)
+            <div class="form-group row">
+                <label asp-for="Contact.Name" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" 
+                        class="form-control" 
+                        id="inputName1" 
+                        placeholder="Name" 
+                        data-val-required="Required." 
+                        data-val="true"
+                        name="name"
+                        asp-for="Contact.Name"
+                        data-val-regex="May only contain letters, spaces and the the following characters: - '"
+                        data-val-regex-pattern="^[a-zA-Z \-']+$">
+                    <small id="nameHelp" class="form-text text-muted float-left">We'll never share your name with anyone else.</small>
+                    <div class="field-validation-valid float-left" data-valmsg-for="name" data-valmsg-replace="true"></div>                     
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Contact.Email" class="col-sm-2 col-form-label">Email address</label>
+                <div class="col-sm-10">
+                    <input type="email" 
+                        class="form-control" 
+                        id="inputEmail" 
+                        placeholder="Email" 
+                        data-val-required="Required." 
+                        data-val="true"
+                        name="email"
+                        asp-for="Contact.Email">
+                    <small id="emailHelp" class="form-text text-muted float-left">We'll never share your email with anyone else.</small>
+                    <div class="field-validation-valid float-left" data-valmsg-for="email" data-valmsg-replace="true"></div>                     
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Contact.Message" class="col-sm-2 col-form-label">Your message</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" 
+                        id="textareaMessage" 
+                        rows="3" 
+                        name="message"
+                        asp-for="Contact.Message"
+                        placeholder="Message"
+                        data-val-required="Required." 
+                        data-val="true"
+                        data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
+                        data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$">
+                    </textarea>
+                    <div class="field-validation-valid float-left" data-valmsg-for="message" data-valmsg-replace="true"></div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Save Details" />
+            <div id="results"></div>
+            <div class="mt-3">
+                <h4>Privacy statement</h4>
+                <div class="text-left">
+                    <p>The data supplied by the form on this page is stored securely in our database.</p>
+                    <p>We will store your data for upto 1 year, after which contact enquiries are automatically deleted.</p>
+                    <p>We will use your data only for the purpose of this enquiry and nothing else. We will not use it for our own marketing. We will not supply it to any other party.</p>
+                    <p>If you want us to delete your data sooner then please use this form again and request that we delete all contact enquiries from your email address -  we will promptly do just that.</p>
+                    <p>If you have any other enquiries about your data then please use this form again with your enquiry and we will get right back to you.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function jumpToAnchor (target){window.location.hash=target;}
+
+    document.addEventListener("DOMContentLoaded", function(){
+        var results = $("#results");
+        onBegin = function(){
+            results.html("<img src=\"resources/images/loader.gif\" alt=\"Loading\" />");
+        };
+        onComplete = function(){
+            results.html("");
+        };
+        onSuccess = function (xhr) {
+            alert(`Thankyou: ${xhr.valueOf('name')}! 
+            
+Your request has been forwarded to our team - we will respond as quickly as we can.`);
+            
+        };
+        onFailed = function (xhr) {
+            alert(`Status: ${xhr.status} : Status Text: ${xhr.statusText}
+            
+Response Text: ${xhr.responseText}`);
+        };
+    });
+</script>

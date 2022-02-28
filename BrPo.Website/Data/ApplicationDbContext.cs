@@ -35,7 +35,7 @@ namespace BrPo.Website.Data
             this.SeedPapers(modelBuilder);
         }
 
-        public DbSet<ContactModel> Contacts { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<ImageFileModel> ImageFiles { get; set; }
         public DbSet<PaperModel> Papers { get; set; }
         public DbSet<BasketItem> basketItems { get; set; }

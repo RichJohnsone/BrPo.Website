@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>@ViewData["Title"] - High Quality Photo Prints - Professional Photo Printing - Fine-Art Printing</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
@@ -50,35 +50,31 @@
 
 <body>
     <header>
-        <nav class="autohide navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">
-                    <img src="/resources/images/BPLogo1s.png" alt="Brixton Photographic logo" style="width:50px" class="float-left"/>
-                    <img src="/resources/images/BrixtonPhotograpic.com.png" id="textLogo" alt="BrixtonPhotographic.com" style="width:25%; min-width:250px; padding-top:15px; padding-left:10px;" class="float-left"/>
+        <nav class="autohide navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top pt-0 pb-0 container-fluid">
+                <a class="navbar-brand flex-grow-0" asp-area="" asp-page="/Index">
+                    <img src="/resources/images/logo-32.png" alt="Brixton Photographic logo" style="" class="navbar-logo float-left"/>
+                    <img src="/resources/images/BrixtonPhotograpic3-150.png" id="textLogo" alt="BrixtonPhotographic.com" style="" class="navbar-name float-left"/>
                 </a>
-                <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler ml-auto mt-0" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Pictures" asp-page="/Galleries">Buy</a>
                         </li>                            
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Sell</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyImages">Images</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyGalleries">Galleries</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Sell</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyImages">Images</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyGalleries">Galleries</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Print</a>
                             <ul class="dropdown-menu">
@@ -90,6 +86,10 @@
                                 </li>
                             </ul>
                         </li>
+                    </ul>
+                </div>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end flex-grow-0">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
                         <li class="nav-item" id="shopping-basket-nav">
                             <a class="nav-link d-flex justify-content-left" asp-area="ShoppingBasket" asp-page="/Basket">
                                 <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket">
@@ -114,7 +114,7 @@
                         <partial name="_LoginPartial" />
                     </ul>
                 </div>
-            </div>
+
         </nav>
     </header>
     <div class="container" id="main_layout_container">

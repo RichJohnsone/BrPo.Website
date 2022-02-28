@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BrPo.Website.Services.ContactForm.Models
 {
     [Table("Contacts")]
-    public class ContactModel
+    public class Contact
     {
         [Key]
         public int Id { get; set; }
