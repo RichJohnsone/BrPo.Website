@@ -1,5 +1,5 @@
 ﻿@page
-@model BrPo.Website.Areas.Admin.Pages.RoleAdminModel
+@model BrPo.Website.Areas.Identity.Pages.Roles.RoleAdminModel
 @{
     ViewData["Title"] = "Role Admin";
 }
@@ -8,7 +8,7 @@
     <div class="col-lg-6">
         <h2>Roles Admin</h2>
     </div>
-    <div class="col-lg-6 text-right">
+    <div class="col-lg-6 text-end">
         <a class="btn btn-primary" asp-area="Identity" asp-page="/Roles/CreateRole">Create role</a>
     </div>
 </div>
@@ -27,7 +27,7 @@
                 <td>
                     @role.Name
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     <a asp-area="Identity" asp-page="/Roles/EditRole" asp-route-name="@role.Name" class="btn btn-primary">Edit</a>
                     <button type="submit"
                             asp-page-handler="DeleteRole"

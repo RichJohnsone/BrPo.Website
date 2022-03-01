@@ -3,39 +3,38 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BrPo.Website.Pages
+namespace BrPo.Website.Pages;
+
+[BindProperties(SupportsGet = true)]
+[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+public class StatusModel : PageModel
 {
-    [BindProperties(SupportsGet = true)]
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public class StatusModel : PageModel
+    public string Status { get; set; }
+
+    public int OriginalStatusCode { get; set; }
+
+    public string? OriginalPathAndQuery { get; set; }
+
+    public IActionResult OnGet(string status = null)
     {
-        public string Status { get; set; }
+        Status = status;
+        OriginalStatusCode = status.ToInt();
 
-        public int OriginalStatusCode { get; set; }
-
-        public string? OriginalPathAndQuery { get; set; }
-
-        public IActionResult OnGet(string status = null)
+        if (Status == "404")
         {
-            Status = status;
-            OriginalStatusCode = status.ToInt();
+            var statusCodeReExecuteFeature =
+                HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
 
-            if (Status == "404")
+            if (statusCodeReExecuteFeature is not null)
             {
-                var statusCodeReExecuteFeature =
-                    HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-
-                if (statusCodeReExecuteFeature is not null)
-                {
-                    OriginalPathAndQuery = string.Join(
-                        statusCodeReExecuteFeature.OriginalPathBase,
-                        statusCodeReExecuteFeature.OriginalPath,
-                        statusCodeReExecuteFeature.OriginalQueryString);
-                }
-                RedirectToPage();
+                OriginalPathAndQuery = string.Join(
+                    statusCodeReExecuteFeature.OriginalPathBase,
+                    statusCodeReExecuteFeature.OriginalPath,
+                    statusCodeReExecuteFeature.OriginalQueryString);
             }
-
-            return Page();
+            RedirectToPage();
         }
+
+        return Page();
     }
 }

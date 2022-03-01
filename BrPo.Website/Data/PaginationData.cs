@@ -1,48 +1,47 @@
 ﻿using System;
 
-namespace BrPo.Website.Data
+namespace BrPo.Website.Data;
+
+public sealed class PaginationData : IEquatable<PaginationData>
 {
-    public sealed class PaginationData : IEquatable<PaginationData>
+    private const int DefaultPageNumber = 1;
+    private const int DefaultPageSize = 10;
+
+    public PaginationData()
     {
-        private const int DefaultPageNumber = 1;
-        private const int DefaultPageSize = 10;
+    }
 
-        public PaginationData()
+    public PaginationData(int pageNumber, int pageSize)
+    {
+        PageNumber = pageNumber;
+        PageSize = pageSize;
+    }
+
+    public static PaginationData Default { get; } = new PaginationData(DefaultPageNumber, DefaultPageSize);
+
+    public int? PageSize { get; set; } = DefaultPageSize;
+    public int? PageNumber { get; set; } = DefaultPageNumber;
+
+    public bool Equals(PaginationData other)
+    {
+        if (other == null)
         {
+            return false;
         }
-
-        public PaginationData(int pageNumber, int pageSize)
+        if (ReferenceEquals(this, other))
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
+            return true;
         }
+        return (PageSize == other.PageSize) && (PageNumber == other.PageNumber);
+    }
 
-        public static PaginationData Default { get; } = new PaginationData(DefaultPageNumber, DefaultPageSize);
+    public override bool Equals(object obj)
+    {
+        return obj is PaginationData && Equals((PaginationData)obj);
+    }
 
-        public int? PageSize { get; set; } = DefaultPageSize;
-        public int? PageNumber { get; set; } = DefaultPageNumber;
-
-        public bool Equals(PaginationData other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-            return (PageSize == other.PageSize) && (PageNumber == other.PageNumber);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is PaginationData && Equals((PaginationData)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (PageSize.GetHashCode() * 397) ^ PageNumber.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return (PageSize.GetHashCode() * 397) ^ PageNumber.GetHashCode();
     }
 }

@@ -8,33 +8,32 @@ using Microsoft.EntityFrameworkCore;
 using BrPo.Website.Data;
 using BrPo.Website.Services.Paper.Models;
 
-namespace BrPo.Website.Areas.Admin.Pages.Paper
+namespace BrPo.Website.Areas.Admin.Pages.Paper;
+
+public class DetailsModel : PageModel
 {
-    public class DetailsModel : PageModel
+    private readonly BrPo.Website.Data.ApplicationDbContext _context;
+
+    public DetailsModel(BrPo.Website.Data.ApplicationDbContext context)
     {
-        private readonly BrPo.Website.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DetailsModel(BrPo.Website.Data.ApplicationDbContext context)
+    public PaperModel PaperModel { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        public PaperModel PaperModel { get; set; }
+        PaperModel = await _context.Papers.FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        if (PaperModel == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            PaperModel = await _context.Papers.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (PaperModel == null)
-            {
-                return NotFound();
-            }
-            return Page();
+            return NotFound();
         }
+        return Page();
     }
 }

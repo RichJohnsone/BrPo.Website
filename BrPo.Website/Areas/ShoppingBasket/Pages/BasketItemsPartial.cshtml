@@ -40,11 +40,11 @@
                        title="Set the quantity of prints required"
                        value="@basketItem.PrintOrderItem.Quantity" />
             </td>
-            <td class="text-right pt-4">@basketItem.PrintOrderItem.Value</td>
+            <td class="text-end pt-4">@basketItem.PrintOrderItem.Value</td>
             <td class="mt-1"><i class="fas fa-times delete-from-basket-js btn btn-danger" 
                                 data-id="@basketItem.Id"
                                 data-toggle="tooltip" 
-                                title="Delete this item from your shopping basket">
+                                title="Delete this item from your shopping basket"></i>
             </td>
         </tr>
     }
@@ -52,12 +52,12 @@
     <tfoot>
         <tr>
             <th colspan=6>&nbsp;</th>
-            <th>Sub Total<span class="float-right">£</span></th>
-            <th><div id="basketSubTotal" class="text-right"></div></th>
+            <th>Sub Total<span class="float-end">£</span></th>
+            <th><div id="basketSubTotal" class="text-end"></div></th>
             <th>&nbsp;</th>
         </tr>
         <tr>
-            <th colspan=5><div class="float-right mt-2">Voucher</div></th>
+            <th colspan=5><div class="float-end mt-2">Voucher</div></th>
             <th><input type="text"
                        class="form-control"
                        min="1" 
@@ -65,20 +65,20 @@
                        data-toggle="tooltip" 
                        title="Enter a voucher code"/>
             </th>
-            <th><div class="mt-2">Discount<span class="float-right">£</span></div></th>
-            <th><div id="voucherDiscount" class="text-right mt-2">0.00</div></th>
+            <th><div class="mt-2">Discount<span class="float-end">£</span></div></th>
+            <th><div id="voucherDiscount" class="text-end mt-2">0.00</div></th>
             <th>&nbsp;</th>
         </tr>
         <tr>
             <th colspan=6>&nbsp;</th>
-            <th>Delivery<span class="float-right">£</span></th>
-            <th><div id="deliveryTotal" class="text-right">0.00</div></th>
+            <th>Delivery<span class="float-end">£</span></th>
+            <th><div id="deliveryTotal" class="text-end">0.00</div></th>
             <th>&nbsp;</th>
         </tr>
         <tr>
             <th colspan=6>&nbsp;</th>
-            <th>Total<span class="float-right">£</span></th>
-            <th><div id="basketTotal" class="text-right">0.00</div></th>
+            <th>Total<span class="float-end">£</span></th>
+            <th><div id="basketTotal" class="text-end">0.00</div></th>
             <th>&nbsp;</th>
         </tr>
     </tfoot>

@@ -60,17 +60,17 @@
             const userId = $("#userId").val();
             const invoiceId = $("#invoiceId").val();
             if (invoiceId === 0) {
-                alert ("No Invoice Id supplied!")
+                alert("No Invoice Id supplied!");
                 return;
             }            
             if (userId === "") {
-                alert ("No User Id supplied!")
+                alert("No User Id supplied!");
                 return;
             }
             const invoiceTotal = $("#amount").val();
             if (invoiceTotal == undefined) invoiceTotal = 0;
             if (invoiceTotal === 0) {
-                alert ("No Invoice Total supplied!")
+                alert("No Invoice Total supplied!");
                 return;
             }            
             const body = JSON.stringify({ 
@@ -89,13 +89,13 @@
             if (response.ok){
                 const { clientSecret } = await response.json();
                 const appearance = {
-                    theme: 'stripe',
+                    theme: 'stripe'
                 };
                 cs = clientSecret;
                 elements = stripe.elements({ appearance, clientSecret });
                 const paymentElement = elements.create("payment");
                 paymentElement.on('change' , function(event) {
-                    inputs = $("input[aria-invalid=true]");
+                    const inputs = $("input[aria-invalid=true]");
                     if (inputs.length == 0) {
                         clearMessage();
                     }

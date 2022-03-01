@@ -6,46 +6,45 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace BrPo.Website.Pages
+namespace BrPo.Website.Pages;
+
+public class ContactModel : PageModel
 {
-    public class ContactModel : PageModel
+    private readonly ILogger<IndexModel> _logger;
+    private readonly IContactService _contactService;
+    public Contact Contact { get; set; }
+
+    public ContactModel(
+        ILogger<IndexModel> logger,
+        IContactService contactService)
     {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly IContactService _contactService;
-        public Contact Contact { get; set; }
+        _logger = logger;
+        _contactService = contactService;
+    }
 
-        public ContactModel(
-            ILogger<IndexModel> logger,
-            IContactService contactService)
-        {
-            _logger = logger;
-            _contactService = contactService;
-        }
+    public void OnGet()
+    {
+    }
 
-        public void OnGet()
+    public async Task<IActionResult> OnPostSaveFormAsync()
+    {
+        if (!ModelState.IsValid)
         {
+            return Page();
         }
-
-        public async Task<IActionResult> OnPostSaveFormAsync()
+        if (!Contact.Email.IsValidEmailAddress())
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            if (!Contact.Email.IsValidEmailAddress())
-            {
-                return BadRequest("Email address is not valid");
-            }
-            var existingContact = _contactService.Find(Contact);
-            if (existingContact == null)
-            {
-                Contact.DateCreated = System.DateTime.UtcNow;
-                await _contactService.Save(Contact);
-                await _contactService.Email(Contact);
-            }
-            else
-                return BadRequest("This request has been saved already");
-            return Content(Contact.Name);
+            return BadRequest("Email address is not valid");
         }
+        var existingContact = _contactService.Find(Contact);
+        if (existingContact == null)
+        {
+            Contact.DateCreated = System.DateTime.UtcNow;
+            await _contactService.Save(Contact);
+            await _contactService.Email(Contact);
+        }
+        else
+            return BadRequest("This request has been saved already");
+        return Content(Contact.Name);
     }
 }

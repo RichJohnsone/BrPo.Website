@@ -1,0 +1,482 @@
+﻿@page
+@model BrPo.Website.Areas.Sell.Pages.MyGalleriesModel
+@{
+    var gridStyle = "display: none !important;";
+    var sliderStyle = "";
+    if (Model.DisplayAsGrid)
+    {
+        gridStyle = "";
+        sliderStyle = "display: none !important;";
+    }
+}
+<style>
+    #editPanel {
+
+    }
+    #gallery-grid {
+        width: 100%;
+    }
+</style>
+
+@section Head { <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet"> }
+
+<div class="container p-0">
+    <div class="row d-inline-block w-100 m-0 mb-3">
+        <div class="col-12 p-0 mx-auto">
+            <h1 class="d-inline">My Galleries</h1>
+            <button class="btn-icon btn-primary d-inline ml-2" id="add-gallery" data-toggle="tooltip" title="Add gallery">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="btn-icon btn-info d-inline ml-1" id="set-view-grid" data-toggle="tooltip" title="Switch to grid view" style="@sliderStyle">
+                <i class="fas fa-grip-horizontal"></i>
+            </button>
+            <button class="btn-icon btn-info d-inline ml-2" id="set-view-slider" data-toggle="tooltip" title="Switch to slider view" style="@gridStyle">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row m-0 mb-3">
+        <div class="overlay-container">
+            <div id="gallery-grid-container" class="col-12 d-flex justify-content-center flex-nowrap mx-auto p-0" style="@gridStyle"></div>
+            <div class="grid-loading">
+                <div class="grid-loading-text">
+                    Grid loading
+                </div>
+            </div>
+        </div>
+        <div id="gallery-image-scroller-container" class="w-100 d-flex justify-content-center flex-nowrap" style="@sliderStyle"></div>
+    </div>
+    <div class="form-group row m-0 mb-2 d-flex justify-content-center flex-nowrap">
+        <div class="col-12 p-0" id="editPanel"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h2 class="text-danger">
+                    <i class="fas fa-exclamation"></i>
+                    <span>Warning</span>
+                </h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <p>This will remove the gallery: <span id="confirm-modal-gallery-name"></span></p>
+                    <p>It will also remove any content records associated with the gallery.</p>
+                    <p>Your images will remain.</p>
+                    <h4>This process cannot be undone</h4>
+                </div>       
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" 
+                        id="deleteGalleryButton" 
+                        data-imageGalleryId="0"
+                        class="btn btn-primary">Remove gallery and associated data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_LoaderModalPartial")
+
+<script src="~/js/mvc-grid/mvc-grid.js"></script>
+<script>
+    var displayAsGrid = @Model.DisplayAsGrid.ToString().ToLower();
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // grid functions
+
+        var gridElement;
+        const gridOptions = {
+        };
+        var grid;
+
+        function initialiseGrid(){
+            gridElement = document.querySelector('.mvc-grid');
+            grid = new MvcGrid(gridElement, gridOptions);
+        }
+
+        function reloadGrid(){
+            new MvcGrid(document.querySelector('.mvc-grid')).reload();
+            $("#editPanel").html("");
+        }
+
+        document.addEventListener("reloadend", e => {
+            bindTooltips();
+            bindButtons();
+            scrollTo($("body"));
+        });
+
+        // set view functions
+
+        $("#set-view-grid").on('click', function(){
+            displayAsGrid = true;
+            loadGalleryGrid();
+            $("#gallery-image-scroller-container").hide();
+            $("#gallery-image-scroller-container").removeClass("d-flex");
+            $("#gallery-grid-container").show();
+            $("#gallery-grid-container").addClass("d-flex");
+            $("#set-view-grid").hide();
+            $("#set-view-grid").removeClass("d-inline");
+            $("#set-view-slider").show();
+            $("#set-view-slider").addClass("d-inline");
+            $("#editPanel").html("");
+        });
+
+        $("#set-view-slider").on('click', function(){
+            displayAsGrid = false;
+            loadGalleryImageScroller();
+            $("#gallery-image-scroller-container").show();
+            $("#gallery-image-scroller-container").addClass("d-flex")
+            $("#gallery-grid-container").hide();
+            $("#gallery-grid-container").removeClass("d-flex")
+            $("#set-view-grid").show();
+            $("#set-view-grid").addClass("d-inline")
+            $("#set-view-slider").hide();
+            $("#set-view-slider").removeClass("d-inline")
+            $("#editPanel").html("");
+       });
+
+        // load functions
+
+        function loadEditPanel(galleryId, alertMessage){
+            try {
+                showLoader();
+                $("#editPanel").html("");
+                alertClear();
+                $("#editPanel").load(`MyGalleries?handler=EditGalleryPartial&galleryId=${galleryId}`, function (response, status, xhr){
+                    console.log(`editPanel.load: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadEditPanel.error: ${response}`)
+                        setTimeout(showLoader(false), 1000);
+                        $("#addOrEdit").removeAttr("disabled");
+                    } 
+                    if (status == "success"){
+                        try {
+                            initialiseValidation();
+                            loadContentPanel(galleryId);
+                            $("#addOrEdit").on('click', function(e){
+                                e.preventDefault();
+                                onSubmit();
+                            });
+                            if (alertMessage) 
+                            {
+                                alertSuccess(alertMessage);
+                            } else {
+                                alertClear();
+                            }
+                            $(".alert-close-js").on('click', alertClear);
+                            bindTooltips();
+                            setTimeout(function(){
+                                if ($("#ContentCount").val() == 0) showLoader(false);
+                            }, 750);
+                            $('[data-toggle="hover"]').unbind().popover(({ trigger: "hover" }));
+                            if (displayAsGrid) setSelectedGridRow(galleryId);
+                        }
+                        catch(e) {
+                            alertError(`Error from loadEditPanel.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                            //showLoader(false);
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadEditPanel: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                //showLoader(false);
+            }
+        }
+
+        function loadContentPanel(galleryId){
+            try {
+                $("#content-image-scroller-container").load(`MyGalleries?handler=GalleryContent&galleryId=${galleryId}`, function (response, status, xhr){
+                    console.log(`loadContentPanel: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadContentPanel.error: ${response}`)
+                    } 
+                    if (status == "success"){
+                        try {
+                            $(".content-js").on('click', function(e){
+                                e.preventDefault();
+                                $("#CoverImageId").val($(this).attr('data-imageFileId'));
+                            });
+                            setTimeout(function(){
+                                showLoader(false);
+                            }, 500);
+                            initialiseImageScroller($("#galleries-scroller"));
+                            if ($("#CoverImageId").val() != 0){
+                                $("#content-image-scroller-container li").removeClass("image-scroller-content-active");
+                                $("#content-image-scroller-container li a[data-imageFileId=" + $("#CoverImageId").val() + "]").parent().parent().addClass("image-scroller-content-active");
+                            }
+                            $(".content-js").on('click', function(){
+                                $("#CoverImageId").val($(this).attr('data-imageFileId'));
+                                $("#content-image-scroller-container li").removeClass("image-scroller-content-active");
+                                $("#content-image-scroller-container li a[data-imageFileId=" + $("#CoverImageId").val() + "]").parent().parent().addClass("image-scroller-content-active");
+                            }).attr('title', 'make cover image');
+                            bindTooltips();
+                        }
+                        catch(e) {
+                            alertError(`Error from loadContentPanel.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadContentPanel: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                    showLoader(false);
+            }
+        }
+
+        function loadGalleryImageScroller(){
+            try {
+                $("#gallery-image-scroller-container").load(`MyGalleries?handler=GalleryImageScroller`, function (response, status, xhr){
+                    console.log(`loadGalleryImageScroller: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadGalleryImageScroller.error: ${response}`)
+                    } 
+                    if (status == "success"){
+                        try {
+                            bindButtons();
+                            resizeImageScroller();
+                            initialiseImageScroller($("#content-scroller"));
+                        }
+                        catch(e) {
+                            alertError(`Error from loadGalleryImageScroller.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadGalleryImageScroller: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                    showLoader(false);
+            }
+        }
+
+        function loadGalleryGrid(){
+            try {
+                $("#gallery-grid-container").load(`MyGalleries?handler=GalleryGrid`, function (response, status, xhr){
+                    console.log(`loadGalleryGrid: status:${status}`);
+                    if (status == "error"){
+                            alertError(`Error from loadGalleryGrid.error: ${response}`)
+                    } 
+                    if (status == "success"){
+                        try {
+                            initialiseGrid();
+                            bindTooltips();
+                            bindButtons();
+                        }
+                        catch(e) {
+                            alertError(`Error from loadGalleryGrid.success: ${e.name} : ${e.description} : ${e.message}`)
+                        }
+                        finally {
+                        }
+                    } 
+                });
+            }
+            catch(e) {
+                alertError(`Error from loadGalleryGrid: ${e.name} : ${e.description} : ${e.message}` );
+            }
+            finally {
+                    showLoader(false);
+            }
+        }
+
+        function bindButtons(){
+            $(".edit-js").on('click', function(e){
+                e.preventDefault();
+                const galleryId = $(this).attr('data-imageGalleryId')
+                loadEditPanel(galleryId, null);
+                $("#gallery-image-scroller-container li").removeClass("image-scroller-content-active");
+                $("#gallery-image-scroller-container li a[data-imageGalleryId=" + galleryId + "]").parent().parent().addClass("image-scroller-content-active");
+            });
+            $(".delete-js").on('click', function(e){
+                e.preventDefault();
+                const galleryId = $(this).attr('data-imageGalleryId')
+                const galleryName = $(this).parent().parent().prev().children().first().html();
+                loadConfirmModal(galleryId, galleryName);
+            });
+        }
+        // delete functions
+
+        function loadConfirmModal(galleryId, galleryName){
+            $("#confirm-modal-gallery-name").html(galleryName);
+            $('#deleteGalleryButton').attr('data-imageGalleryId', galleryId);
+            $('#confirmModal').modal('show');
+        }
+
+        $('#deleteGalleryButton').click(function (e) {
+            e.preventDefault();
+            $('#confirmModal').modal('hide');
+            const galleryId = $(this).attr('data-imageGalleryId');
+            deleteGallery(galleryId);
+        });
+
+        function deleteGallery(galleryId){
+            let url = `MyGalleries?handler=DeleteGallery&galleryId=${galleryId}`;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: {
+                    "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $("#editPanel").html("");
+                    reloadGrid();
+                    alertSuccess("Your gallery has been deleted");
+                },
+                error: function (response, status, error) {
+                    alertError(`deleteGallery: ${response.responseText} : ${status} : ${error}`);
+                }
+            });        
+        }
+
+        // form functions
+
+        function onSubmit(){
+            alertClear();
+            if ($("#galleriesForm").valid()){
+                showLoader();
+                const alertMessage = $("#Id").val() == 0 ? "Gallery created" : "Gallery saved";
+                $("#addOrEdit").attr("disabled", "disabled");
+                let url = 'MyGalleries?handler=SaveGallery';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        "XSRF-TOKEN": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    data: new FormData(document.getElementById("galleriesForm")),
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        let gallery = JSON.parse(response);
+                        let galleryId = gallery.Id;
+                        loadEditPanel(galleryId, alertMessage);
+                        if (displayAsGrid){
+                            loadGalleryGrid();
+                        } else {
+                            loadGalleryImageScroller();
+                        }
+                    },
+                    error: function (response, status, error) {
+                        $("#addOrEdit").removeAttr("disabled");
+                        alertError(`${response.responseText}`);
+                        showLoader(false);
+                    }
+                });
+            }
+        };
+        
+        // initialisation
+
+        alertClear();
+        $("#add-gallery").on('click', function(e){
+            e.preventDefault();
+            loadEditPanel(0, null);
+        });
+        $(".alert-close-js").on('click', alertClear);
+
+        $("body").on('change input', function(){
+            validateForm();
+        })
+        $("body").on('mouseup', 'select, a', function(){
+            validateForm();
+        })
+        $("body").on('mouseup', 'button', function(){
+            validateForm();
+        })  
+        if (displayAsGrid){
+            loadGalleryGrid();
+        } else {
+            loadGalleryImageScroller();
+        }
+        window.addEventListener('resize', resizeImageScroller);
+
+        document.addEventListener("reloadstart", e => {
+            $('.mvc-grid').fadeOut();
+            $('.grid-loading').fadeIn();
+        });
+
+        document.addEventListener("reloadend", e => {
+            $('.mvc-grid').fadeIn();
+            $('.grid-loading').fadeOut('fast');
+            bindButtons();
+        });
+    });
+
+    // UI
+
+    function setSelectedGridRow(galleryId){
+        $(".edit-js").parent().parent().parent().removeClass('selected-grid-row');
+        $(".edit-js[data-imagegalleryid=" + galleryId + "]").parent().parent().parent().addClass('selected-grid-row');
+    }
+
+    let debounceTimeoutId;
+    function resizeImageScroller(){
+        clearTimeout(debounceTimeoutId);
+        debounceTimeoutId = setTimeout( function(){
+            //onResizeImageScroller();
+        }, 300);
+    }
+
+    function onResizeImageScroller(){
+            let element = $(".image-scroller").first();
+            let scrollNecessary = ( element.children().first().width() + $(".image-scroller-list").width() + element.children().last().width() ) - element.parents('.row').width() >= 0 ? true : false;
+            if (scrollNecessary){
+                $(".image-scroller-nav").parent().addClass("d-inline-block");
+                $(".image-scroller-nav").show();
+                let newWidth = element.width() - element.children().first().width() - element.children().last().width() - 20;
+                $(".image-scroller-list").width(newWidth);
+            } else {
+                $(".image-scroller-nav").parent().removeClass("d-inline-block");
+                $(".image-scroller-nav").hide();
+                $(".image-scroller-list").width('auto');
+            }
+    }
+
+    function initialiseImageScroller(element) {
+        $(".image-scroller-name").each(function(){
+            var imageWidth = $(this).parent().parent().children().first().children().first().width();
+            $(this).css('max-width', imageWidth);
+        });
+        $(".image-scroller-nav").hide();
+    }
+
+    const validationOptions = {
+        ignore: "",
+        errorClass: "error"
+    };
+
+    function validateForm(){
+        if ($("#galleriesForm").length > 0 && $("#galleriesForm").validator){
+            setTimeout(function(){
+                $("#galleriesForm").valid();
+            }, 250)
+        }
+    }
+
+    function initialiseValidation(){
+        $("#galleriesForm").removeData("validator");
+        $("#galleriesForm").validate(validationOptions);
+        $.validator.unobtrusive.parse(document);
+    }
+</script>

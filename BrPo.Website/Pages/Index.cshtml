@@ -6,10 +6,9 @@
 
 <style>
     button {
-        margin-top:10px;
-        max-height:38px;
     }
 </style>
+
 @if (Model.Environment == "Development")
 {
     <style>
@@ -18,12 +17,13 @@
         }
     </style>
 }
+
 <div class="row">
     <div class="col-12">
         <h1>Fine-art prints and printing</h1>
     </div>
 </div>
-<div class="row p-3">
+<div class="row">
     <div class="d-flex flex-wrap justify-content-between home-page-display-box-container">
         <div class="home-page-display-box flex-grow-1 d-flex flex-column">
             <div class="row home-page-display-box-header-container">
@@ -41,7 +41,7 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Browse galleries</button>
+                    <button class="btn btn-primary float-end">Browse galleries</button>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Start selling</button>
+                    <button class="btn btn-primary float-end">Start selling</button>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Print</button>
+                    <button class="btn btn-primary float-end">Print</button>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Exhibition service</button>
+                    <button class="btn btn-primary float-end">Exhibition service</button>
                 </div>
             </div>
         </div>
@@ -130,7 +130,7 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Portfolio service</button>
+                    <button class="btn btn-primary float-end">Portfolio service</button>
                 </div>
             </div>
         </div>
@@ -153,19 +153,16 @@
             </div>
             <div class="row home-page-display-box-actions-container">
                 <div class="col-12 home-page-display-box-actions">
-                    <button class="btn btn-primary float-right">Contact</button>
+                    <button class="btn btn-primary float-end">Contact</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
 <script>
     console.log("Environment: @Model.Environment");
     document.addEventListener('DOMContentLoaded', function () {
-        $("#main_layout_container").removeClass("container").addClass("container-fluid");
     });
 </script>
 

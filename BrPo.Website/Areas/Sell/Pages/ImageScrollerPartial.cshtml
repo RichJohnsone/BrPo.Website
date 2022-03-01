@@ -1,0 +1,81 @@
+﻿@using BrPo.Website.Services.Image.Services
+@model BrPo.Website.Areas.Sell.Models.ImageScrollerModel
+@inject IImageService ImageService;
+@{
+    var index = 0;
+}
+                    <div class="image-scroller d-inline-block p-0" id="@Model.ImageScrollerId">
+                        @*<div class="d-inline-block"><i class="image-scroller-nav fas fa-chevron-circle-left mr-2"></i></div>*@
+                        <div class="d-inline-block">
+                            <ul class="image-scroller-list list-group list-group-horizontal">
+                                @foreach(var item in Model.Content)
+                                {
+                                var titleLabel = item.ImageGalleryItemId == 0 ? "gallery" : "image";
+                                var isActive = ""; // index++ == 0 ? "image-scroller-content-active" : "";
+                                <li class="@isActive image-scroller-content list-group-item">
+                                    <div class="image-scroller-image-container">
+                                        <a href="@item.Link"
+                                            class="@item.LinkClass align-self-center"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            data-imageFileId="@item.ImageFileId"
+                                            data-imageGalleryId="@item.ImageGalleryId"
+                                            data-imageGalleryItemId="@item.ImageGalleryItemId"
+                                            title="View">
+                                            @if (item.ImageFileId == 0)
+                                            {
+                                            <img class="image-scroller-image" src="~/resources/images/NoContent.png" height="@Model.ContentHeight">
+                                            }
+                                            else
+                                            {
+                                            <img class="image-scroller-image" src="data:image/png;base64,@ImageService.GetBase64Thumbnail(item.ImageFileId, Model.ContentHeight)">
+                                            }
+                                        </a>
+                                    </div>
+                                    @if (Model.ShowName) 
+                                    {
+                                    <div class="mt-2 mb-0"
+                                            data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="@item.Name">
+                                        <h6 class="image-scroller-name mb-0">@item.Name&nbsp;</h6>
+                                    </div>                        
+                                    }
+                                    @if (Model.ShowButtons)
+                                    {
+                        <div class="mb-0 mt-2">
+                            @*                                        <span data-toggle="tooltip" title= "Edit">
+                                <i class="fas fa-pen image-scroller-edit-button edit-js"
+                                data-imageGalleryId="@item.ImageGalleryId"></i>
+                                </span>
+                                <span data-toggle="tooltip" title= "Delete">
+                                <i class="fas fa-times fa-lg ml-2 image-scroller-delete-button delete-js"
+                                data-imageGalleryId="@item.ImageGalleryId"></i>
+                                </span>*@
+                                        @{
+                                            var label = item.ImageGalleryId == 0 && item.ImageGalleryItemId == 0 ? "Add" : "Edit";
+                                            var icon = item.ImageGalleryId == 0 && item.ImageGalleryItemId == 0 ? "fa-plus" : "fa-pen";
+                                        }
+                                        <button class="btn-icon-sml btn-primary d-inline" data-toggle="tooltip" title="@label">
+                                            <i class="fas @icon image-scroller-edit-button edit-js"
+                                               data-imageFileId="@item.ImageFileId"
+                                               data-imageGalleryItemId="@item.ImageGalleryItemId"
+                                               data-imageGalleryId="@item.ImageGalleryId"></i>
+                                        </button>
+                                        @if (item.ImageGalleryId != 0 || (item.ImageGalleryId == 0 && item.ImageGalleryItemId != 0))
+                                        {
+                                        <button class="btn-icon-sml btn-danger d-inline ml-1" data-toggle="tooltip" title="Delete">
+                                            <i class="fas fa-times fa-lg image-scroller-delete-button delete-js"
+                                               data-imageFileId="@item.ImageFileId"
+                                               data-imageGalleryItemId="@item.ImageGalleryItemId"
+                                               data-imageGalleryId="@item.ImageGalleryId"></i>
+                                        </button>
+                                        }
+                                    </div>
+                                    }
+                                </li>
+                                }
+                            </ul>
+                        </div>
+                        @*<div class="d-inline-block"><i class="image-scroller-nav fas fa-chevron-circle-right ml-2"></i></div>*@
+                    </div>

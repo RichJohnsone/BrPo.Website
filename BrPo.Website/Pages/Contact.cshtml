@@ -29,8 +29,8 @@
                         asp-for="Contact.Name"
                         data-val-regex="May only contain letters, spaces and the the following characters: - '"
                         data-val-regex-pattern="^[a-zA-Z \-']+$">
-                    <small id="nameHelp" class="form-text text-muted float-left">We'll never share your name with anyone else.</small>
-                    <div class="field-validation-valid float-left" data-valmsg-for="name" data-valmsg-replace="true"></div>                     
+                    <small id="nameHelp" class="form-text text-muted float-start">We'll never share your name with anyone else.</small>
+                    <div class="field-validation-valid float-start" data-valmsg-for="name" data-valmsg-replace="true"></div>                     
                 </div>
             </div>
             <div class="form-group row">
@@ -44,8 +44,8 @@
                         data-val="true"
                         name="email"
                         asp-for="Contact.Email">
-                    <small id="emailHelp" class="form-text text-muted float-left">We'll never share your email with anyone else.</small>
-                    <div class="field-validation-valid float-left" data-valmsg-for="email" data-valmsg-replace="true"></div>                     
+                    <small id="emailHelp" class="form-text text-muted float-start">We'll never share your email with anyone else.</small>
+                    <div class="field-validation-valid float-start" data-valmsg-for="email" data-valmsg-replace="true"></div>                     
                 </div>
             </div>
             <div class="form-group row">
@@ -62,7 +62,7 @@
                         data-val-regex="May only contain alpha-numerics, spaces and the following characters: . , / _ :"
                         data-val-regex-pattern="^[a-zA-Z0-9_ .,/:]+$">
                     </textarea>
-                    <div class="field-validation-valid float-left" data-valmsg-for="message" data-valmsg-replace="true"></div>
+                    <div class="field-validation-valid float-start" data-valmsg-for="message" data-valmsg-replace="true"></div>
                 </div>
             </div>
             <input type="submit" class="btn btn-primary" value="Save Details" />

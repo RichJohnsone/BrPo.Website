@@ -6,8 +6,8 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown"><i class="fas fa-user"></i></a>
-        <ul class="dropdown-menu">
+        <a class="nav-link dropdown-toggle" href="#" id="navbardrop4" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user"></i></a>
+        <ul class="dropdown-menu" aria-labelledby="navbardrop4">
             <li>
                 <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Manage</a>
             </li>

@@ -10,56 +10,55 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BrPo.Website.Areas.ShoppingBasket.Pages
+namespace BrPo.Website.Areas.ShoppingBasket.Pages;
+
+[Route("api/[controller]")]
+[ApiController]
+public class PaymentIntentController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PaymentIntentController : ControllerBase
+    private readonly ILogger<PaymentIntentController> _logger;
+    private readonly IShoppingBasketService _shoppingBasketService;
+
+    public PaymentIntentController(
+        ILogger<PaymentIntentController> logger,
+        IShoppingBasketService shoppingBasketService)
     {
-        private readonly ILogger<PaymentIntentController> _logger;
-        private readonly IShoppingBasketService _shoppingBasketService;
+        _logger = logger;
+        _shoppingBasketService = shoppingBasketService;
+    }
 
-        public PaymentIntentController(
-            ILogger<PaymentIntentController> logger,
-            IShoppingBasketService shoppingBasketService)
+    [HttpPost]
+    public async Task<IActionResult> Index(PaymentIntentCreateRequest request)
+    {
+        if (request.Amount <= 0)
+            return null;
+        var paymentIntentService = new PaymentIntentService();
+        var metadata = new Dictionary<string, string>();
+        metadata.Add("invoiceid", JsonConvert.SerializeObject(request.InvoiceId));
+        metadata.Add("userid", JsonConvert.SerializeObject(request.UserId));
+        if (await AmountMatchesInvoice(request.Amount, metadata["invoiceid"].ToInt(), metadata["userid"].Replace("\"", "")))
         {
-            _logger = logger;
-            _shoppingBasketService = shoppingBasketService;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(PaymentIntentCreateRequest request)
-        {
-            if (request.Amount <= 0)
-                return null;
-            var paymentIntentService = new PaymentIntentService();
-            var metadata = new Dictionary<string, string>();
-            metadata.Add("invoiceid", JsonConvert.SerializeObject(request.InvoiceId));
-            metadata.Add("userid", JsonConvert.SerializeObject(request.UserId));
-            if (await AmountMatchesInvoice(request.Amount, metadata["invoiceid"].ToInt(), metadata["userid"].Replace("\"", "")))
+            var paymentIntent = paymentIntentService.Create(new PaymentIntentCreateOptions
             {
-                var paymentIntent = paymentIntentService.Create(new PaymentIntentCreateOptions
+                Amount = request.Amount,
+                Currency = "gbp",
+                AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
                 {
-                    Amount = request.Amount,
-                    Currency = "gbp",
-                    AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
-                    {
-                        Enabled = true,
-                    },
-                    Metadata = metadata
-                });
-                return new JsonResult(new { clientSecret = paymentIntent.ClientSecret });
-            }
-            else
-            {
-                return new BadRequestObjectResult(new { error = "Incorrect amount in request" });
-            }
+                    Enabled = true,
+                },
+                Metadata = metadata
+            });
+            return new JsonResult(new { clientSecret = paymentIntent.ClientSecret });
         }
-
-        private async Task<bool> AmountMatchesInvoice(int amount, int invoiceId, string userId)
+        else
         {
-            var invoiceTotal = await _shoppingBasketService.GetInvoiceTotalAsync(invoiceId, userId);
-            return invoiceTotal == (Decimal)amount / 100;
+            return new BadRequestObjectResult(new { error = "Incorrect amount in request" });
         }
+    }
+
+    private async Task<bool> AmountMatchesInvoice(int amount, int invoiceId, string userId)
+    {
+        var invoiceTotal = await _shoppingBasketService.GetInvoiceTotalAsync(invoiceId, userId);
+        return invoiceTotal == (Decimal)amount / 100;
     }
 }

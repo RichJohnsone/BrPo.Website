@@ -1,32 +1,31 @@
 using System.Collections.Generic;
-using BrPo.Website.Areas.Identity.Services;
+using BrPo.Website.Areas.Identity.Pages.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BrPo.Website.Areas.Admin.Pages
+namespace BrPo.Website.Areas.Identity.Pages.Roles;
+
+[BindProperties]
+public class RoleAdminModel : PageModel
 {
-    [BindProperties]
-    public class RoleAdminModel : PageModel
+    public List<IdentityRole> Roles { get; set; }
+    private readonly IAdminService _adminService;
+
+    public RoleAdminModel(IAdminService adminService)
     {
-        public List<IdentityRole> Roles { get; set; }
-        private readonly IAdminService _adminService;
+        _adminService = adminService;
+    }
 
-        public RoleAdminModel(IAdminService adminService)
-        {
-            _adminService = adminService;
-        }
+    public void OnGet()
+    {
+        Roles = _adminService.GetRoles();
+    }
 
-        public void OnGet()
-        {
-            Roles = _adminService.GetRoles();
-        }
-
-        public IActionResult OnPostDeleteRole(string name)
-        {
-            var role = _adminService.GetRole(name);
-            _adminService.RemoveRole(role.Name);
-            return RedirectToPage("/RoleAdmin");
-        }
+    public IActionResult OnPostDeleteRole(string name)
+    {
+        var role = _adminService.GetRole(name);
+        _adminService.RemoveRole(role.Name);
+        return RedirectToPage("/RoleAdmin");
     }
 }

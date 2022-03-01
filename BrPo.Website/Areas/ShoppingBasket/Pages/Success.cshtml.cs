@@ -9,30 +9,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace BrPo.Website.Areas.ShoppingBasket.Pages
+namespace BrPo.Website.Areas.ShoppingBasket.Pages;
+
+public class SuccessModel : PageModel
 {
-    public class SuccessModel : PageModel
+    private readonly ILogger<SuccessModel> _logger;
+    private readonly IShoppingBasketService _shoppingBasketService;
+    private readonly IApplicationUserService _applicationUserService;
+
+    public ApplicationUser ApplicationUser { get; set; }
+
+    public SuccessModel(
+        ILogger<SuccessModel> logger,
+        IShoppingBasketService shoppingBasketService,
+        IApplicationUserService applicationUserService)
     {
-        private readonly ILogger<SuccessModel> _logger;
-        private readonly IShoppingBasketService _shoppingBasketService;
-        private readonly IApplicationUserService _applicationUserService;
+        _logger = logger;
+        _shoppingBasketService = shoppingBasketService;
+        _applicationUserService = applicationUserService;
+    }
 
-        public ApplicationUser ApplicationUser { get; set; }
-
-        public SuccessModel(
-            ILogger<SuccessModel> logger,
-            IShoppingBasketService shoppingBasketService,
-            IApplicationUserService applicationUserService)
-        {
-            _logger = logger;
-            _shoppingBasketService = shoppingBasketService;
-            _applicationUserService = applicationUserService;
-        }
-
-        public async Task<IActionResult> OnGet([FromQuery] string session_id)
-        {
-            ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
-            return Page();
-        }
+    public async Task<IActionResult> OnGet([FromQuery] string session_id)
+    {
+        ApplicationUser = await _applicationUserService.GetCurrentUserAsync(this.User);
+        return Page();
     }
 }

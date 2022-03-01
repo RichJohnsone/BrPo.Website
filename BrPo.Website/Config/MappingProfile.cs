@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using BrPo.Website.Services.ShoppingBasket.Models;
 
-namespace BrPo.Website.Config
+namespace BrPo.Website.Config;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<PrintOrderItem, PrintInvoiceItem>();
-        }
+        CreateMap<PrintOrderItem, PrintInvoiceItem>();
     }
 }

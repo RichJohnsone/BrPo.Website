@@ -8,52 +8,51 @@ using Microsoft.EntityFrameworkCore;
 using BrPo.Website.Data;
 using BrPo.Website.Services.Paper.Models;
 
-namespace BrPo.Website.Areas.Admin.Pages.Paper
+namespace BrPo.Website.Areas.Admin.Pages.Paper;
+
+public class DeleteModel : PageModel
 {
-    public class DeleteModel : PageModel
+    private readonly BrPo.Website.Data.ApplicationDbContext _context;
+
+    public DeleteModel(BrPo.Website.Data.ApplicationDbContext context)
     {
-        private readonly BrPo.Website.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DeleteModel(BrPo.Website.Data.ApplicationDbContext context)
+    [BindProperty]
+    public PaperModel PaperModel { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        [BindProperty]
-        public PaperModel PaperModel { get; set; }
+        PaperModel = await _context.Papers.FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        if (PaperModel == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            return NotFound();
+        }
+        return Page();
+    }
 
-            PaperModel = await _context.Papers.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (PaperModel == null)
-            {
-                return NotFound();
-            }
-            return Page();
+    public async Task<IActionResult> OnPostAsync(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        PaperModel = await _context.Papers.FindAsync(id);
+
+        if (PaperModel != null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            PaperModel = await _context.Papers.FindAsync(id);
-
-            if (PaperModel != null)
-            {
-                _context.Papers.Remove(PaperModel);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
+            _context.Papers.Remove(PaperModel);
+            await _context.SaveChangesAsync();
         }
+
+        return RedirectToPage("./Index");
     }
 }

@@ -1,46 +1,45 @@
 using System;
 using System.Threading.Tasks;
-using BrPo.Website.Areas.Identity.Services;
+using BrPo.Website.Areas.Identity.Pages.Services;
 using BrPo.Website.Config;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BrPo.Website.Areas.Admin.Pages
+namespace BrPo.Website.Areas.Identity.Pages.Roles;
+
+[BindProperties, Authorize(Roles = RolesConfig.Administrator)]
+public class EditRoleModel : PageModel
 {
-    [BindProperties, Authorize(Roles = RolesConfig.Administrator)]
-    public class EditRoleModel : PageModel
+    private readonly IAdminService _adminService;
+    private RoleManager<IdentityRole> RoleManager { get; set; }
+
+    public EditRoleModel(RoleManager<IdentityRole> roleManager, IAdminService adminService)
     {
-        private readonly IAdminService _adminService;
-        private RoleManager<IdentityRole> RoleManager { get; set; }
+        RoleManager = roleManager;
+        _adminService = adminService;
+    }
 
-        public EditRoleModel(RoleManager<IdentityRole> roleManager, IAdminService adminService)
+    public IdentityRole IdentityRole { get; set; }
+
+    public void OnGet(string roleName)
+    {
+        IdentityRole = _adminService.GetRole(roleName);
+    }
+
+    public async Task<IActionResult> OnPost()
+    {
+        var role = _adminService.GetRole(IdentityRole.Id);
+        try
         {
-            RoleManager = roleManager;
-            _adminService = adminService;
+            await RoleManager.SetRoleNameAsync(role, IdentityRole.Name);
+            return RedirectToPage("/RoleAdmin");
         }
-
-        public IdentityRole IdentityRole { get; set; }
-
-        public void OnGet(string roleName)
+        catch (Exception e)
         {
-            IdentityRole = _adminService.GetRole(roleName);
-        }
-
-        public async Task<IActionResult> OnPost()
-        {
-            var role = _adminService.GetRole(IdentityRole.Id);
-            try
-            {
-                await RoleManager.SetRoleNameAsync(role, IdentityRole.Name);
-                return RedirectToPage("/RoleAdmin");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
+            Console.WriteLine(e.Message);
+            throw;
         }
     }
 }

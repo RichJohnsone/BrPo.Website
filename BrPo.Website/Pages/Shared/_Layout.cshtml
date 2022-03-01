@@ -1,35 +1,34 @@
-﻿@using Microsoft.AspNetCore.Http.Features
-@using BrPo.Website.Config
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+﻿@using BrPo.Website.Config
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>@ViewData["Title"] - High Quality Photo Prints - Professional Photo Printing - Fine-Art Printing</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
-    <link href="~/css/mvc-grid/mvc-grid.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="apple-touch-icon" sizes="57x57" href="/rescourses/images/favicons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/rescourses/images/favicons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/rescourses/images/favicons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/rescourses/images/favicons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/rescourses/images/favicons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/rescourses/images/favicons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/rescourses/images/favicons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/rescourses/images/favicons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/rescourses/images/favicons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/rescourses/images/favicons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/rescourses/images/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/rescourses/images/favicons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/rescourses/images/favicons/favicon-16x16.png">
-    <link href="~/lib/bootstrap-colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png"> 
-    <meta name="description" content="A website to sell High Quality Photo Prints, Professional Photo Printing, Fine-Art Printing, Brixton London UK">
+    <link rel="apple-touch-icon" sizes="57x57" href="/resources/images/favicons/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/resources/images/favicons/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/resources/images/favicons/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/resources/images/favicons/apple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/resources/images/favicons/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/resources/images/favicons/apple-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/resources/images/favicons/apple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/resources/images/favicons/apple-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/resources/images/favicons/apple-icon-180x180.png" />
+    <link rel="icon" type="image/png" sizes="192x192"  href="/resources/images/favicons/android-icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/resources/images/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/resources/images/favicons/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/resources/images/favicons/favicon-16x16.png" />
+    <link href="~/lib/bootstrap-colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+    <meta name="description" content="Buy, Sell, Print, Professional Image Printing, Fine-Art Printing, Brixton London UK">
     @*<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=61eac75faa3f60001954c356&product=image-share-buttons" async="async"></script>*@
 
     <script>
@@ -45,44 +44,45 @@
         }
     }*@
 
-    @RenderSection("Head", required: false)
+    @await RenderSectionAsync("Head", required: false)
 </head>
 
 <body>
     <header>
-        <nav class="autohide navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top pt-0 pb-0 container-fluid">
+        <nav class="autohide-js navbar navbar-expand-sm @*navbar-toggleable-sm*@ navbar-light bg-white border-bottom box-shadow mb-3 fixed-top pt-0 pb-0">
+            <div class="container-fluid">
                 <a class="navbar-brand flex-grow-0" asp-area="" asp-page="/Index">
-                    <img src="/resources/images/logo-32.png" alt="Brixton Photographic logo" style="" class="navbar-logo float-left"/>
-                    <img src="/resources/images/BrixtonPhotograpic3-150.png" id="textLogo" alt="BrixtonPhotographic.com" style="" class="navbar-name float-left"/>
+                    <img src="/resources/images/logo-32.png" alt="Brixton Photographic logo" style="" class="navbar-logo float-start"/>
+                    <img src="/resources/images/BrixtonPhotograpic3-150.png" id="textLogo" alt="BrixtonPhotographic.com" style="" class="navbar-name float-start"/>
                 </a>
-                <button class="navbar-toggler ml-auto mt-0" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler mt-0" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center flex-grow-1">
                     <ul class="navbar-nav flex-grow-1 justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Pictures" asp-page="/Galleries">Buy</a>
-                        </li>                            
+                            <a class="nav-link text-dark" asp-area="Buy" asp-page="/Galleries">Buy</a>
+                        </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Sell</a>
-                            <ul class="dropdown-menu">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop1" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sell</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbardrop1">
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyImages">Images</a>
+                                    <a class="nav-link text-dark" asp-area="Sell" asp-page="/MyImages">Images</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Pictures" asp-page="/MyGalleries">Galleries</a>
+                                    <a class="nav-link text-dark" asp-area="Sell" asp-page="/MyGalleries">Galleries</a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Print</a>
-                            <ul class="dropdown-menu">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop2" role="button" data-bs-toggle="dropdown" aria-expanded="false">Print</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbardrop2">
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Printing" asp-page="/Upload">Upload</a>
+                                    <a class="nav-link text-dark" asp-area="Print" asp-page="/Upload">Upload</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Printing" asp-page="/Order">Order</a>
+                                    <a class="nav-link text-dark" asp-area="Print" asp-page="/Order">Order</a>
                                 </li>
                             </ul>
                         </li>
@@ -91,42 +91,41 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end flex-grow-0">
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
                         <li class="nav-item" id="shopping-basket-nav">
-                            <a class="nav-link d-flex justify-content-left" asp-area="ShoppingBasket" asp-page="/Basket">
+                            <a class="nav-link d-flex justify-content-start" asp-area="ShoppingBasket" asp-page="/Basket">
                                 <i class="fas fa-shopping-basket" data-toggle="tooltip" data-placement="bottom" title="View Shopping Basket">
-                                    
-                                </i><span class="badge badge-pill badge-danger" id="shoppingBasketCount"></span>                                
+                                </i><span class="badge rounded-pill bg-danger" id="shoppingBasketCount"></span>
                             </a>
                         </li>
                         @if (User.IsInRole(RolesConfig.Administrator))
                         {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop"  data-toggle="dropdown">Admin</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Index">Paper - Admin</a></li>
-                                <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Create">Paper - Create</a></li>
-                                <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Edit">Paper - Edit</a></li>
-                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/RoleAdmin">Role - Admin</a></li>
-                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/CreateRole">Role - Create</a></li>
-                                <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/EditRole">Role - Edit</a></li>
-                            </ul>
-                        </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop3" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbardrop3">
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Index">Paper - Admin</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Create">Paper - Create</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-page="/Paper/Edit">Paper - Edit</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/RoleAdmin">Role - Admin</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/CreateRole">Role - Create</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/EditRole">Role - Edit</a></li>
+                                </ul>
+                            </li>
                         }
-                        <partial name="_LoginPartial" />
+                        <partial name="_LoginPartial"/>
                     </ul>
                 </div>
-
+            </div>
         </nav>
     </header>
-    <div class="container" id="main_layout_container">
+    <div class="container-fluid" id="main_layout_container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="autohide border-top footer text-muted fixed-bottom bg-white box-shadow">
+    <footer class="autohide-js border-top footer text-muted fixed-bottom bg-white box-shadow">
         <div class="container">
-            &copy; @DateTime.UtcNow.Year - Brixton Photographic@* - <a asp-area="" asp-page="/Privacy">Privacy*@</a>
+            &copy; @DateTime.UtcNow.Year - Brixton Photographic
         </div>
     </footer>
 
@@ -134,134 +133,15 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" ></script>
     <script src="https://kit.fontawesome.com/3077efd7ad.js" crossorigin="anonymous"></script>
     <script src="~/lib/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
     <script src="~/lib/bootstrap-slider/dist/bootstrap-slider.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-            //window.addEventListener('resize', textLogoDisplay);
 
-            //function textLogoDisplay(){
-            //    if ($(window).width() < 800){
-            //        $("#textLogo").hide();
-            //    } else {
-            //        $("#textLogo").show();
-            //    }
-            //}
-
-            setTimeout(bindTooltips, 1000);
-            updateBasketCount();
-        });
-
-        var tooltipHideTimer;
-        function bindTooltips(){
-            $('[data-toggle="tooltip"]').tooltip({
-                delay: {show: 300, hide: 300}
-            }).click(function () {
-                $('[data-toggle="tooltip"]').tooltip("hide");
-            });
-            //$('[data-toggle="tooltip"]').on('shown.bs.tooltip', function (){
-            //    clearTimeout( tooltipHideTimer );
-            //    tooltipHideTimer = setTimeout($('[data-toggle="tooltip"]').tooltip("hide"), 1000);
-            //});
-        }
-
-        function getCurrentFormId(htmlElement) {
-            var inputElement = htmlElement.currentTarget;
-            var form = $(inputElement).closest('form')[0];
-            var formId = $(form).attr("id");
-            return formId;
-        }
-
-        function updateBasketCount(){
-            try {
-                $.ajax({
-                    url: '/Printing/Order?handler=BasketCount',
-                    success: function(response){   
-                        let count = response == 0 ? '' : response;
-                        $("#shoppingBasketCount").html(count);
-                        if (count > 0) {
-                            $("#shopping-basket-nav").show();
-                        } else {
-                            $("#shopping-basket-nav").hide();
-                        }
-                    },
-                    error: function(data){
-                        console.log(`Ajax error from getBasketCount: status = ${data.status} : description: ${data.statusText}`);
-                    }
-                });    
-            }
-            catch(e) {
-                console.log(`Error from updateBasketCount : ${e.name} :  : ${e.description} : ${e.message}` );
-            }        
-        }
-
-        function showLoader(show){
-            if (show || show == undefined){
-                $('#spinnerModal').modal('show');
-                $('body').removeClass('modal-open');
-            } else {
-                $('#spinnerModal').modal('hide');
-            }
-        }
-
-        function alertSuccess(message){
-            $("#alert-container").show().removeClass("alert-danger").addClass("alert-success").removeClass("alert-warning");
-            $("#alert-icon").removeClass().addClass("fas fa-check-circle fa-lg");
-            $("#alert-message").html(`Success:   ${message}`);
-        }
-
-        function alertWarning(message){
-            $("#alert-message").show().removeClass("alert-danger").removeClass("alert-success").addClass("alert-warning");
-            $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
-            $("#alert-message").html(`Warning:   ${message}`);
-            console.log(message);
-        }
-
-        function alertError(message){
-            $("#alert-container").show().addClass("alert-danger").removeClass("alert-success").removeClass("alert-warning");
-            $("#alert-icon").removeClass().addClass("fas fa-exclamation-circle fa-lg");
-            $("#alert-message").html(`Error:   ${message}`);
-            console.log(message);
-        }
-
-        function alertClear(){
-            $("#alert-container").hide();
-            $("#alert-message").html();
-        }
-
-        // autohide nav and footer
-
-        nav_autohide = document.querySelector('nav.autohide');
-        footer_autohide = document.querySelector('footer.autohide');
-        // add padding-top to body (if necessary)
-        navbar_height = document.querySelector('.navbar').offsetHeight;
-        document.body.style.paddingTop = navbar_height + 'px';
-
-        if(nav_autohide){
-            var last_scroll_top = 0;
-            window.addEventListener('scroll', function() {
-                    let scroll_top = window.scrollY;
-                    if(scroll_top < last_scroll_top) {
-                        nav_autohide.classList.remove('scrolled-down');
-                        nav_autohide.classList.add('scrolled-up');
-                        footer_autohide.classList.remove('footer-scrolled-down');
-                        footer_autohide.classList.add('footer-scrolled-up');
-                    }
-                    else {
-                        nav_autohide.classList.remove('scrolled-up');
-                        nav_autohide.classList.add('scrolled-down');
-                        footer_autohide.classList.remove('footer-scrolled-up');
-                        footer_autohide.classList.add('footer-scrolled-down');
-                    }
-                    last_scroll_top = scroll_top;
-            }); 
-        }
     </script>
 </body>
 </html>
